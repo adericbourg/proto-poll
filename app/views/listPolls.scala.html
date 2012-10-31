@@ -1,0 +1,9 @@
+@(polls: List[Poll])
+
+@main("Polls") {
+	<ul class="none">
+	    @for(poll <- polls) {
+	        <li><a href="/poll/@poll.id" title="@poll.description">@poll.title</a></li>
+	    }
+	</ul>
+}

@@ -1,0 +1,81 @@
+@(poll: Poll, pollForm: Form[Poll])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@choiceGroup(choice: Field, className: String = "choice") = {
+    <div class="@className">
+        <input name="choice[x].label" placeholder="Choice x"/>
+		<a href="#" class="remove-choice btn btn-danger btn-mini"><i class="icon-white icon-remove-sign"></i> Remove</a>
+    </div>
+}
+
+@main("Add choices") {
+    @if(pollForm.hasErrors) {
+        <div class="alert-message error">
+            <p><strong>Oops</strong> Please fix all errors</p>
+        </div>
+    }
+
+    @helper.form(action = routes.EditPoll.saveChoices(poll.id)) {
+		<div class="header">
+			<h1>@poll.title</h1>
+			<blockquote>
+    			<p>@poll.description</p>
+    		</blockquote>
+		</div>
+
+        <fieldset>
+            <legend>Choices</legend>
+            <div id="choices">
+    			<div class="manage">
+                    <a class="add-choice btn btn-small">Add another choice</a>
+                </div>
+                @repeat(pollForm("choices")) { choice =>
+                    @choiceGroup(choice)
+                }
+
+                @** Keep an hidden block that will be used as template for Javascript copy code **@
+                @choiceGroup(
+                    pollForm("choices[x]"),
+                    className = "choice_template"
+                )
+            </div>
+        </fieldset>
+
+        <div class="actions">
+            <input type="submit" class="btn btn-primary" value="Create" />
+            <a href="/" class="btn btn-link">Cancel</a>
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('.remove-choice').live('click', function(e) {
+            $(this).parents('.choice').remove()
+            renumber()
+        })
+
+        $('.add-choice').live('click', function(e) {
+            var template = $('.choice_template')
+            template.before('<div class="choice">' + template.html() + '</div>')
+            renumber()
+        })
+
+        $('#form').submit(function() {
+            $('.choice_template').remove()
+        })
+
+        var renumber = function(choice) {
+        	var count = 0;
+            $('#choices').each(function(i) {
+                $('input', this).each(function() {
+                	count++
+                    $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'))
+                    $(this).attr('placeholder', 'Choice ' + count)
+                })
+            })
+        }
+        
+        renumber()
+    </script>
+}

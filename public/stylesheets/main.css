@@ -1,0 +1,24 @@
+.choice:first-child > .danger {
+    display: none;
+}
+
+.choice_template {
+    display: none;
+}
+
+table.poll-results .result {
+	text-align: center;
+}
+
+table.poll-results td.result-ko {
+	background-color: #ffecec;
+}
+
+table.poll-results td.result-ok {
+	background-color: #ddfcda; 
+	color: #00b050;
+}
+
+table.poll-results td.better-choice {
+	font-weight: bold;
+}
