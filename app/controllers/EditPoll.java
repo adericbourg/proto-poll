@@ -19,6 +19,12 @@ import views.html.newPoll;
 
 import com.google.common.base.Strings;
 
+/**
+ * Managing poll controller. Create, edit, add choices.
+ * 
+ * @author adericbourg
+ * 
+ */
 public class EditPoll extends Controller {
 	private static final Form<Poll> pollForm = form(Poll.class);
 	private static final Pattern CHOICE_ORDER = Pattern

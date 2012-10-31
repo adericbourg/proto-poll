@@ -16,6 +16,12 @@ import play.mvc.Result;
 import services.PollService;
 import views.html.answerPoll;
 
+/**
+ * Poll answer controller.
+ * 
+ * @author adericbourg
+ * 
+ */
 public class AnswerPoll extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
