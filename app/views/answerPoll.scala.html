@@ -51,7 +51,12 @@
 	<script type="text/javascript">
         $('.answer').live('click', function(e) {
         	$(this).find("input:checkbox").each(function(){ this.checked = !this.checked; });
+        	return false;
         })
+        $(".answer :checkbox").click(function(e) {
+   			e.stopPropagation();
+   			var val = $(this).val();
+  		});
         $('td.username').live('click', function(e) {
         	$(this).children("input").first().focus();
         })
