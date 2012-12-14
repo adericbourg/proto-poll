@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.Valid;
 
 import play.data.validation.Constraints.Required;
@@ -19,14 +20,20 @@ import play.db.ebean.Model;
  * 
  */
 @Entity
+@Table(name = "POLL")
 public class Poll extends Model {
 
+	private static final long serialVersionUID = 1L;
+
 	@Id
+	@Column(name = "ID")
 	public Long id;
 
 	@Required
-	@Column(nullable = false)
+	@Column(name = "TITLE", nullable = false)
 	public String title;
+
+	@Column(name = "DESCRIPTION")
 	public String description;
 
 	@Valid
