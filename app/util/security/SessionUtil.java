@@ -17,7 +17,19 @@ public final class SessionUtil {
 		getCurrentSession().put(USERNAME_KEY, user.username);
 	}
 
-	public static User getCurrentUser() {
+	public static User getCurrentUser(Context context) {
+		if (context == null) {
+			return null;
+		}
+
+		if (!context.session().containsKey(USERNAME_KEY)) {
+			return null;
+		}
+		return UserService.findByUsername(context.session().get(USERNAME_KEY));
+
+	}
+
+	public static User currentUser() {
 		if (!getCurrentSession().containsKey(USERNAME_KEY)) {
 			return null;
 		}

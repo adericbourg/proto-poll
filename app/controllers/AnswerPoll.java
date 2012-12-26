@@ -13,7 +13,9 @@ import models.PollResults;
 import play.data.DynamicForm;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import services.PollService;
+import util.security.SessionUtil;
 import views.html.answerPoll;
 
 /**
@@ -22,6 +24,7 @@ import views.html.answerPoll;
  * @author adericbourg
  * 
  */
+@Security.Authenticated(Secured.class)
 public class AnswerPoll extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
@@ -30,7 +33,8 @@ public class AnswerPoll extends Controller {
 		Poll poll = PollService.getPoll(id);
 		List<Choice> choices = PollService.getChoicesByPoll(id);
 
-		return ok(answerPoll.render(poll, choices, getPollResults(id)));
+		return ok(answerPoll.render(SessionUtil.currentUser(), poll,
+				choices, getPollResults(id)));
 	}
 
 	private static PollResults getPollResults(Long pollId) {
@@ -48,14 +52,14 @@ public class AnswerPoll extends Controller {
 
 	public static Result answer(Long id) {
 		DynamicForm form = form().bindFromRequest();
-		String username = form.data().get(USERNAME_KEY);
+		// String username = form.data().get(USERNAME_KEY);
 		Set<Long> choices = new HashSet<Long>();
 		for (Entry<String, String> entry : form.data().entrySet()) {
 			if (!isUsername(entry.getKey())) {
 				choices.add(Long.valueOf(entry.getValue()));
 			}
 		}
-		PollService.answerPoll(username, id, choices);
+		PollService.answerPoll(SessionUtil.currentUser(), id, choices);
 		return view(id);
 	}
 

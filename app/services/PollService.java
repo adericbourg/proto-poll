@@ -64,9 +64,8 @@ public class PollService {
 		return choices;
 	}
 
-	public static void answerPoll(String username, Long pollId,
+	public static void answerPoll(User user, Long pollId,
 			Collection<Long> choiceIds) {
-		User user = UserService.getUserOrRegisterByName(username);
 		Poll poll = getPollWithChoices(pollId);
 		Answer answer = getOrCreateAnswer(user, poll);
 

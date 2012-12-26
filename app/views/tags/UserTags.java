@@ -7,7 +7,7 @@ import util.security.SessionUtil;
 public class UserTags {
 
 	public static Html currentUser() {
-		User user = SessionUtil.getCurrentUser();
+		User user = SessionUtil.currentUser();
 
 		if (user == null) {
 			return new Html(

@@ -1,10 +1,14 @@
-@(poll: Poll, choices: List[Choice], results: PollResults)
+@(user: User, poll: Poll, choices: List[Choice], results: PollResults)
 
 @main("Answer") {
 	<h1>@poll.title</h1>
 	<blockquote>
 		<p>@poll.description</p>
 	</blockquote>
+	
+	@if(results.isAlreadyAnswered()) {
+		<p>You already answered this poll. You may update your answers if you wish.</p>
+	}
 	
 	@helper.form(action = routes.AnswerPoll.answer(poll.id)) {
 		<table class="table table-bordered table-hover table-condensed poll-results">
@@ -18,16 +22,27 @@
 			</thead>
 			<tbody>
 				@for(username <- results.usernames) {
-					<tr>
-						<td>@username</td>
-						@for(choice <- choices) {
-							@if(results.isCheckedChoice(username, choice.id)) {
-								<td class="result result-ok">&#10004;</td>
-							} else {
-								<td class="result result-ko"></td>
+					@if(username.equals(user.username)) {
+						<tr class="info">
+							<td class="username">@user.username</td>
+							@for(choice <- choices) {
+								<td class="result answer">
+									<input type="checkbox" name="choice_@choice.id" value="@choice.id" @if(results.isCheckedChoice(username, choice.id)) {checked="checked"}/>
+								</td>
 							}
-						}
-					</tr>
+						</tr>
+					} else {
+						<tr>
+							<td>@username</td>
+							@for(choice <- choices) {
+								@if(results.isCheckedChoice(username, choice.id)) {
+									<td class="result result-ok">&#10004;</td>
+								} else {
+									<td class="result result-ko"></td>
+								}
+							}
+						</tr>
+					}
 				}
 				<tr>
 					<th>Totals</th>
@@ -35,17 +50,24 @@
 						<td class="result @if(results.isBetterChoice(choice.id)) { better-choice }">@results.total(choice.id)</td>
 					}
 				</tr>
-				<tr class="info">
-					<td class="username"><input name="username" placeholder="Your name"/></td>
-					@for(choice <- choices) {
-						<td class="result answer">
-							<input type="checkbox" name="choice_@choice.id" value="@choice.id" />
-						</td>
-					}
-				</tr>
+				@if(!results.isAlreadyAnswered()) {
+					<tr class="info">
+						<td class="username">@user.username</td>
+						@for(choice <- choices) {
+							<td class="result answer">
+								<input type="checkbox" name="choice_@choice.id" value="@choice.id" />
+							</td>
+						}
+					</tr>
+				}
 			</tbody>
 		</table>
-		<input class="btn btn-primary btn-large" value="Submit" type="submit" />
+		
+		@if(results.isAlreadyAnswered()) {
+			<input class="btn btn-primary btn-large" value="Update" type="submit" />
+		} else {
+			<input class="btn btn-primary btn-large" value="Submit" type="submit" />
+		}
 	}
 	
 	<script type="text/javascript">

@@ -12,6 +12,7 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import services.PollService;
 import views.html.addChoices;
 import views.html.index;
@@ -25,6 +26,7 @@ import com.google.common.base.Strings;
  * @author adericbourg
  * 
  */
+@Security.Authenticated(Secured.class)
 public class EditPoll extends Controller {
 	private static final Form<Poll> pollForm = form(Poll.class);
 	private static final Pattern CHOICE_ORDER = Pattern
