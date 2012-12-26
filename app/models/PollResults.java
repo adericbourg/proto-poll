@@ -14,8 +14,8 @@ import java.util.TreeMap;
  * 
  */
 public class PollResults {
-	private final Map<String, Set<Long>> results = new TreeMap<>();
-	private final Map<Long, Long> totals = new HashMap<>();
+	private final Map<String, Set<Long>> results = new TreeMap<String, Set<Long>>();
+	private final Map<Long, Long> totals = new HashMap<Long, Long>();
 	private Long maxValue;
 
 	public void registerUser(String username) {

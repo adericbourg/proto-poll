@@ -24,9 +24,9 @@ import com.avaje.ebean.ExpressionList;
  */
 public class PollService {
 
-	private static final Finder<Long, Poll> POLL_FINDER = new Finder<>(
+	private static final Finder<Long, Poll> POLL_FINDER = new Finder<Long, Poll>(
 			Long.class, Poll.class);
-	private static final Finder<Long, Choice> CHOICE_FINDER = new Finder<>(
+	private static final Finder<Long, Choice> CHOICE_FINDER = new Finder<Long, Choice>(
 			Long.class, Choice.class);
 
 	private PollService() {
@@ -76,7 +76,7 @@ public class PollService {
 		}
 
 		// Map poll choices.
-		Map<Long, Choice> choices = new HashMap<>();
+		Map<Long, Choice> choices = new HashMap<Long, Choice>();
 		for (Choice choice : poll.choices) {
 			choices.put(choice.id, choice);
 		}
@@ -84,7 +84,7 @@ public class PollService {
 		// Save current choices.
 		Choice choice;
 		AnswerDetail detail;
-		List<AnswerDetail> details = new ArrayList<>();
+		List<AnswerDetail> details = new ArrayList<AnswerDetail>();
 		for (Long choiceId : choiceIds) {
 			choice = choices.get(choiceId);
 			detail = new AnswerDetail();

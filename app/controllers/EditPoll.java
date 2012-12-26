@@ -60,7 +60,7 @@ public class EditPoll extends Controller {
 	public static Result saveChoices(Long pollId) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		Choice choice;
-		List<Choice> choices = new ArrayList<>();
+		List<Choice> choices = new ArrayList<Choice>();
 		String value;
 		for (Entry<String, String> entry : dynamicForm.data().entrySet()) {
 			value = entry.getValue();
