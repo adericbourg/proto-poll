@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -28,7 +29,18 @@ public class User extends Model {
 	@Column(name = "USERNAME", unique = true, nullable = false)
 	public String username;
 
+	@Column(name = "PASSWORD_HASH")
+	public String passwordHash;
+
+	@Column(name = "EMAIL")
+	public String email;
+
 	@Required
 	@Column(name = "IS_REGISTERED", nullable = false)
 	public Boolean registered = false;
+
+	@Transient
+	public String getDisplay() {
+		return String.format("%s (%s)", username, email);
+	}
 }

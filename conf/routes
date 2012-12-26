@@ -5,6 +5,13 @@
 # Home page
 GET     /                           controllers.Application.index()
 
+# Authentication
+GET		/register					controllers.Authentication.register()
+POST	/register					controllers.Authentication.saveRegistration()
+GET		/login						controllers.Authentication.login()
+POST	/authenticate				controllers.Authentication.authenticate()
+GET		/logout						controllers.Authentication.logout()
+
 # Manage polls
 
 GET     /poll/new                   controllers.EditPoll.newPoll()

@@ -7,6 +7,7 @@
 		}
 **@
 
+
 <!DOCTYPE html>
 
 <html>
@@ -32,15 +33,23 @@
     </head>
     <body>
 
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a href="/" class="brand">ProtoPoll</a><span class="brand">&nbsp;[&nbsp;@title&nbsp;]</span>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-        </div>
+		<header class="header">
+			 <div class="navbar navbar-inverse navbar-fixed-top">
+				<div class="navbar-inner">
+					<div class="container">
+		                <div class="row">
+		                    <div class="span3">
+	                        	<a href="/" class="brand" >ProtoPoll</a><span class="brand">&nbsp;[&nbsp;@title&nbsp;]</span>
+		                    </div>
+		                    <div class="menu span9 pull-right">
+		                    	@views.tags.UserTags.currentUser
+		                    </div>
+		                </div>
+					</div>
+				</div> 
+        	</div>
+        </header>
+
       	<div class="container">
 			<div class="content">
 				@content
