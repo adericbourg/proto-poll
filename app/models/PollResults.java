@@ -16,7 +16,9 @@ import util.security.SessionUtil;
  * 
  */
 public class PollResults {
+	// Username -> checked choices.
 	private final Map<String, Set<Long>> results = new TreeMap<String, Set<Long>>();
+	// Choice -> answer count.
 	private final Map<Long, Long> totals = new HashMap<Long, Long>();
 	private Long maxValue;
 	private Boolean alreadyAnswered;
