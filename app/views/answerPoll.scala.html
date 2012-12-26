@@ -22,7 +22,7 @@
 			</thead>
 			<tbody>
 				@for(username <- results.usernames) {
-					@if(username.equals(user.username)) {
+					@if(user != null && username.equals(user.username)) {
 						<tr class="info">
 							<td class="username">@user.username</td>
 							@for(choice <- choices) {

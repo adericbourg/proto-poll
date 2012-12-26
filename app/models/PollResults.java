@@ -58,7 +58,11 @@ public class PollResults {
 	public boolean isAlreadyAnswered() {
 		if (alreadyAnswered == null) {
 			User user = SessionUtil.currentUser();
-			alreadyAnswered = results.containsKey(user.username);
+			if (user == null) {
+				alreadyAnswered = false;
+			} else {
+				alreadyAnswered = results.containsKey(user.username);
+			}
 		}
 		return alreadyAnswered.booleanValue();
 	}
