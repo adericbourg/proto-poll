@@ -1,4 +1,4 @@
-package views.tags;
+package ui.tags;
 
 import models.User;
 import play.api.templates.Html;
