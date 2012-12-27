@@ -51,7 +51,6 @@ public class EditPoll extends Controller {
 		} else {
 			Poll poll = filledForm.get();
 			Long pollId = PollService.createPoll(poll);
-			Messages.pushInfo("Poll successfully created.");
 			return setChoices(pollId);
 		}
 	}
@@ -76,7 +75,7 @@ public class EditPoll extends Controller {
 			}
 		}
 		PollService.saveChoices(pollId, choices);
-		flash("success", "Poll successfully created");
+		Messages.pushInfo("Poll successfully created.");
 		return ok(index.render());
 
 	}
