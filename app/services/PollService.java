@@ -101,8 +101,7 @@ public class PollService {
 			Answer answer = new Answer();
 			answer.user = user;
 			answer.poll = poll;
-			answer.save();
-			return getOrCreateAnswer(user, poll);
+			return answer;
 		}
 		return el.findUnique();
 	}
