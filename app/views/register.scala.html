@@ -3,35 +3,36 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("Sign in") {
+@main("Register") {
 
 	@helper.form(action = routes.Authentication.saveRegistration()) {
-		@inputText(
-	       	registrationForm("username"), 
-	       	'_label -> "User name",
-	       	'_showContraints -> true
-        )
-        @inputPassword(
-	       	registrationForm("password"), 
-	       	'_label -> "Password",
-	       	'_showContraints -> true
-        )
-        @inputPassword(
-	       	registrationForm("passwordConfirm"), 
-	       	'_label -> "Confirm password",
-	       	'_showContraints -> true
-        )
-        @inputText(
-	       	registrationForm("email"), 
-	       	'_label -> "E-mail",
-	       	'_showContraints -> true
-        )
-        
-        <div class="actions">
-            <input type="submit" class="btn btn-primary" value="Sign in">
-            <a href="@routes.Application.index" class="btn btn-link">Cancel</a>
-        </div>
-        
+		<fieldset>
+			<legend>Registration form</legend>
+			@inputText(
+		       	registrationForm("username"), 
+		       	'_label -> "User name",
+		       	'_showContraints -> true
+	        )
+	        @inputPassword(
+		       	registrationForm("password"), 
+		       	'_label -> "Password",
+		       	'_showContraints -> true
+	        )
+	        @inputPassword(
+		       	registrationForm("passwordConfirm"), 
+		       	'_label -> "Confirm password",
+		       	'_showContraints -> true
+	        )
+	        @inputText(
+		       	registrationForm("email"), 
+		       	'_label -> "E-mail",
+		       	'_showContraints -> true
+	        )
+	        <div class="actions">
+	            <input type="submit" class="btn btn-primary" value="Sign in">
+	            <a href="@routes.Application.index" class="btn btn-link">Cancel</a>
+	        </div>
+        </fieldset>
 	}
 
 }

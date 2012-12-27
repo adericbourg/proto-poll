@@ -5,25 +5,28 @@
 
 @main("Login") {
 
-	<div>Not registered? <a href="@routes.Authentication.register">Create account now!</a></div>
+	<div class="well well-small">
+		Not registered? <a href="@routes.Authentication.register">Create account now!</a>
+	</div>
 
 	@helper.form(action = routes.Authentication.authenticate()) {
-		@inputText(
-	       	loginForm("username"), 
-	       	'_label -> "User name",
-	       	'_showContraints -> true
-        )
-        @inputPassword(
-	       	loginForm("password"), 
-	       	'_label -> "Password",
-	       	'_showContraints -> true
-        )
-
-        <div class="actions">
-            <input type="submit" class="btn btn-primary" value="Login">
-            <a href="@routes.Application.index" class="btn btn-link">Cancel</a>
-        </div>
-        
+		<fieldset>
+			<legend>Sign in</legend>
+			@inputText(
+		       	loginForm("username"), 
+		       	'_label -> "User name",
+		       	'_showContraints -> true
+	        )
+	        @inputPassword(
+		       	loginForm("password"), 
+		       	'_label -> "Password",
+		       	'_showContraints -> true
+	        )
+	
+	        <div class="actions">
+	            <input type="submit" class="btn btn-primary" value="Login">
+	            <a href="@routes.Application.index" class="btn btn-link">Cancel</a>
+	        </div>
+		</fieldset>
 	}
-
 }

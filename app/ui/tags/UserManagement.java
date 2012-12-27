@@ -4,7 +4,16 @@ import models.User;
 import play.api.templates.Html;
 import util.security.SessionUtil;
 
-public class UserTags {
+public class UserManagement {
+
+	public static boolean isLoggedIn() {
+		return SessionUtil.currentUser() != null;
+	}
+
+	public static Html getUserDisplay() {
+		User user = SessionUtil.currentUser();
+		return user == null ? new Html("") : new Html(user.getDisplay());
+	}
 
 	public static Html currentUser() {
 		User user = SessionUtil.currentUser();
