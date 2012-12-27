@@ -72,7 +72,7 @@ public final class Messages {
 
 	public static List<String> listWarning() {
 		List<String> warnings = new ArrayList<String>();
-		if (hasError()) {
+		if (hasWarning()) {
 			do {
 				warnings.add(popWarning());
 			} while (hasWarning());
