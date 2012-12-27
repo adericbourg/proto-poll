@@ -12,8 +12,12 @@ GET		/login						controllers.Authentication.login()
 POST	/authenticate				controllers.Authentication.authenticate()
 GET		/logout						controllers.Authentication.logout()
 
-# Manage polls
+# User
+GET		/user/profile				controllers.UserSettings.profile()
+POST	/user/update/profile		controllers.UserSettings.updateProfile()
+POST	/user/update/security		controllers.UserSettings.updatePassword()
 
+# Manage polls
 GET     /poll/new                   controllers.EditPoll.newPoll()
 POST    /poll/new                   controllers.EditPoll.createPoll()
 GET		/poll/addChoices/:id		controllers.EditPoll.setChoices(id: Long)

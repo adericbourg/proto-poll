@@ -1,7 +1,9 @@
 package services;
 
 import models.User;
+import ui.tags.Messages;
 import util.security.PasswordUtil;
+import util.security.SessionUtil;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
@@ -27,6 +29,31 @@ public final class UserService {
 			throw new RuntimeException("username already exists");
 		}
 		user.save();
+	}
+
+	public static void updateUserEmail(String email) {
+		User user = SessionUtil.currentUser();
+		if (user == null) {
+			throw new RuntimeException("No current user");
+		}
+		user.email = email;
+		user.save();
+	}
+
+	public static boolean updateUserPassword(String oldPassword,
+			String newPassword) {
+		User currentUser = SessionUtil.currentUser();
+
+		if (!currentUser.passwordHash.equals(PasswordUtil.hashPassword(
+				currentUser.username, oldPassword))) {
+			Messages.error("Wrong old password");
+			return false;
+		}
+
+		currentUser.passwordHash = PasswordUtil.hashPassword(
+				currentUser.username, newPassword);
+		currentUser.save();
+		return true;
 	}
 
 	public static User authenticate(String login, String password) {

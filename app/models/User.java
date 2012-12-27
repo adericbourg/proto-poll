@@ -9,6 +9,8 @@ import javax.persistence.Transient;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
+import com.google.common.base.Strings;
+
 /**
  * Application user.
  * 
@@ -41,6 +43,9 @@ public class User extends Model {
 
 	@Transient
 	public String getDisplay() {
+		if (Strings.isNullOrEmpty(email)) {
+			return username;
+		}
 		return String.format("%s (%s)", username, email);
 	}
 }
