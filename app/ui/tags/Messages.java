@@ -16,34 +16,11 @@ public final class Messages {
 		throw new AssertionError();
 	}
 
-	public static boolean hasMessage() {
-		return hasError() || hasWarning() || hasInfo();
-	}
-
-	public static boolean hasError() {
-		return ERROR_QUEUE.get() != null && !ERROR_QUEUE.get().isEmpty();
-	}
-
-	public static boolean hasWarning() {
-		return WARNING_QUEUE.get() != null && !WARNING_QUEUE.get().isEmpty();
-	}
-
-	public static boolean hasInfo() {
-		return INFO_QUEUE.get() != null && !INFO_QUEUE.get().isEmpty();
-	}
-
-	public static void pushInfo(String message) {
+	public static void info(String message) {
 		if (INFO_QUEUE.get() == null) {
 			INFO_QUEUE.set(new LinkedList<String>());
 		}
 		INFO_QUEUE.get().add(message);
-	}
-
-	public static String popInfo() {
-		if (INFO_QUEUE.get() == null) {
-			return null;
-		}
-		return INFO_QUEUE.get().poll();
 	}
 
 	public static List<String> listInfo() {
@@ -56,18 +33,22 @@ public final class Messages {
 		return infos;
 	}
 
-	public static void pushWarning(String message) {
+	private static String popInfo() {
+		if (INFO_QUEUE.get() == null) {
+			return null;
+		}
+		return INFO_QUEUE.get().poll();
+	}
+
+	private static boolean hasInfo() {
+		return INFO_QUEUE.get() != null && !INFO_QUEUE.get().isEmpty();
+	}
+
+	public static void warning(String message) {
 		if (WARNING_QUEUE.get() == null) {
 			WARNING_QUEUE.set(new LinkedList<String>());
 		}
 		WARNING_QUEUE.get().add(message);
-	}
-
-	public static String popWarning() {
-		if (WARNING_QUEUE.get() == null) {
-			return null;
-		}
-		return WARNING_QUEUE.get().poll();
 	}
 
 	public static List<String> listWarning() {
@@ -80,18 +61,22 @@ public final class Messages {
 		return warnings;
 	}
 
-	public static void pushError(String message) {
+	private static String popWarning() {
+		if (WARNING_QUEUE.get() == null) {
+			return null;
+		}
+		return WARNING_QUEUE.get().poll();
+	}
+
+	private static boolean hasWarning() {
+		return WARNING_QUEUE.get() != null && !WARNING_QUEUE.get().isEmpty();
+	}
+
+	public static void error(String message) {
 		if (ERROR_QUEUE.get() == null) {
 			ERROR_QUEUE.set(new LinkedList<String>());
 		}
 		ERROR_QUEUE.get().add(message);
-	}
-
-	public static String popError() {
-		if (ERROR_QUEUE.get() == null) {
-			return null;
-		}
-		return ERROR_QUEUE.get().poll();
 	}
 
 	public static List<String> listError() {
@@ -103,4 +88,16 @@ public final class Messages {
 		}
 		return errors;
 	}
+
+	private static String popError() {
+		if (ERROR_QUEUE.get() == null) {
+			return null;
+		}
+		return ERROR_QUEUE.get().poll();
+	}
+
+	private static boolean hasError() {
+		return ERROR_QUEUE.get() != null && !ERROR_QUEUE.get().isEmpty();
+	}
+
 }

@@ -75,7 +75,7 @@ public class EditPoll extends Controller {
 			}
 		}
 		PollService.saveChoices(pollId, choices);
-		Messages.pushInfo("Poll successfully created.");
+		Messages.info("Poll successfully created.");
 		return ok(index.render());
 
 	}

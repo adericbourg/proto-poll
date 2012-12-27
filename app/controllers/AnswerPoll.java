@@ -60,7 +60,7 @@ public class AnswerPoll extends Controller {
 			}
 		}
 		PollService.answerPoll(SessionUtil.currentUser(), id, choices);
-		Messages.pushInfo("Thank you for answering!");
+		Messages.info("Thank you for answering!");
 		return view(id);
 	}
 

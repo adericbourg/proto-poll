@@ -40,10 +40,10 @@ public class Authentication extends Controller {
 		Registration registration = filledForm.get();
 		if (registration.password == null
 				|| registration.passwordConfirm == null) {
-			Messages.pushError("Password is mandatory. Think about your security.");
+			Messages.error("Password is mandatory. Think about your security.");
 		}
 		if (!registration.password.equals(registration.passwordConfirm)) {
-			Messages.pushError("Passwords do not match.");
+			Messages.error("Passwords do not match.");
 		}
 		User user = getUserFromRegistration(registration);
 		UserService.registerUser(user);
@@ -75,13 +75,13 @@ public class Authentication extends Controller {
 		Login login = formLogin.get();
 		User user = UserService.authenticate(login.username, login.password);
 		if (user == null) {
-			Messages.pushError("The user name or password you provided is invalid.");
+			Messages.error("The user name or password you provided is invalid.");
 			return badRequest(views.html.login.render(formLogin));
 		}
 		SessionUtil.setUser(user);
 
 		// Redirect to main page.
-		Messages.pushInfo("Welcome " + user.username + "!");
+		Messages.info("Welcome " + user.username + "!");
 		return Application.index();
 	}
 
