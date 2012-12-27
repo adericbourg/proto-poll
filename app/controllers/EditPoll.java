@@ -14,6 +14,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import services.PollService;
+import ui.tags.Messages;
 import views.html.addChoices;
 import views.html.index;
 import views.html.newPoll;
@@ -50,6 +51,7 @@ public class EditPoll extends Controller {
 		} else {
 			Poll poll = filledForm.get();
 			Long pollId = PollService.createPoll(poll);
+			Messages.pushInfo("Poll successfully created.");
 			return setChoices(pollId);
 		}
 	}

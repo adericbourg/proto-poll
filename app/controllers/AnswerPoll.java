@@ -15,6 +15,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import services.PollService;
+import ui.tags.Messages;
 import util.security.SessionUtil;
 import views.html.answerPoll;
 
@@ -33,8 +34,8 @@ public class AnswerPoll extends Controller {
 		Poll poll = PollService.getPoll(id);
 		List<Choice> choices = PollService.getChoicesByPoll(id);
 
-		return ok(answerPoll.render(SessionUtil.currentUser(), poll,
-				choices, getPollResults(id)));
+		return ok(answerPoll.render(SessionUtil.currentUser(), poll, choices,
+				getPollResults(id)));
 	}
 
 	private static PollResults getPollResults(Long pollId) {
@@ -52,7 +53,6 @@ public class AnswerPoll extends Controller {
 
 	public static Result answer(Long id) {
 		DynamicForm form = form().bindFromRequest();
-		// String username = form.data().get(USERNAME_KEY);
 		Set<Long> choices = new HashSet<Long>();
 		for (Entry<String, String> entry : form.data().entrySet()) {
 			if (!isUsername(entry.getKey())) {
@@ -60,6 +60,7 @@ public class AnswerPoll extends Controller {
 			}
 		}
 		PollService.answerPoll(SessionUtil.currentUser(), id, choices);
+		Messages.pushInfo("Thank you for answering!");
 		return view(id);
 	}
 
