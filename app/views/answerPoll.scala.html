@@ -1,6 +1,6 @@
 @(user: User, poll: Poll, choices: List[Choice], results: PollResults)
 
-@main("Answer") {
+@main("Answer poll: " + poll.title) {
 	<h1>@poll.title</h1>
 	<blockquote>
 		<p>@poll.description</p>
@@ -47,7 +47,13 @@
 				<tr>
 					<th>Totals</th>
 					@for(choice <- choices) {
-						<td class="result @if(results.isBetterChoice(choice.id)) { better-choice }">@results.total(choice.id)</td>
+						<td class="result">
+							@if(results.isBetterChoice(choice.id)) {
+								<span class="badge badge-info">@results.total(choice.id)</span>
+							} else {
+								@results.total(choice.id)
+							}
+						</td>
 					}
 				</tr>
 				@if(!results.isAlreadyAnswered()) {

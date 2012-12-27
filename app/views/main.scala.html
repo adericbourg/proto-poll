@@ -12,7 +12,7 @@
 
 <html>
     <head>
-        <title>@title</title>
+        <title>ProtoPoll :: @title</title>
         <!-- Le styles -->
         <link rel="stylesheet" href="@routes.Assets.at("bootstrap/css/bootstrap.min.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
@@ -39,7 +39,7 @@
 					<div class="container">
 		                <div class="row">
 		                    <div class="span3">
-	                        	<a href="/" class="brand" >ProtoPoll</a><span class="brand">&nbsp;[&nbsp;@title&nbsp;]</span>
+	                        	<a href="/" class="brand" >ProtoPoll</a>
 		                    </div>
 		                    <div class="menu span9 pull-right">
 		                    	@ui.tags.UserTags.currentUser
@@ -49,6 +49,11 @@
 				</div> 
         	</div>
         </header>
+
+	    <ul class="breadcrumb">
+    		<li><a href="/">Home</a> <span class="divider">/</span></li>
+    		<li class="active">@title</li>
+    	</ul>
 
       	<div class="container">
       	
