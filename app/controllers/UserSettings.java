@@ -57,15 +57,19 @@ public class UserSettings extends Controller {
 		// Check new passwords match.
 		if (Strings.isNullOrEmpty(security.password1)) {
 			hasError = true;
-			Messages.error("New password is required");
+			Messages.error("New password is required.");
 		}
 		if (Strings.isNullOrEmpty(security.password2)) {
 			hasError = true;
-			Messages.error("New password confirmation is required");
+			Messages.error("New password confirmation is required.");
 		}
 		if (!security.password1.equals(security.password2)) {
 			hasError = true;
-			Messages.error("New password and confirmation password do not match");
+			Messages.error("New password and confirmation password do not match.");
+		}
+		if (!Strings.isNullOrEmpty(security.oldPassword)
+				&& security.oldPassword.equals(security.password1)) {
+			Messages.warning("New password is the same as the old one. You might not want to do that.");
 		}
 
 		if (!hasError) {
