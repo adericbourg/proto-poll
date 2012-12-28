@@ -14,6 +14,8 @@ import javax.validation.Valid;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
+import com.google.common.base.Strings;
+
 /**
  * Poll.
  * 
@@ -46,4 +48,14 @@ public class Poll extends Model {
 
 	@ManyToOne(optional = true)
 	public User userCreator;
+
+	// ---
+
+	public boolean hasDescription() {
+		return !Strings.isNullOrEmpty(description);
+	}
+
+	public boolean hasRegisteredCreator() {
+		return userCreator != null;
+	}
 }

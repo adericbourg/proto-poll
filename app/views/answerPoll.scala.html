@@ -3,7 +3,13 @@
 @main("Answer poll: " + poll.title) {
 	<h1>@poll.title</h1>
 	<blockquote>
-		<p>@poll.description</p>
+		<p>
+			@poll.description
+			@if(poll.hasRegisteredCreator) {
+				@if(poll.hasDescription) {<br />}
+				<small>Created by @poll.userCreator.getDisplayName</small>
+			}
+		</p>
 	</blockquote>
 	
 	@if(results.isAlreadyAnswered()) {
