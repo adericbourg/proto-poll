@@ -1,6 +1,12 @@
 @(user: User, poll: Poll, choices: List[Choice], results: PollResults)
 
 @main("Answer poll: " + poll.title) {
+	@if(results.isAlreadyAnswered()) {
+		<div class="well text-warning">
+			You already answered this poll. You may update your answers if you wish.
+		</div>
+	}
+	
 	<h1>@poll.title</h1>
 	<blockquote>
 		<p>
@@ -11,10 +17,6 @@
 			}
 		</p>
 	</blockquote>
-	
-	@if(results.isAlreadyAnswered()) {
-		<p>You already answered this poll. You may update your answers if you wish.</p>
-	}
 	
 	@helper.form(action = routes.AnswerPoll.answer(poll.id)) {
 		<table class="table table-bordered table-hover table-condensed poll-results">
