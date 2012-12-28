@@ -99,8 +99,11 @@ public class UserSettings extends Controller {
 	}
 
 	private static Form<UserProfile> getFormProfile() {
+		User currentUser = SessionUtil.currentUser();
+
 		UserProfile userProfileData = new UserProfile();
-		userProfileData.email = SessionUtil.currentUser().email;
+		userProfileData.displayName = currentUser.displayName;
+		userProfileData.email = currentUser.email;
 
 		return FORM_USER_PROFILE.fill(userProfileData);
 	}
