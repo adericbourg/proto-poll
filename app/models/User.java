@@ -47,10 +47,7 @@ public class User extends Model {
 	@Transient
 	public String getDisplay() {
 		if (!Strings.isNullOrEmpty(displayName)) {
-			return displayName;
-		}
-		if (Strings.isNullOrEmpty(email)) {
-			return username;
+			return String.format("%s (%s)", displayName, username);
 		}
 		return String.format("%s (%s)", username, email);
 	}
