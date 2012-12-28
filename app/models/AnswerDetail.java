@@ -18,16 +18,16 @@ import play.db.ebean.Model;
  * 
  */
 @Entity
-@Table(name = "ANSWER_DETAIL", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"CHOICE_ID", "ANSWER_ID" }))
+@Table(name = "answer_detail", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"choice_id", "answer_id" }))
 public class AnswerDetail extends Model {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "ID")
+	@Column(name = "id")
 	public Long id;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "CHOICE_ID")
+	@JoinColumn(name = "choice_id")
 	public Choice choice;
 }

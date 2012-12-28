@@ -21,22 +21,22 @@ import play.db.ebean.Model;
  * 
  */
 @Entity
-@Table(name = "ANSWER", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"POLL_ID", "USER_ID" }))
+@Table(name = "answer", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"poll_id", "user_id" }))
 public class Answer extends Model {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "ID")
+	@Column(name = "id")
 	public Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "USER_ID")
+	@JoinColumn(name = "user_id")
 	public User user;
 
 	@ManyToOne
-	@JoinColumn(name = "POLL_ID")
+	@JoinColumn(name = "poll_id")
 	public Poll poll;
 
 	@OneToMany(cascade = CascadeType.ALL)

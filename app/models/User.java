@@ -18,27 +18,27 @@ import com.google.common.base.Strings;
  * 
  */
 @Entity
-@Table(name = "USER")
+@Table(name = "user")
 public class User extends Model {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "ID")
+	@Column(name = "id")
 	public Long id;
 
 	@Required
-	@Column(name = "USERNAME", nullable = false)
+	@Column(name = "username", nullable = false)
 	public String username;
 
-	@Column(name = "PASSWORD_HASH")
+	@Column(name = "password_hash")
 	public String passwordHash;
 
-	@Column(name = "EMAIL")
+	@Column(name = "email")
 	public String email;
 
 	@Required
-	@Column(name = "IS_REGISTERED", nullable = false)
+	@Column(name = "is_registered", nullable = false)
 	public Boolean registered = false;
 
 	@Transient

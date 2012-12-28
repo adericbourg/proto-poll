@@ -21,20 +21,20 @@ import play.db.ebean.Model;
  * 
  */
 @Entity
-@Table(name = "POLL")
+@Table(name = "poll")
 public class Poll extends Model {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "ID")
+	@Column(name = "id")
 	public Long id;
 
 	@Required(message = "Title is mandatory")
-	@Column(name = "TITLE", nullable = false)
+	@Column(name = "title", nullable = false)
 	public String title;
 
-	@Column(name = "DESCRIPTION")
+	@Column(name = "description")
 	public String description;
 
 	@Valid

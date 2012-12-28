@@ -19,25 +19,25 @@ import play.db.ebean.Model;
  * 
  */
 @Entity
-@Table(name = "CHOICE", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"LABEL", "POLL_ID" }))
+@Table(name = "choice", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"label", "poll_id" }))
 public class Choice extends Model {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "ID")
+	@Column(name = "id")
 	public Long id;
 
 	@Required(message = "Enter label for this choice")
-	@Column(name = "LABEL", nullable = false)
+	@Column(name = "label", nullable = false)
 	public String label;
 
 	@Required
-	@Column(name = "SORT_ORDER", nullable = false)
+	@Column(name = "sort_order", nullable = false)
 	public Integer sortOrder;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "POLL_ID")
+	@JoinColumn(name = "poll_id")
 	public Poll poll;
 }
