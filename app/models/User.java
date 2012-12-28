@@ -28,7 +28,7 @@ public class User extends Model {
 	public Long id;
 
 	@Required
-	@Column(name = "USERNAME", unique = true, nullable = false)
+	@Column(name = "USERNAME", nullable = false)
 	public String username;
 
 	@Column(name = "PASSWORD_HASH")

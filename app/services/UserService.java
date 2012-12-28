@@ -28,6 +28,7 @@ public final class UserService {
 		if (findByUsername(user.username) != null) {
 			throw new RuntimeException("username already exists");
 		}
+		user.registered = true;
 		user.save();
 	}
 
@@ -88,7 +89,7 @@ public final class UserService {
 		return el.findUnique();
 	}
 
-	private static User registerAnonymousUser(String name) {
+	public static User registerAnonymousUser(String name) {
 		User user = new User();
 		user.username = name.trim();
 		user.registered = false;

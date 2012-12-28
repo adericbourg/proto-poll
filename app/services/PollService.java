@@ -12,6 +12,8 @@ import models.Choice;
 import models.Poll;
 import models.User;
 import play.db.ebean.Model.Finder;
+import services.exception.AnonymousUserAlreadyAnsweredPoll;
+import util.security.SessionUtil;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
@@ -35,6 +37,7 @@ public class PollService {
 	}
 
 	public static Long createPoll(Poll poll) {
+		poll.userCreator = SessionUtil.currentUser();
 		poll.save();
 		return poll.id;
 	}
@@ -64,9 +67,34 @@ public class PollService {
 		return choices;
 	}
 
-	public static void answerPoll(User user, Long pollId,
+	public static void answerPoll(Long pollId, Collection<Long> choiceIds) {
+		answerPoll(SessionUtil.currentUser(), pollId, choiceIds);
+	}
+
+	public static void answerPoll(String username, Long pollId,
 			Collection<Long> choiceIds) {
-		Poll poll = getPollWithChoices(pollId);
+		Poll poll = getPollWithAnswers(pollId);
+
+		// Check if a user with same name has already answered.
+		for (Answer answer : poll.answers) {
+			if (answer.user.username.equals(username)) {
+				throw new AnonymousUserAlreadyAnsweredPoll();
+			}
+		}
+
+		// Create new unregistered user with same login.
+		User user = UserService.registerAnonymousUser(username);
+
+		answerPoll(user, pollId, choiceIds);
+	}
+
+	private static void answerPoll(User user, Long pollId,
+			Collection<Long> choiceIds) {
+		if (user == null) {
+			throw new RuntimeException("User cannot be null");
+		}
+
+		Poll poll = getPollWithAnswers(pollId);
 		Answer answer = getOrCreateAnswer(user, poll);
 
 		// Clear all previous answers.
@@ -110,11 +138,5 @@ public class PollService {
 		return Ebean.find(Poll.class).fetch("answers").fetch("answers.user")
 				.fetch("answers.details").fetch("answers.details.choice")
 				.where().eq("id", pollId).findUnique();
-	}
-
-	private static Poll getPollWithChoices(Long pollId) {
-		return Ebean.find(Poll.class).fetch("choices").where().eq("id", pollId)
-				.findUnique();
-
 	}
 }

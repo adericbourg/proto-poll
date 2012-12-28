@@ -17,11 +17,11 @@ GET		/user/profile				controllers.UserSettings.profile()
 POST	/user/update/profile		controllers.UserSettings.updateProfile()
 POST	/user/update/security		controllers.UserSettings.updatePassword()
 
-# Manage polls
-GET     /poll/new                   controllers.EditPoll.newPoll()
-POST    /poll/new                   controllers.EditPoll.createPoll()
-GET		/poll/addChoices/:id		controllers.EditPoll.setChoices(id: Long)
-POST	/poll/addChoices/:id		controllers.EditPoll.saveChoices(id: Long)
+# Create polls
+GET     /poll/new                   controllers.CreatePoll.newPoll()
+POST    /poll/new                   controllers.CreatePoll.createPoll()
+GET		/poll/addChoices/:id		controllers.CreatePoll.setChoices(id: Long)
+POST	/poll/addChoices/:id		controllers.CreatePoll.saveChoices(id: Long)
 
 # View polls
 

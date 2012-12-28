@@ -11,7 +11,7 @@
 }
 
 @main("Add choices") {
-    @helper.form(action = routes.EditPoll.saveChoices(poll.id)) {
+    @helper.form(action = routes.CreatePoll.saveChoices(poll.id)) {
 		<div class="header">
 			<h1>@poll.title</h1>
 			<blockquote>

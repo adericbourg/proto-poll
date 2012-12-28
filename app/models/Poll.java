@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
@@ -42,4 +43,7 @@ public class Poll extends Model {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<Answer> answers;
+
+	@ManyToOne(optional = true)
+	public User userCreator;
 }

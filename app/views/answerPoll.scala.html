@@ -23,12 +23,18 @@
 			<tbody>
 				@for(username <- results.usernames) {
 					@if(user != null && username.equals(user.username)) {
-						<tr class="info">
+						<tr>
 							<td class="username">@user.username</td>
 							@for(choice <- choices) {
-								<td class="result answer">
-									<input type="checkbox" name="choice_@choice.id" value="@choice.id" @if(results.isCheckedChoice(username, choice.id)) {checked="checked"}/>
-								</td>
+								@if(results.isCheckedChoice(username, choice.id)) {
+									<td class="result answer result-ok">
+										<input type="checkbox" name="choice_@choice.id" value="@choice.id" checked="checked"/>
+									</td>
+								} else {
+									<td class="result answer result-ko">
+										<input type="checkbox" name="choice_@choice.id" value="@choice.id" />
+									</td>
+								}
 							}
 						</tr>
 					} else {
@@ -56,9 +62,21 @@
 						</td>
 					}
 				</tr>
-				@if(!results.isAlreadyAnswered()) {
+				@if(user != null && !results.isAlreadyAnswered()) {
 					<tr class="info">
 						<td class="username">@user.username</td>
+						@for(choice <- choices) {
+							<td class="result answer">
+								<input type="checkbox" name="choice_@choice.id" value="@choice.id" />
+							</td>
+						}
+					</tr>
+				}
+				@if(user == null) {
+					<tr class="info">
+						<td class="username">
+							<input name="username" placeholder="Your name"/>
+						</td>
 						@for(choice <- choices) {
 							<td class="result answer">
 								<input type="checkbox" name="choice_@choice.id" value="@choice.id" />
