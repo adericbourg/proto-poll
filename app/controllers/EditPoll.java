@@ -1,5 +1,8 @@
 package controllers;
 
+import static ui.tags.Messages.info;
+import static ui.tags.MessagesHelper.invalidForm;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -14,7 +17,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import services.PollService;
-import ui.tags.Messages;
 import views.html.addChoices;
 import views.html.index;
 import views.html.newPoll;
@@ -42,12 +44,12 @@ public class EditPoll extends Controller {
 
 		if (filledForm.hasErrors()) {
 			// Error handling.
-			return badRequest(newPoll.render(POLL_FORM));
-		} else {
-			Poll poll = filledForm.get();
-			Long pollId = PollService.createPoll(poll);
-			return setChoices(pollId);
+			return invalidForm(newPoll.render(POLL_FORM));
 		}
+
+		Poll poll = filledForm.get();
+		Long pollId = PollService.createPoll(poll);
+		return setChoices(pollId);
 	}
 
 	public static Result setChoices(Long pollId) {
@@ -70,7 +72,7 @@ public class EditPoll extends Controller {
 			}
 		}
 		PollService.saveChoices(pollId, choices);
-		Messages.info("Poll successfully created.");
+		info("Poll successfully created.");
 		return ok(index.render());
 
 	}

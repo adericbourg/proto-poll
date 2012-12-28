@@ -1,5 +1,7 @@
 package controllers;
 
+import static ui.tags.Messages.info;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -15,7 +17,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import services.PollService;
-import ui.tags.Messages;
 import util.security.SessionUtil;
 import views.html.answerPoll;
 
@@ -60,7 +61,7 @@ public class AnswerPoll extends Controller {
 			}
 		}
 		PollService.answerPoll(SessionUtil.currentUser(), id, choices);
-		Messages.info("Thank you for answering!");
+		info("Thank you for answering!");
 		return view(id);
 	}
 

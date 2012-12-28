@@ -1,13 +1,14 @@
 package controllers;
 
+import static ui.tags.Messages.info;
+import static ui.tags.Messages.warning;
+import static ui.tags.MessagesHelper.invalidForm;
 import play.data.Form;
 import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import services.UserService;
-import ui.tags.Messages;
-import ui.tags.MessagesHelper;
 import util.security.SessionUtil;
 import views.html.userProfile;
 
@@ -41,7 +42,7 @@ public class UserSettings extends Controller {
 		Form<UserProfile> formProfile = getFormProfile().bindFromRequest(
 				"email");
 		if (formProfile.hasErrors()) {
-			return badRequest(userProfile.render(formProfile,
+			return invalidForm(userProfile.render(formProfile,
 					FORM_USER_SECURITY));
 		}
 		UserService.updateUserEmail(formProfile.get().email);
@@ -53,9 +54,8 @@ public class UserSettings extends Controller {
 
 		// Check form.
 		if (formSecurity.hasErrors()) {
-			MessagesHelper.invalidForm();
-			return badRequest(userProfile
-					.render(getFormProfile(), formSecurity));
+			return invalidForm(userProfile.render(getFormProfile(),
+					formSecurity));
 		}
 
 		UserSecurity security = formSecurity.get();
@@ -76,16 +76,15 @@ public class UserSettings extends Controller {
 		}
 
 		if (hasError) {
-			MessagesHelper.invalidForm();
-			return badRequest(userProfile
-					.render(getFormProfile(), formSecurity));
+			return invalidForm(userProfile.render(getFormProfile(),
+					formSecurity));
 		}
 
 		if (!Strings.isNullOrEmpty(security.oldPassword)
 				&& security.oldPassword.equals(security.password1)) {
-			Messages.warning("New password is the same as the old one. You might not want to do that.");
+			warning("New password is the same as the old one. You might not want to do that.");
 		}
-		Messages.info("Password changed successfully");
+		info("Password changed successfully");
 		return profile();
 	}
 

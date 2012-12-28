@@ -1,13 +1,13 @@
 package controllers;
 
+import static ui.tags.Messages.info;
+import static ui.tags.MessagesHelper.invalidForm;
 import models.User;
 import play.data.Form;
 import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.UserService;
-import ui.tags.Messages;
-import ui.tags.MessagesHelper;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
 
@@ -41,8 +41,7 @@ public class Authentication extends Controller {
 		Form<Registration> filledForm = FORM_REGISTRATION.bindFromRequest();
 
 		if (filledForm.hasErrors()) {
-			MessagesHelper.invalidForm();
-			return badRequest(views.html.register.render(filledForm));
+			return invalidForm(views.html.register.render(filledForm));
 		}
 
 		// Register user.
@@ -50,8 +49,7 @@ public class Authentication extends Controller {
 		if (!registration.password.equals(registration.passwordConfirm)) {
 			filledForm.reject("password", "Passwords do not match");
 			filledForm.reject("passwordConfirm", "");
-			MessagesHelper.invalidForm();
-			return badRequest(views.html.register.render(filledForm));
+			return invalidForm(views.html.register.render(filledForm));
 		}
 		User user = getUserFromRegistration(registration);
 		UserService.registerUser(user);
@@ -77,28 +75,26 @@ public class Authentication extends Controller {
 	public static Result authenticate() {
 		Form<Login> formLogin = FORM_LOGIN.bindFromRequest();
 		if (formLogin.hasErrors()) {
-			MessagesHelper.invalidForm();
-			return badRequest(views.html.login.render(formLogin));
+			return invalidForm(views.html.login.render(formLogin));
 		}
 
 		Login login = formLogin.get();
 		User user = UserService.authenticate(login.username, login.password);
 		if (user == null) {
-			MessagesHelper.invalidForm();
 			formLogin.reject("username", "User name and password do not match");
 			formLogin.reject("password", "");
-			return badRequest(views.html.login.render(formLogin));
+			return invalidForm(views.html.login.render(formLogin));
 		}
+
 		SessionUtil.setUser(user);
 
 		// Redirect to main page.
-		Messages.info("Welcome " + user.username + "!");
+		info("Welcome " + user.username + "!");
 		return Application.index();
 	}
 
 	public static Result logout() {
-		SessionUtil.removeCurrentUser();
+		session().clear();
 		return Application.index();
-
 	}
 }
