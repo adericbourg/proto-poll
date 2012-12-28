@@ -94,7 +94,7 @@ public class Authentication extends Controller {
 	}
 
 	public static Result logout() {
-		session().clear();
+		SessionUtil.clear();
 		return Application.index();
 	}
 }

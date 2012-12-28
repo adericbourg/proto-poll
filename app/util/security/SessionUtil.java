@@ -38,10 +38,11 @@ public final class SessionUtil {
 
 	}
 
-	public static void removeCurrentUser() {
+	public static void clear() {
 		if (getCurrentSession().containsKey(USERNAME_KEY)) {
 			getCurrentSession().remove(USERNAME_KEY);
 		}
+		getCurrentSession().clear();
 	}
 
 	private static Session getCurrentSession() {
