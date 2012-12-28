@@ -54,8 +54,12 @@ public class Authentication extends Controller {
 		User user = getUserFromRegistration(registration);
 		UserService.registerUser(user);
 
-		// Redirect to login page.
-		return login();
+		// Automatically log user in.
+		SessionUtil.setUser(user);
+
+		// Redirect to home page.
+		info("Welcome " + user.username + "! Thank you for your registration.");
+		return Application.index();
 	}
 
 	private static User getUserFromRegistration(Registration registration) {
