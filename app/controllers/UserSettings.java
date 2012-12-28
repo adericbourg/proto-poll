@@ -1,11 +1,13 @@
 package controllers;
 
 import play.data.Form;
+import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import services.UserService;
 import ui.tags.Messages;
+import ui.tags.MessagesHelper;
 import util.security.SessionUtil;
 import views.html.userProfile;
 
@@ -15,12 +17,16 @@ import com.google.common.base.Strings;
 public class UserSettings extends Controller {
 
 	public static class UserProfile {
+		@Required(message = "You cannot remove your email address")
 		public String email;
 	}
 
 	public static class UserSecurity {
+		@Required(message = "Enter your current password")
 		public String oldPassword;
+		@Required(message = "Enter your new password")
 		public String password1;
+		@Required(message = "Enter your new password confirmation")
 		public String password2;
 	}
 
@@ -47,6 +53,7 @@ public class UserSettings extends Controller {
 
 		// Check form.
 		if (formSecurity.hasErrors()) {
+			MessagesHelper.invalidForm();
 			return badRequest(userProfile
 					.render(getFormProfile(), formSecurity));
 		}
@@ -55,21 +62,10 @@ public class UserSettings extends Controller {
 		boolean hasError = false;
 
 		// Check new passwords match.
-		if (Strings.isNullOrEmpty(security.password1)) {
-			hasError = true;
-			Messages.error("New password is required.");
-		}
-		if (Strings.isNullOrEmpty(security.password2)) {
-			hasError = true;
-			Messages.error("New password confirmation is required.");
-		}
 		if (!security.password1.equals(security.password2)) {
 			hasError = true;
-			Messages.error("New password and confirmation password do not match.");
-		}
-		if (!Strings.isNullOrEmpty(security.oldPassword)
-				&& security.oldPassword.equals(security.password1)) {
-			Messages.warning("New password is the same as the old one. You might not want to do that.");
+			formSecurity.reject("password1", "Passwords do not match");
+			formSecurity.reject("password2", "");
 		}
 
 		if (!hasError) {
@@ -80,10 +76,15 @@ public class UserSettings extends Controller {
 		}
 
 		if (hasError) {
+			MessagesHelper.invalidForm();
 			return badRequest(userProfile
 					.render(getFormProfile(), formSecurity));
 		}
 
+		if (!Strings.isNullOrEmpty(security.oldPassword)
+				&& security.oldPassword.equals(security.password1)) {
+			Messages.warning("New password is the same as the old one. You might not want to do that.");
+		}
 		Messages.info("Password changed successfully");
 		return profile();
 	}

@@ -29,25 +29,20 @@ import com.google.common.base.Strings;
  */
 @Security.Authenticated(Secured.class)
 public class EditPoll extends Controller {
-	private static final Form<Poll> pollForm = form(Poll.class);
+	private static final Form<Poll> POLL_FORM = form(Poll.class);
 	private static final Pattern CHOICE_ORDER = Pattern
 			.compile("choice\\[(.*?)\\]");
 
 	public static Result newPoll() {
-		return ok(newPoll.render(pollForm));
+		return ok(newPoll.render(POLL_FORM));
 	}
 
 	public static Result createPoll() {
-		Form<Poll> filledForm = pollForm.bindFromRequest();
-
-		// Title is mandatory.
-		if (filledForm.field("title").valueOr("").isEmpty()) {
-			filledForm.reject("title", "Set title to poll");
-		}
+		Form<Poll> filledForm = POLL_FORM.bindFromRequest();
 
 		if (filledForm.hasErrors()) {
 			// Error handling.
-			return badRequest(newPoll.render(pollForm));
+			return badRequest(newPoll.render(POLL_FORM));
 		} else {
 			Poll poll = filledForm.get();
 			Long pollId = PollService.createPoll(poll);
@@ -57,7 +52,7 @@ public class EditPoll extends Controller {
 
 	public static Result setChoices(Long pollId) {
 		Poll poll = PollService.getPoll(pollId);
-		return ok(addChoices.render(poll, pollForm));
+		return ok(addChoices.render(poll, POLL_FORM));
 	}
 
 	public static Result saveChoices(Long pollId) {

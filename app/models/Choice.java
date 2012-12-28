@@ -29,7 +29,7 @@ public class Choice extends Model {
 	@Column(name = "ID")
 	public Long id;
 
-	@Required
+	@Required(message = "Enter label for this choice")
 	@Column(name = "LABEL", nullable = false)
 	public String label;
 

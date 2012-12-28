@@ -11,12 +11,6 @@
 }
 
 @main("Add choices") {
-    @if(pollForm.hasErrors) {
-        <div class="alert-message error">
-            <p><strong>Oops</strong> Please fix all errors</p>
-        </div>
-    }
-
     @helper.form(action = routes.EditPoll.saveChoices(poll.id)) {
 		<div class="header">
 			<h1>@poll.title</h1>
