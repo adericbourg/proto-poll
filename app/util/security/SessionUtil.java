@@ -7,30 +7,22 @@ import services.UserService;
 
 public final class SessionUtil {
 
-	private static final String USERNAME_KEY = "k_username";
+	static final String USERNAME_KEY = "k_username";
 
 	private SessionUtil() {
 		throw new AssertionError();
+	}
+
+	public static boolean isAuthenticated() {
+		return getCurrentSession().containsKey(USERNAME_KEY);
 	}
 
 	public static void setUser(User user) {
 		getCurrentSession().put(USERNAME_KEY, user.username);
 	}
 
-	public static User getCurrentUser(Context context) {
-		if (context == null) {
-			return null;
-		}
-
-		if (!context.session().containsKey(USERNAME_KEY)) {
-			return null;
-		}
-		return UserService.findByUsername(context.session().get(USERNAME_KEY));
-
-	}
-
 	public static User currentUser() {
-		if (!getCurrentSession().containsKey(USERNAME_KEY)) {
+		if (!isAuthenticated()) {
 			return null;
 		}
 		return UserService
@@ -39,7 +31,7 @@ public final class SessionUtil {
 	}
 
 	public static void clear() {
-		if (getCurrentSession().containsKey(USERNAME_KEY)) {
+		if (isAuthenticated()) {
 			getCurrentSession().remove(USERNAME_KEY);
 		}
 		getCurrentSession().clear();
