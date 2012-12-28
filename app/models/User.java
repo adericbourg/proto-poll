@@ -31,6 +31,9 @@ public class User extends Model {
 	@Column(name = "username", nullable = false)
 	public String username;
 
+	@Column(name = "display_name")
+	public String displayName;
+
 	@Column(name = "password_hash")
 	public String passwordHash;
 
@@ -43,6 +46,9 @@ public class User extends Model {
 
 	@Transient
 	public String getDisplay() {
+		if (!Strings.isNullOrEmpty(displayName)) {
+			return displayName;
+		}
 		if (Strings.isNullOrEmpty(email)) {
 			return username;
 		}

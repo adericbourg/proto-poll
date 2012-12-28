@@ -10,7 +10,11 @@
 		   	@helper.form(action = routes.UserSettings.updateProfile(), 'id -> "formUserProfile") {
 		        <fieldset>
 		            <legend>Your informations</legend>
-		
+					@inputText(
+		            	formUserProfile("displayName"), 
+		            	'_label -> "You name",
+		            	'_showContraints -> false
+		            )
 		            @inputText(
 		            	formUserProfile("email"), 
 		            	'_label -> "E-mail",

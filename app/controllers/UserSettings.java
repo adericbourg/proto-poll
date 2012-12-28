@@ -3,6 +3,7 @@ package controllers;
 import static ui.tags.Messages.info;
 import static ui.tags.Messages.warning;
 import static ui.tags.MessagesHelper.invalidForm;
+import models.User;
 import play.data.Form;
 import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
@@ -18,6 +19,7 @@ import com.google.common.base.Strings;
 public class UserSettings extends Controller {
 
 	public static class UserProfile {
+		public String displayName;
 		@Required(message = "You cannot remove your email address")
 		public String email;
 	}
@@ -40,13 +42,21 @@ public class UserSettings extends Controller {
 
 	public static Result updateProfile() {
 		Form<UserProfile> formProfile = getFormProfile().bindFromRequest(
-				"email");
+				"email", "displayName");
 		if (formProfile.hasErrors()) {
 			return invalidForm(userProfile.render(formProfile,
 					FORM_USER_SECURITY));
 		}
-		UserService.updateUserEmail(formProfile.get().email);
+		UserService
+				.updateUserProfile(getUserFromUserProfile(formProfile.get()));
 		return profile();
+	}
+
+	private static User getUserFromUserProfile(UserProfile profile) {
+		User user = new User();
+		user.email = profile.email;
+		user.displayName = profile.displayName;
+		return user;
 	}
 
 	public static Result updatePassword() {

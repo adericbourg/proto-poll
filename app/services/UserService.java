@@ -32,13 +32,14 @@ public final class UserService {
 		user.save();
 	}
 
-	public static void updateUserEmail(String email) {
-		User user = SessionUtil.currentUser();
-		if (user == null) {
+	public static void updateUserProfile(User user) {
+		User currentUser = SessionUtil.currentUser();
+		if (currentUser == null) {
 			throw new RuntimeException("No current user");
 		}
-		user.email = email;
-		user.save();
+		currentUser.email = user.email;
+		currentUser.displayName = user.displayName;
+		currentUser.save();
 	}
 
 	public static boolean updateUserPassword(String oldPassword,
