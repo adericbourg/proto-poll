@@ -82,7 +82,7 @@ public final class UserService {
 	public static User findByUsername(String name) {
 		String trimmedUsername = name.trim();
 		ExpressionList<User> el = Ebean.find(User.class).where()
-				.ieq("username", trimmedUsername);
+				.ieq("username", trimmedUsername).ieq("registered", "true");
 		if (el.findRowCount() == 0) {
 			return null;
 		}
