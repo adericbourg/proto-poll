@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 
 import play.data.validation.Constraints.Required;
@@ -51,10 +52,12 @@ public class Poll extends Model {
 
 	// ---
 
+	@Transient
 	public boolean hasDescription() {
 		return !Strings.isNullOrEmpty(description);
 	}
 
+	@Transient
 	public boolean hasRegisteredCreator() {
 		return userCreator != null;
 	}
