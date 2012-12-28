@@ -29,7 +29,7 @@ public class Poll extends Model {
 	@Column(name = "ID")
 	public Long id;
 
-	@Required
+	@Required(message = "Title is mandatory")
 	@Column(name = "TITLE", nullable = false)
 	public String title;
 

@@ -2,6 +2,7 @@ package controllers;
 
 import models.User;
 import play.data.Form;
+import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.UserService;
@@ -12,14 +13,19 @@ import util.security.SessionUtil;
 public class Authentication extends Controller {
 
 	public static class Registration {
+		@Required(message = "User name is mandatory.")
 		public String username;
+		@Required(message = "Password is mandatory. Think about your security.")
 		public String password;
+		@Required(message = "Password confirmation is mandatory")
 		public String passwordConfirm;
 		public String email;
 	}
 
 	public static class Login {
+		@Required(message = "Please enter your user name")
 		public String username;
+		@Required(message = "Please enter your password")
 		public String password;
 	}
 
@@ -32,18 +38,17 @@ public class Authentication extends Controller {
 
 	public static Result saveRegistration() {
 		Form<Registration> filledForm = FORM_REGISTRATION.bindFromRequest();
+
 		if (filledForm.hasErrors()) {
 			return badRequest(views.html.register.render(filledForm));
 		}
 
 		// Register user.
 		Registration registration = filledForm.get();
-		if (registration.password == null
-				|| registration.passwordConfirm == null) {
-			Messages.error("Password is mandatory. Think about your security.");
-		}
 		if (!registration.password.equals(registration.passwordConfirm)) {
-			Messages.error("Passwords do not match.");
+			filledForm.reject("password", "Passwords do not match");
+			filledForm.reject("passwordConfirm", "");
+			return badRequest(views.html.register.render(filledForm));
 		}
 		User user = getUserFromRegistration(registration);
 		UserService.registerUser(user);
@@ -75,6 +80,7 @@ public class Authentication extends Controller {
 		Login login = formLogin.get();
 		User user = UserService.authenticate(login.username, login.password);
 		if (user == null) {
+
 			Messages.error("The user name or password you provided is invalid.");
 			return badRequest(views.html.login.render(formLogin));
 		}
