@@ -1,3 +1,7 @@
+.center-content {
+	text-align: center;
+}
+
 .choice:first-child > .danger {
     display: none;
 }
