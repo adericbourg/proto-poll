@@ -49,6 +49,9 @@ public class User extends Model {
 		if (!Strings.isNullOrEmpty(displayName)) {
 			return String.format("%s (%s)", displayName, username);
 		}
-		return String.format("%s (%s)", username, email);
+		if (!Strings.isNullOrEmpty(email)) {
+			return String.format("%s (%s)", username, email);
+		}
+		return username;
 	}
 }
