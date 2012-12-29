@@ -1,0 +1,38 @@
+@(poll: Poll) 
+
+@import helper._
+@import helper.twitterBootstrap._
+@import ui.util.UIUtil;
+
+
+@main("Poll created") {
+
+	<script type=”text/javascript”>
+		function select_and_copy(obj) { 
+			var content_value = eval(obj);
+			content_value.focus();
+			content_value.select();
+			if (!document.all) {
+				return; // IE only
+			}
+			range = text_val.createTextRange();
+			range.execCommand(\\’copy\\’);
+		}
+	</script>
+
+	<fieldset>
+		<legend>@poll.title</legend>
+		@if(poll.hasDescription) {<blockquote>@poll.description</blockquote>}
+		
+		Choices:
+		<ol>
+			@for(choice <- poll.choices) {
+				<li>@choice.label</li>
+			}
+		</ol>
+		
+		Share your poll URL to allow people to answer<br/>
+		<input type="text" value="@UIUtil.getFullUrl(routes.AnswerPoll.view(poll.id).url)" onclick="select_and_copy(this)" />
+	</fieldset>
+	
+}

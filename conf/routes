@@ -22,6 +22,7 @@ GET     /poll/new                   controllers.CreatePoll.newPoll()
 POST    /poll/new                   controllers.CreatePoll.createPoll()
 GET		/poll/addChoices/:id		controllers.CreatePoll.setChoices(id: Long)
 POST	/poll/addChoices/:id		controllers.CreatePoll.saveChoices(id: Long)
+GET		/poll/confirm/:id			controllers.CreatePoll.confirmPollCreation(id: Long)
 
 # View polls
 

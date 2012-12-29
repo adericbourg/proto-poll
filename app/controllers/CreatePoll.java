@@ -17,8 +17,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
 import views.html.addChoices;
-import views.html.index;
 import views.html.newPoll;
+import views.html.pollCreated;
 
 import com.google.common.base.Strings;
 
@@ -71,8 +71,13 @@ public class CreatePoll extends Controller {
 		}
 		PollService.saveChoices(pollId, choices);
 		info("Poll successfully created.");
-		return ok(index.render());
+		return confirmPollCreation(pollId);
 
+	}
+
+	public static Result confirmPollCreation(Long pollId) {
+		Poll poll = PollService.getPoll(pollId);
+		return ok(pollCreated.render(poll));
 	}
 
 	private static int extractSortOrder(String key) {
