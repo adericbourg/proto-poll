@@ -1,6 +1,8 @@
 package services;
 
 import models.User;
+import services.exception.AlreadyRegisteredUser;
+import services.exception.NoAuthenfiedUserInSessionException;
 import ui.tags.Messages;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
@@ -23,10 +25,10 @@ public final class UserService {
 
 	public static void registerUser(User user) {
 		if (user.id != null) {
-			throw new RuntimeException("user already registered");
+			throw new IllegalArgumentException("user already has an id");
 		}
 		if (findByUsername(user.username) != null) {
-			throw new RuntimeException("username already exists");
+			throw new AlreadyRegisteredUser(user.username);
 		}
 		user.registered = true;
 		user.save();
@@ -35,7 +37,7 @@ public final class UserService {
 	public static void updateUserProfile(User user) {
 		User currentUser = SessionUtil.currentUser();
 		if (currentUser == null) {
-			throw new RuntimeException("No current user");
+			throw new NoAuthenfiedUserInSessionException();
 		}
 		currentUser.email = user.email;
 		currentUser.displayName = user.displayName;
@@ -70,14 +72,6 @@ public final class UserService {
 			return null;
 		}
 		return el.findUnique();
-	}
-
-	public static User getUserOrRegisterByName(String name) {
-		User user = findByUsername(name);
-		if (user == null) {
-			return registerAnonymousUser(name);
-		}
-		return user;
 	}
 
 	public static User findByUsername(String name) {

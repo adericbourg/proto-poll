@@ -8,9 +8,15 @@ import models.User;
 
 import org.junit.Test;
 
+import services.exception.AlreadyRegisteredUser;
+import util.security.PasswordUtil;
+
 public class UserServiceTest extends ProtoPollTest {
 
 	private static final String DUMMY_USERNAME = "tst-dmy-name";
+	private static final String DUMMY_PASSWORD = "tst-dmy-name";
+	private static final String DUMMY_PASSWORD_HASHED = PasswordUtil
+			.hashPassword(DUMMY_USERNAME, DUMMY_PASSWORD);
 
 	@Test
 	public void testRegisterAnonymousUser() {
@@ -64,4 +70,56 @@ public class UserServiceTest extends ProtoPollTest {
 		// Assert.
 		assertNull(foundUser);
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testAlreadySavedUser() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		UserService.registerUser(user);
+
+		// Act.
+		UserService.registerUser(user);
+	}
+
+	@Test(expected = AlreadyRegisteredUser.class)
+	public void testAlreadyRegisteredUsername() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		UserService.registerUser(user);
+
+		User duplicateUser = new User();
+		duplicateUser.username = DUMMY_USERNAME;
+
+		// Act.
+		UserService.registerUser(duplicateUser);
+	}
+
+	@Test
+	public void testAuthenticateUser() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		user.passwordHash = DUMMY_PASSWORD_HASHED;
+		UserService.registerUser(user);
+
+		// Act.
+		User authentifiedUser = UserService.authenticate(DUMMY_USERNAME,
+				DUMMY_PASSWORD);
+
+		// Assert.
+		assertNotNull(authentifiedUser);
+		assertEquals(user.id, authentifiedUser.id);
+	}
+
+	@Test
+	public void testAuthenticateNonExistentUser() {
+		// Act.
+		User user = UserService.authenticate(DUMMY_USERNAME, DUMMY_PASSWORD);
+
+		// Assert.
+		assertNull(user);
+	}
+
 }
