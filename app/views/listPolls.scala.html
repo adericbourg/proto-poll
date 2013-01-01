@@ -3,7 +3,7 @@
 @main("Polls") {
 	<ul class="none">
 	    @for(question <- questions) {
-	        <li><a href="/poll/@question.id" title="@question.description">@question.title</a></li>
+	        <li><a href="@routes.AnswerQuestion.view(question.id)" title="@question.description">@question.title</a></li>
 	    }
 	</ul>
 }
