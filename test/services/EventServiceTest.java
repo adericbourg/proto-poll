@@ -38,7 +38,7 @@ public class EventServiceTest extends ProtoPollTest {
 
 	private Event testCreateEvent() {
 		Event event = new Event();
-		event.label = "event label";
+		event.title = "event title";
 		EventService.createEvent(event);
 		return event;
 	}

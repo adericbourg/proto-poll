@@ -1,0 +1,78 @@
+@(event: Event, formEvent: Form[Event])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@dateGroup(date: Field, className: String = "date") = {
+    <div class="@className">
+        <input type="date" name="choice[x].label" placeholder="Choice x"/>
+		<a href="#" class="remove-date btn btn-danger btn-mini"><i class="icon-white icon-remove-sign"></i> Remove</a>
+    </div>
+}
+
+
+@main("Add dates") {
+	
+	@helper.form(action = routes.CreateEvent.saveDates(event.id)) {
+		<div class="header">
+			<h1>@event.title</h1>
+			<blockquote>
+    			<p>@event.description</p>
+    		</blockquote>
+		</div>
+
+        <fieldset>
+            <legend>Dates</legend>
+            <div id="dates">
+    			<div class="manage">
+                    <a class="add-date btn btn-small">Add another date</a>
+                </div>
+                @repeat(formEvent("dates")) { date =>
+                    @dateGroup(date)
+                }
+
+                @** Keep an hidden block that will be used as template for Javascript copy code **@
+                @dateGroup(
+                    formEvent("dates[x]"),
+                    className = "date_template"
+                )
+            </div>
+        </fieldset>
+
+        <div class="actions">
+            <input type="submit" class="btn btn-primary" value="Create" />
+            <a href="/" class="btn btn-link">Cancel</a>
+        </div>
+    }
+    
+    <script type="text/javascript">
+        $('.remove-date').live('click', function(e) {
+            $(this).parents('.date').remove()
+            renumber()
+        })
+
+        $('.add-date').live('click', function(e) {
+            var template = $('.date_template')
+            template.before('<div class="date">' + template.html() + '</div>')
+            renumber()
+        })
+
+        $('#form').submit(function() {
+            $('.date_template').remove()
+        })
+
+        var renumber = function(choice) {
+        	var count = 0;
+            $('#dates').each(function(i) {
+                $('input', this).each(function() {
+                	count++
+                    $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'date[' + count + ']'))
+                    $(this).attr('placeholder', 'Date ' + count)
+                })
+            })
+        }
+        
+        renumber()
+    </script>
+    
+}

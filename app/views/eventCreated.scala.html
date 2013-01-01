@@ -1,0 +1,22 @@
+@(event: Event)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import ui.util.UIUtil;
+
+@main("Event created") {
+	<fieldset>
+		<legend>@event.title</legend>
+		@if(event.hasDescription) {<blockquote>@event.description</blockquote>}
+		
+		Dates:
+		<ol>
+			@for(date <- event.dates) {
+				<li>@date.date.toString</li>
+			}
+		</ol>
+		
+		Share your event URL to allow people to answer<br/>
+		<input type="text" value="@UIUtil.getFullUrl(routes.AnswerEvent.view(event.id).url)" onclick="select_and_copy(this)" />
+	</fieldset>
+}

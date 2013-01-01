@@ -1,11 +1,16 @@
 package models;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 
 import play.db.ebean.Model;
 
@@ -21,11 +26,15 @@ public class Event extends Model {
 	@Column(name = "id")
 	public Long id;
 
-	@Column(name = "label", nullable = false)
-	public String label;
+	@Column(name = "title", nullable = false)
+	public String title;
 
 	@Column(name = "description")
 	public String description;
+
+	@Valid
+	@OneToMany(cascade = CascadeType.ALL)
+	public List<EventChoice> dates;
 
 	@ManyToOne(optional = true)
 	public User userCreator;
