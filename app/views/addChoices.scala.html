@@ -1,4 +1,4 @@
-@(poll: Poll, pollForm: Form[Poll])
+@(question: Question, questionForm: Form[Question])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -11,11 +11,11 @@
 }
 
 @main("Add choices") {
-    @helper.form(action = routes.CreatePoll.saveChoices(poll.id)) {
+    @helper.form(action = routes.CreateQuestion.saveChoices(question.id)) {
 		<div class="header">
-			<h1>@poll.title</h1>
+			<h1>@question.title</h1>
 			<blockquote>
-    			<p>@poll.description</p>
+    			<p>@question.description</p>
     		</blockquote>
 		</div>
 
@@ -25,13 +25,13 @@
     			<div class="manage">
                     <a class="add-choice btn btn-small">Add another choice</a>
                 </div>
-                @repeat(pollForm("choices")) { choice =>
+                @repeat(questionForm("choices")) { choice =>
                     @choiceGroup(choice)
                 }
 
                 @** Keep an hidden block that will be used as template for Javascript copy code **@
                 @choiceGroup(
-                    pollForm("choices[x]"),
+                    questionForm("choices[x]"),
                     className = "choice_template"
                 )
             </div>

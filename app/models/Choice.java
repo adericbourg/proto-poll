@@ -20,7 +20,7 @@ import play.db.ebean.Model;
  */
 @Entity
 @Table(name = "choice", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"label", "poll_id" }))
+		"label", "question_id" }))
 public class Choice extends Model {
 
 	private static final long serialVersionUID = 1L;
@@ -38,6 +38,6 @@ public class Choice extends Model {
 	public Integer sortOrder;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "poll_id")
-	public Poll poll;
+	@JoinColumn(name = "question_id")
+	public Question question;
 }

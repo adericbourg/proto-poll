@@ -17,21 +17,19 @@ GET		/user/profile				controllers.UserSettings.profile()
 POST	/user/update/profile		controllers.UserSettings.updateProfile()
 POST	/user/update/security		controllers.UserSettings.updatePassword()
 
-# Create polls
-GET     /poll/new                   controllers.CreatePoll.newPoll()
-POST    /poll/new                   controllers.CreatePoll.createPoll()
-GET		/poll/addChoices/:id		controllers.CreatePoll.setChoices(id: Long)
-POST	/poll/addChoices/:id		controllers.CreatePoll.saveChoices(id: Long)
-GET		/poll/confirm/:id			controllers.CreatePoll.confirmPollCreation(id: Long)
+# Create questions
+GET     /question/new               controllers.CreateQuestion.newQuestion()
+POST    /question/new               controllers.CreateQuestion.createQuestion()
+GET		/question/addChoices/:id	controllers.CreateQuestion.setChoices(id: Long)
+POST	/question/addChoices/:id	controllers.CreateQuestion.saveChoices(id: Long)
+GET		/question/confirm/:id		controllers.CreateQuestion.confirmQuestionCreation(id: Long)
 
 # View polls
-
 GET		/polls						controllers.ViewPolls.polls()
 
-# Answer poll
-
-GET		/poll/:id					controllers.AnswerPoll.view(id: Long)
-POST	/poll/:id					controllers.AnswerPoll.answer(id: Long)
+# Answer question
+GET		/question/:id				controllers.AnswerQuestion.view(id: Long)
+POST	/question/:id				controllers.AnswerQuestion.answer(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

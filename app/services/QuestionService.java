@@ -9,7 +9,7 @@ import java.util.Map;
 import models.Answer;
 import models.AnswerDetail;
 import models.Choice;
-import models.Poll;
+import models.Question;
 import models.User;
 import play.db.ebean.Model.Finder;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
@@ -19,64 +19,65 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 
 /**
- * Poll management service.
+ * Question management service.
  * 
  * @author adericbourg
  * 
  */
-public class PollService {
+public class QuestionService {
 
-	private static final Finder<Long, Poll> POLL_FINDER = new Finder<Long, Poll>(
-			Long.class, Poll.class);
+	private static final Finder<Long, Question> QUESTION_FINDER = new Finder<Long, Question>(
+			Long.class, Question.class);
 	private static final Finder<Long, Choice> CHOICE_FINDER = new Finder<Long, Choice>(
 			Long.class, Choice.class);
 
-	private PollService() {
+	private QuestionService() {
 		// No instance.
 		throw new AssertionError();
 	}
 
-	public static Long createPoll(Poll poll) {
-		poll.userCreator = SessionUtil.currentUser();
-		poll.save();
-		return poll.id;
+	public static Long createQuestion(Question question) {
+		question.userCreator = SessionUtil.currentUser();
+		question.save();
+		return question.id;
 	}
 
-	public static void saveChoices(Long pollId, List<Choice> choices) {
-		Poll poll = getPoll(pollId);
-		poll.choices = choices;
-		poll.save();
+	public static void saveChoices(Long questionId, List<Choice> choices) {
+		Question question = getQuestion(questionId);
+		question.choices = choices;
+		question.save();
 	}
 
-	public static Poll getPoll(Long id) {
-		return POLL_FINDER.byId(id);
+	public static Question getQuestion(Long id) {
+		return QUESTION_FINDER.byId(id);
 	}
 
 	public static Choice getChoice(Long id) {
 		return CHOICE_FINDER.byId(id);
 	}
 
-	public static List<Poll> polls() {
-		return Ebean.find(Poll.class).findList();
+	public static List<Question> questions() {
+		return Ebean.find(Question.class).findList();
 	}
 
-	public static List<Choice> getChoicesByPoll(Long pollId) {
+	public static List<Choice> getChoicesByQuestion(Long questionId) {
 		List<Choice> choices = Ebean.find(Choice.class).where()
-				.eq("poll.id", pollId).findList();
+				.eq("question.id", questionId).findList();
 		Ebean.sort(choices, "sortOrder");
 		return choices;
 	}
 
-	public static void answerPoll(Long pollId, Collection<Long> choiceIds) {
-		answerPoll(SessionUtil.currentUser(), pollId, choiceIds);
+	public static void answerQuestion(Long questionId,
+			Collection<Long> choiceIds) {
+		answerQuestion(SessionUtil.currentUser(), questionId, choiceIds);
 	}
 
-	public static void answerPoll(String username, Long pollId,
+	public static void answerQuestion(String username, Long questionId,
 			Collection<Long> choiceIds) {
-		Poll poll = getPollWithAnswers(pollId);
+		Question question = getQuestionWithAnswers(questionId);
 
 		// Check if a user with same name has already answered.
-		for (Answer answer : poll.answers) {
+		for (Answer answer : question.answers) {
 			if (answer.user.username.equals(username)) {
 				throw new AnonymousUserAlreadyAnsweredPoll();
 			}
@@ -85,26 +86,26 @@ public class PollService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerPoll(user, pollId, choiceIds);
+		answerQuestion(user, questionId, choiceIds);
 	}
 
-	private static void answerPoll(User user, Long pollId,
+	private static void answerQuestion(User user, Long questionId,
 			Collection<Long> choiceIds) {
 		if (user == null) {
 			throw new RuntimeException("User cannot be null");
 		}
 
-		Poll poll = getPollWithAnswers(pollId);
-		Answer answer = getOrCreateAnswer(user, poll);
+		Question question = getQuestionWithAnswers(questionId);
+		Answer answer = getOrCreateAnswer(user, question);
 
 		// Clear all previous answers.
 		for (AnswerDetail detail : answer.details) {
 			detail.delete();
 		}
 
-		// Map poll choices.
+		// Map choices.
 		Map<Long, Choice> choices = new HashMap<Long, Choice>();
-		for (Choice choice : poll.choices) {
+		for (Choice choice : question.choices) {
 			choices.put(choice.id, choice);
 		}
 
@@ -122,21 +123,22 @@ public class PollService {
 		answer.save();
 	}
 
-	private static Answer getOrCreateAnswer(User user, Poll poll) {
+	private static Answer getOrCreateAnswer(User user, Question question) {
 		ExpressionList<Answer> el = Ebean.find(Answer.class).fetch("details")
-				.where().eq("user.id", user.id).eq("poll.id", poll.id);
+				.where().eq("user.id", user.id).eq("question.id", question.id);
 		if (el.findRowCount() == 0) {
 			Answer answer = new Answer();
 			answer.user = user;
-			answer.poll = poll;
+			answer.question = question;
 			return answer;
 		}
 		return el.findUnique();
 	}
 
-	public static Poll getPollWithAnswers(Long pollId) {
-		return Ebean.find(Poll.class).fetch("answers").fetch("answers.user")
-				.fetch("answers.details").fetch("answers.details.choice")
-				.where().eq("id", pollId).findUnique();
+	public static Question getQuestionWithAnswers(Long questionId) {
+		return Ebean.find(Question.class).fetch("answers")
+				.fetch("answers.user").fetch("answers.details")
+				.fetch("answers.details.choice").where().eq("id", questionId)
+				.findUnique();
 	}
 }

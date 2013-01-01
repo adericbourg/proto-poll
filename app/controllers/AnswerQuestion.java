@@ -11,16 +11,17 @@ import java.util.Set;
 import models.Answer;
 import models.AnswerDetail;
 import models.Choice;
-import models.Poll;
-import models.PollResults;
+import models.Question;
+import models.QuestionResults;
 import play.data.DynamicForm;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.PollService;
+import services.QuestionService;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
-import views.html.answerPoll;
+
+import views.html.answerQuestion;
 
 import com.google.common.base.Strings;
 
@@ -30,7 +31,7 @@ import com.google.common.base.Strings;
  * @author adericbourg
  * 
  */
-public class AnswerPoll extends Controller {
+public class AnswerQuestion extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
 
@@ -38,10 +39,10 @@ public class AnswerPoll extends Controller {
 		return ok(getPollViewContent(id));
 	}
 
-	private static PollResults getPollResults(Long pollId) {
-		Poll poll = PollService.getPollWithAnswers(pollId);
+	private static QuestionResults getPollResults(Long pollId) {
+		Question poll = QuestionService.getQuestionWithAnswers(pollId);
 
-		PollResults results = new PollResults();
+		QuestionResults results = new QuestionResults();
 		for (Answer ans : poll.answers) {
 			results.registerUser(ans.user.username);
 			for (AnswerDetail detail : ans.details) {
@@ -52,11 +53,11 @@ public class AnswerPoll extends Controller {
 	}
 
 	private static Content getPollViewContent(Long id) {
-		Poll poll = PollService.getPoll(id);
-		List<Choice> choices = PollService.getChoicesByPoll(id);
+		Question question = QuestionService.getQuestion(id);
+		List<Choice> choices = QuestionService.getChoicesByQuestion(id);
 
-		return answerPoll.render(SessionUtil.currentUser(), poll, choices,
-				getPollResults(id));
+		return answerQuestion.render(SessionUtil.currentUser(), question,
+				choices, getPollResults(id));
 	}
 
 	public static Result answer(Long id) {
@@ -68,7 +69,7 @@ public class AnswerPoll extends Controller {
 			}
 		}
 		if (SessionUtil.isAuthenticated()) {
-			PollService.answerPoll(id, choices);
+			QuestionService.answerQuestion(id, choices);
 		} else {
 			String username = form.data().get(USERNAME_KEY);
 			if (Strings.isNullOrEmpty(username)) {
@@ -76,7 +77,7 @@ public class AnswerPoll extends Controller {
 				return badRequest(getPollViewContent(id));
 			}
 			try {
-				PollService.answerPoll(username, id, choices);
+				QuestionService.answerQuestion(username, id, choices);
 			} catch (AnonymousUserAlreadyAnsweredPoll e) {
 				error("Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.");
 				return badRequest(getPollViewContent(id));

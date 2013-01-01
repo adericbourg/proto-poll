@@ -10,16 +10,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import models.Choice;
-import models.Poll;
+import models.Question;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.PollService;
+import services.QuestionService;
+import views.html.newQuestion;
 import views.html.addChoices;
-import views.html.newPoll;
-import views.html.pollCreated;
-
+import views.html.questionCreated;
 import com.google.common.base.Strings;
 
 /**
@@ -28,34 +27,34 @@ import com.google.common.base.Strings;
  * @author adericbourg
  * 
  */
-public class CreatePoll extends Controller {
-	private static final Form<Poll> POLL_FORM = form(Poll.class);
+public class CreateQuestion extends Controller {
+	private static final Form<Question> QUESTION_FORM = form(Question.class);
 	private static final Pattern CHOICE_ORDER = Pattern
 			.compile("choice\\[(.*?)\\]");
 
-	public static Result newPoll() {
-		return ok(newPoll.render(POLL_FORM));
+	public static Result newQuestion() {
+		return ok(newQuestion.render(QUESTION_FORM));
 	}
 
-	public static Result createPoll() {
-		Form<Poll> filledForm = POLL_FORM.bindFromRequest();
+	public static Result createQuestion() {
+		Form<Question> filledForm = QUESTION_FORM.bindFromRequest();
 
 		if (filledForm.hasErrors()) {
 			// Error handling.
-			return invalidForm(newPoll.render(POLL_FORM));
+			return invalidForm(newQuestion.render(QUESTION_FORM));
 		}
 
-		Poll poll = filledForm.get();
-		Long pollId = PollService.createPoll(poll);
-		return setChoices(pollId);
+		Question question = filledForm.get();
+		Long questionId = QuestionService.createQuestion(question);
+		return setChoices(questionId);
 	}
 
-	public static Result setChoices(Long pollId) {
-		Poll poll = PollService.getPoll(pollId);
-		return ok(addChoices.render(poll, POLL_FORM));
+	public static Result setChoices(Long questionId) {
+		Question poll = QuestionService.getQuestion(questionId);
+		return ok(addChoices.render(poll, QUESTION_FORM));
 	}
 
-	public static Result saveChoices(Long pollId) {
+	public static Result saveChoices(Long questionId) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		Choice choice;
 		List<Choice> choices = new ArrayList<Choice>();
@@ -69,15 +68,15 @@ public class CreatePoll extends Controller {
 				choices.add(choice);
 			}
 		}
-		PollService.saveChoices(pollId, choices);
-		info("Poll successfully created.");
-		return confirmPollCreation(pollId);
+		QuestionService.saveChoices(questionId, choices);
+		info("Question successfully created.");
+		return confirmQuestionCreation(questionId);
 
 	}
 
-	public static Result confirmPollCreation(Long pollId) {
-		Poll poll = PollService.getPoll(pollId);
-		return ok(pollCreated.render(poll));
+	public static Result confirmQuestionCreation(Long questionId) {
+		Question question = QuestionService.getQuestion(questionId);
+		return ok(questionCreated.render(question));
 	}
 
 	private static int extractSortOrder(String key) {

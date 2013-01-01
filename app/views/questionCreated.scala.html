@@ -1,11 +1,11 @@
-@(poll: Poll) 
+@(question: Question) 
 
 @import helper._
 @import helper.twitterBootstrap._
 @import ui.util.UIUtil;
 
 
-@main("Poll created") {
+@main("Question created") {
 
 	<script type=”text/javascript”>
 		function select_and_copy(obj) { 
@@ -21,18 +21,18 @@
 	</script>
 
 	<fieldset>
-		<legend>@poll.title</legend>
-		@if(poll.hasDescription) {<blockquote>@poll.description</blockquote>}
+		<legend>@question.title</legend>
+		@if(question.hasDescription) {<blockquote>@question.description</blockquote>}
 		
 		Choices:
 		<ol>
-			@for(choice <- poll.choices) {
+			@for(choice <- question.choices) {
 				<li>@choice.label</li>
 			}
 		</ol>
 		
-		Share your poll URL to allow people to answer<br/>
-		<input type="text" value="@UIUtil.getFullUrl(routes.AnswerPoll.view(poll.id).url)" onclick="select_and_copy(this)" />
+		Share your question URL to allow people to answer<br/>
+		<input type="text" value="@UIUtil.getFullUrl(routes.AnswerQuestion.view(question.id).url)" onclick="select_and_copy(this)" />
 	</fieldset>
 	
 }

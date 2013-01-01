@@ -1,24 +1,24 @@
-@(user: User, poll: Poll, choices: List[Choice], results: PollResults)
+@(user: User, question: Question, choices: List[Choice], results: QuestionResults)
 
-@main("Answer poll: " + poll.title) {
+@main("Answer question: " + question.title) {
 	@if(results.isAlreadyAnswered()) {
 		<div class="well text-warning">
 			You already answered this poll. You may update your answers if you wish.
 		</div>
 	}
 	
-	<h1>@poll.title</h1>
+	<h1>@question.title</h1>
 	<blockquote>
 		<p>
-			@poll.description
-			@if(poll.hasRegisteredCreator) {
-				@if(poll.hasDescription) {<br />}
-				<small>Created by @poll.userCreator.getDisplay</small>
+			@question.description
+			@if(question.hasRegisteredCreator) {
+				@if(question.hasDescription) {<br />}
+				<small>Created by @question.userCreator.getDisplay</small>
 			}
 		</p>
 	</blockquote>
 	
-	@helper.form(action = routes.AnswerPoll.answer(poll.id)) {
+	@helper.form(action = routes.AnswerQuestion.answer(question.id)) {
 		<table class="table table-bordered table-hover table-condensed poll-results">
 			<thead>
 			<tr>

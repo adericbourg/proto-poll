@@ -24,11 +24,10 @@ import com.google.common.base.Strings;
  * 
  */
 @Entity
-@Table(name = "poll")
-public class Poll extends Model {
+@Table(name = "question")
+public class Question extends Model {
 
 	private static final long serialVersionUID = 1L;
-
 	@Id
 	@Column(name = "id")
 	public Long id;
@@ -39,7 +38,6 @@ public class Poll extends Model {
 
 	@Column(name = "description")
 	public String description;
-
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<Choice> choices;
@@ -53,12 +51,12 @@ public class Poll extends Model {
 	// ---
 
 	@Transient
-	public boolean hasDescription() {
+	public final boolean hasDescription() {
 		return !Strings.isNullOrEmpty(description);
 	}
 
 	@Transient
-	public boolean hasRegisteredCreator() {
+	public final boolean hasRegisteredCreator() {
 		return userCreator != null;
 	}
 }

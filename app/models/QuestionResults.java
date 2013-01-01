@@ -15,7 +15,7 @@ import util.security.SessionUtil;
  * @author adericbourg
  * 
  */
-public class PollResults {
+public class QuestionResults {
 	// Username -> checked choices.
 	private final Map<String, Set<Long>> results = new TreeMap<String, Set<Long>>();
 	// Choice -> answer count.

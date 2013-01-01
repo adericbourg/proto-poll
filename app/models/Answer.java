@@ -22,7 +22,7 @@ import play.db.ebean.Model;
  */
 @Entity
 @Table(name = "answer", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"poll_id", "user_id" }))
+		"question_id", "user_id" }))
 public class Answer extends Model {
 
 	private static final long serialVersionUID = 1L;
@@ -36,8 +36,8 @@ public class Answer extends Model {
 	public User user;
 
 	@ManyToOne
-	@JoinColumn(name = "poll_id")
-	public Poll poll;
+	@JoinColumn(name = "question_id")
+	public Question question;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<AnswerDetail> details;
