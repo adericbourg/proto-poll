@@ -1,4 +1,4 @@
-@(user: User, question: Question, choices: List[Choice], results: QuestionResults)
+@(user: User, question: Question, choices: List[QuestionChoice], results: QuestionResults)
 
 @main("Answer question: " + question.title) {
 	@if(results.isAlreadyAnswered()) {

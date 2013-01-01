@@ -40,10 +40,10 @@ public class Question extends Model {
 	public String description;
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL)
-	public List<Choice> choices;
+	public List<QuestionChoice> choices;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	public List<Answer> answers;
+	public List<QuestionAnswer> answers;
 
 	@ManyToOne(optional = true)
 	public User userCreator;

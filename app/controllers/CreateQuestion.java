@@ -9,16 +9,17 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import models.Choice;
 import models.Question;
+import models.QuestionChoice;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.QuestionService;
-import views.html.newQuestion;
 import views.html.addChoices;
+import views.html.newQuestion;
 import views.html.questionCreated;
+
 import com.google.common.base.Strings;
 
 /**
@@ -56,13 +57,13 @@ public class CreateQuestion extends Controller {
 
 	public static Result saveChoices(Long questionId) {
 		DynamicForm dynamicForm = form().bindFromRequest();
-		Choice choice;
-		List<Choice> choices = new ArrayList<Choice>();
+		QuestionChoice choice;
+		List<QuestionChoice> choices = new ArrayList<QuestionChoice>();
 		String value;
 		for (Entry<String, String> entry : dynamicForm.data().entrySet()) {
 			value = entry.getValue();
 			if (!Strings.isNullOrEmpty(value)) {
-				choice = new Choice();
+				choice = new QuestionChoice();
 				choice.label = entry.getValue();
 				choice.sortOrder = extractSortOrder(entry.getKey());
 				choices.add(choice);
