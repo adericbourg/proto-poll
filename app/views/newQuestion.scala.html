@@ -3,13 +3,6 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@choiceGroup(field: Field, className: String = "choice") = {
-    <div class="@className">
-        <input name="label" placeholder="Choice"/>
-        <a class="removeChoice btn btn-danger btn-mini">Remove this choice</a>
-    </div>
-}
-
 @main("New question") {
 
     @helper.form(action = routes.CreateQuestion.createQuestion(), 'id -> "form") {
