@@ -1,12 +1,19 @@
 package services;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import play.mvc.Http;
+import play.mvc.Http.Context;
+import play.mvc.Http.Request;
 import play.test.FakeApplication;
 import play.test.Helpers;
 
@@ -53,7 +60,21 @@ public abstract class ProtoPollTest {
 	}
 
 	@Before
-	public void createCleanDb() {
+	public void init() {
+		initSessionRequestAndResponse();
+		createCleanDb();
+	}
+
+	private void initSessionRequestAndResponse() {
+		Request requestMock = mock(Request.class);
+		Http.Cookies cookiesMock = mock(Http.Cookies.class);
+		when(requestMock.cookies()).thenReturn(cookiesMock);
+		Context.current.set(new Context(requestMock,
+				new HashMap<String, String>(), new HashMap<String, String>()));
+
+	}
+
+	private void createCleanDb() {
 		Ebean.execute(Ebean.createCallableSql(dropDdl));
 		Ebean.execute(Ebean.createCallableSql(createDdl));
 	}
