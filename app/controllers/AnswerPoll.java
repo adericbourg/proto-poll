@@ -1,5 +1,8 @@
 package controllers;
 
+import static ui.tags.Messages.error;
+import static ui.tags.Messages.info;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -11,20 +14,28 @@ import models.Choice;
 import models.Poll;
 import models.PollResults;
 import play.data.DynamicForm;
+import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
+import services.exception.AnonymousUserAlreadyAnsweredPoll;
+import util.security.SessionUtil;
 import views.html.answerPoll;
 
+import com.google.common.base.Strings;
+
+/**
+ * Poll answer controller.
+ * 
+ * @author adericbourg
+ * 
+ */
 public class AnswerPoll extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
 
 	public static Result view(Long id) {
-		Poll poll = PollService.getPoll(id);
-		List<Choice> choices = PollService.getChoicesByPoll(id);
-
-		return ok(answerPoll.render(poll, choices, getPollResults(id)));
+		return ok(getPollViewContent(id));
 	}
 
 	private static PollResults getPollResults(Long pollId) {
@@ -40,16 +51,38 @@ public class AnswerPoll extends Controller {
 		return results;
 	}
 
+	private static Content getPollViewContent(Long id) {
+		Poll poll = PollService.getPoll(id);
+		List<Choice> choices = PollService.getChoicesByPoll(id);
+
+		return answerPoll.render(SessionUtil.currentUser(), poll, choices,
+				getPollResults(id));
+	}
+
 	public static Result answer(Long id) {
 		DynamicForm form = form().bindFromRequest();
-		String username = form.data().get(USERNAME_KEY);
 		Set<Long> choices = new HashSet<Long>();
 		for (Entry<String, String> entry : form.data().entrySet()) {
 			if (!isUsername(entry.getKey())) {
 				choices.add(Long.valueOf(entry.getValue()));
 			}
 		}
-		PollService.answerPoll(username, id, choices);
+		if (SessionUtil.isAuthenticated()) {
+			PollService.answerPoll(id, choices);
+		} else {
+			String username = form.data().get(USERNAME_KEY);
+			if (Strings.isNullOrEmpty(username)) {
+				error("Choose a user name.");
+				return badRequest(getPollViewContent(id));
+			}
+			try {
+				PollService.answerPoll(username, id, choices);
+			} catch (AnonymousUserAlreadyAnsweredPoll e) {
+				error("Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.");
+				return badRequest(getPollViewContent(id));
+			}
+		}
+		info("Thank you for answering!");
 		return view(id);
 	}
 

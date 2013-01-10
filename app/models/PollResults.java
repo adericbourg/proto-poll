@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import util.security.SessionUtil;
+
 /**
  * Used in UI. Agregated results wrapper for a poll. Non-persistent.
  * 
@@ -14,9 +16,12 @@ import java.util.TreeMap;
  * 
  */
 public class PollResults {
-	private final Map<String, Set<Long>> results = new TreeMap<>();
-	private final Map<Long, Long> totals = new HashMap<>();
+	// Username -> checked choices.
+	private final Map<String, Set<Long>> results = new TreeMap<String, Set<Long>>();
+	// Choice -> answer count.
+	private final Map<Long, Long> totals = new HashMap<Long, Long>();
 	private Long maxValue;
+	private Boolean alreadyAnswered;
 
 	public void registerUser(String username) {
 		results.put(username, new HashSet<Long>());
@@ -50,6 +55,18 @@ public class PollResults {
 			findMaxValue();
 		}
 		return maxValue.equals(total(choiceId));
+	}
+
+	public boolean isAlreadyAnswered() {
+		if (alreadyAnswered == null) {
+			User user = SessionUtil.currentUser();
+			if (user == null) {
+				alreadyAnswered = false;
+			} else {
+				alreadyAnswered = results.containsKey(user.username);
+			}
+		}
+		return alreadyAnswered.booleanValue();
 	}
 
 	private void findMaxValue() {

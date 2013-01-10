@@ -1,5 +1,8 @@
 package controllers;
 
+import static ui.tags.Messages.info;
+import static ui.tags.MessagesHelper.invalidForm;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -14,47 +17,48 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
 import views.html.addChoices;
-import views.html.index;
 import views.html.newPoll;
+import views.html.pollCreated;
 
 import com.google.common.base.Strings;
 
-public class EditPoll extends Controller {
-	private static final Form<Poll> pollForm = form(Poll.class);
+/**
+ * Managing poll controller. Create, edit, add choices.
+ * 
+ * @author adericbourg
+ * 
+ */
+public class CreatePoll extends Controller {
+	private static final Form<Poll> POLL_FORM = form(Poll.class);
 	private static final Pattern CHOICE_ORDER = Pattern
 			.compile("choice\\[(.*?)\\]");
 
 	public static Result newPoll() {
-		return ok(newPoll.render(pollForm));
+		return ok(newPoll.render(POLL_FORM));
 	}
 
 	public static Result createPoll() {
-		Form<Poll> filledForm = pollForm.bindFromRequest();
-
-		// Title is mandatory.
-		if (filledForm.field("title").valueOr("").isEmpty()) {
-			filledForm.reject("title", "Set title to poll");
-		}
+		Form<Poll> filledForm = POLL_FORM.bindFromRequest();
 
 		if (filledForm.hasErrors()) {
 			// Error handling.
-			return badRequest(newPoll.render(pollForm));
-		} else {
-			Poll poll = filledForm.get();
-			Long pollId = PollService.createPoll(poll);
-			return setChoices(pollId);
+			return invalidForm(newPoll.render(POLL_FORM));
 		}
+
+		Poll poll = filledForm.get();
+		Long pollId = PollService.createPoll(poll);
+		return setChoices(pollId);
 	}
 
 	public static Result setChoices(Long pollId) {
 		Poll poll = PollService.getPoll(pollId);
-		return ok(addChoices.render(poll, pollForm));
+		return ok(addChoices.render(poll, POLL_FORM));
 	}
 
 	public static Result saveChoices(Long pollId) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		Choice choice;
-		List<Choice> choices = new ArrayList<>();
+		List<Choice> choices = new ArrayList<Choice>();
 		String value;
 		for (Entry<String, String> entry : dynamicForm.data().entrySet()) {
 			value = entry.getValue();
@@ -66,9 +70,14 @@ public class EditPoll extends Controller {
 			}
 		}
 		PollService.saveChoices(pollId, choices);
-		flash("success", "Poll successfully created");
-		return ok(index.render());
+		info("Poll successfully created.");
+		return confirmPollCreation(pollId);
 
+	}
+
+	public static Result confirmPollCreation(Long pollId) {
+		Poll poll = PollService.getPoll(pollId);
+		return ok(pollCreated.render(poll));
 	}
 
 	private static int extractSortOrder(String key) {

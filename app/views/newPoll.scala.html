@@ -12,13 +12,7 @@
 
 @main("New poll") {
 
-    @if(pollForm.hasErrors) {
-        <div class="alert-message error">
-            <p><strong>Oops</strong> Please fix all errors</p>
-        </div>
-    }
-
-    @helper.form(action = routes.EditPoll.createPoll(), 'id -> "form") {
+    @helper.form(action = routes.CreatePoll.createPoll(), 'id -> "form") {
         <fieldset>
             <legend>Poll details</legend>
 

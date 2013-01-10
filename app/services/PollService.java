@@ -12,6 +12,8 @@ import models.Choice;
 import models.Poll;
 import models.User;
 import play.db.ebean.Model.Finder;
+import services.exception.AnonymousUserAlreadyAnsweredPoll;
+import util.security.SessionUtil;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
@@ -24,9 +26,9 @@ import com.avaje.ebean.ExpressionList;
  */
 public class PollService {
 
-	private static final Finder<Long, Poll> POLL_FINDER = new Finder<>(
+	private static final Finder<Long, Poll> POLL_FINDER = new Finder<Long, Poll>(
 			Long.class, Poll.class);
-	private static final Finder<Long, Choice> CHOICE_FINDER = new Finder<>(
+	private static final Finder<Long, Choice> CHOICE_FINDER = new Finder<Long, Choice>(
 			Long.class, Choice.class);
 
 	private PollService() {
@@ -35,6 +37,7 @@ public class PollService {
 	}
 
 	public static Long createPoll(Poll poll) {
+		poll.userCreator = SessionUtil.currentUser();
 		poll.save();
 		return poll.id;
 	}
@@ -64,10 +67,34 @@ public class PollService {
 		return choices;
 	}
 
+	public static void answerPoll(Long pollId, Collection<Long> choiceIds) {
+		answerPoll(SessionUtil.currentUser(), pollId, choiceIds);
+	}
+
 	public static void answerPoll(String username, Long pollId,
 			Collection<Long> choiceIds) {
-		User user = UserService.getUserOrRegisterByName(username);
-		Poll poll = getPollWithChoices(pollId);
+		Poll poll = getPollWithAnswers(pollId);
+
+		// Check if a user with same name has already answered.
+		for (Answer answer : poll.answers) {
+			if (answer.user.username.equals(username)) {
+				throw new AnonymousUserAlreadyAnsweredPoll();
+			}
+		}
+
+		// Create new unregistered user with same login.
+		User user = UserService.registerAnonymousUser(username);
+
+		answerPoll(user, pollId, choiceIds);
+	}
+
+	private static void answerPoll(User user, Long pollId,
+			Collection<Long> choiceIds) {
+		if (user == null) {
+			throw new RuntimeException("User cannot be null");
+		}
+
+		Poll poll = getPollWithAnswers(pollId);
 		Answer answer = getOrCreateAnswer(user, poll);
 
 		// Clear all previous answers.
@@ -76,7 +103,7 @@ public class PollService {
 		}
 
 		// Map poll choices.
-		Map<Long, Choice> choices = new HashMap<>();
+		Map<Long, Choice> choices = new HashMap<Long, Choice>();
 		for (Choice choice : poll.choices) {
 			choices.put(choice.id, choice);
 		}
@@ -84,7 +111,7 @@ public class PollService {
 		// Save current choices.
 		Choice choice;
 		AnswerDetail detail;
-		List<AnswerDetail> details = new ArrayList<>();
+		List<AnswerDetail> details = new ArrayList<AnswerDetail>();
 		for (Long choiceId : choiceIds) {
 			choice = choices.get(choiceId);
 			detail = new AnswerDetail();
@@ -102,8 +129,7 @@ public class PollService {
 			Answer answer = new Answer();
 			answer.user = user;
 			answer.poll = poll;
-			answer.save();
-			return getOrCreateAnswer(user, poll);
+			return answer;
 		}
 		return el.findUnique();
 	}
@@ -112,11 +138,5 @@ public class PollService {
 		return Ebean.find(Poll.class).fetch("answers").fetch("answers.user")
 				.fetch("answers.details").fetch("answers.details.choice")
 				.where().eq("id", pollId).findUnique();
-	}
-
-	private static Poll getPollWithChoices(Long pollId) {
-		return Ebean.find(Poll.class).fetch("choices").where().eq("id", pollId)
-				.findUnique();
-
 	}
 }

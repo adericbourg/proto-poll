@@ -1,0 +1,24 @@
+@**
+ *	Tag used to display messages from current call.
+ **@
+
+@import ui.tags.Messages; 
+
+@for(error <- Messages.listError()) {
+	<div class="alert alert-error">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		@error
+	</div>
+}
+@for(warning <- Messages.listWarning()) {
+	<div class="alert">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		@warning
+	</div>
+}
+@for(info <- Messages.listInfo()) {
+	<div class="alert alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		@info
+	</div>
+}

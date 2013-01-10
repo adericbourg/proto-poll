@@ -1,0 +1,35 @@
+@** 
+	Tag managing connected users.
+ **@
+ 
+@import ui.tags.UserManagement; 
+
+@if(UserManagement.isLoggedIn()) {
+	<ul class="nav pull-right">
+		<li class="dropdown">
+			<a href="#" data-toggle="dropdown" class="dropdown-toggle">
+				<i class="icon-user icon-white"></i> @UserManagement.getUserDisplay()
+				<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu closed">
+				<li>
+					<a href="@routes.UserSettings.profile">
+						<i class="icon-barcode"></i> Profile
+					</a>
+				</li>
+				<li>
+					<a href="@routes.Authentication.logout">
+						<i class="icon-off"></i> Log out
+					</a>
+				</li>
+			</ul>
+		</li>
+	</ul>	
+} else {
+    <form class="navbar-form pull-right" action="@routes.Authentication.authenticate" method="POST">
+	    <input name="username" type="text" class="span2" placeholder="User name">
+	    <input name="password" type="password" class="span2" placeholder="Password">
+	    <button type="submit" class="btn">Sign in</button>
+	    <a class="btn btn-inverse" href="@routes.Authentication.register">Not registered?</a>
+    </form>
+}

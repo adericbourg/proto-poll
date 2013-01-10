@@ -5,12 +5,24 @@
 # Home page
 GET     /                           controllers.Application.index()
 
-# Manage polls
+# Authentication
+GET		/register					controllers.Authentication.register()
+POST	/register					controllers.Authentication.saveRegistration()
+GET		/login						controllers.Authentication.login()
+POST	/authenticate				controllers.Authentication.authenticate()
+GET		/logout						controllers.Authentication.logout()
 
-GET     /poll/new                   controllers.EditPoll.newPoll()
-POST    /poll/new                   controllers.EditPoll.createPoll()
-GET		/poll/addChoices/:id		controllers.EditPoll.setChoices(id: Long)
-POST	/poll/addChoices/:id		controllers.EditPoll.saveChoices(id: Long)
+# User
+GET		/user/profile				controllers.UserSettings.profile()
+POST	/user/update/profile		controllers.UserSettings.updateProfile()
+POST	/user/update/security		controllers.UserSettings.updatePassword()
+
+# Create polls
+GET     /poll/new                   controllers.CreatePoll.newPoll()
+POST    /poll/new                   controllers.CreatePoll.createPoll()
+GET		/poll/addChoices/:id		controllers.CreatePoll.setChoices(id: Long)
+POST	/poll/addChoices/:id		controllers.CreatePoll.saveChoices(id: Long)
+GET		/poll/confirm/:id			controllers.CreatePoll.confirmPollCreation(id: Long)
 
 # View polls
 
