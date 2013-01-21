@@ -4,10 +4,11 @@
 @import helper.twitterBootstrap._
 
 @dateGroup(date: Field, className: String = "date") = {
-    <div class="@className">
-        <input type="date" name="choice[x].label" placeholder="Choice x"/>
+	<div class="input-append date datepicker @className" data-date-format="yyyy-mm-dd">
+		<input size="16" type="text" name="choice[x].label" placeholder="Choice x" readonly>
+		<span class="add-on"><i class="icon-th"></i></span>
 		<a href="#" class="remove-date btn btn-danger btn-mini"><i class="icon-white icon-remove-sign"></i> Remove</a>
-    </div>
+	</div>
 }
 
 
@@ -23,7 +24,7 @@
 
         <fieldset>
             <legend>Dates</legend>
-            <div id="dates">
+            <div id="dates">          
     			<div class="manage">
                     <a class="add-date btn btn-small">Add another date</a>
                 </div>
@@ -32,10 +33,12 @@
                 }
 
                 @** Keep an hidden block that will be used as template for Javascript copy code **@
-                @dateGroup(
-                    formEvent("dates[x]"),
-                    className = "date_template"
-                )
+                <div class="date_template">
+	                @dateGroup(
+	                    formEvent("dates[x]"),
+	                    className = "date"
+	                )
+                </div>
             </div>
         </fieldset>
 
@@ -53,7 +56,7 @@
 
         $('.add-date').live('click', function(e) {
             var template = $('.date_template')
-            template.before('<div class="date">' + template.html() + '</div>')
+            template.before(template.html())
             renumber()
         })
 
@@ -70,9 +73,11 @@
                     $(this).attr('placeholder', 'Date ' + count)
                 })
             })
+	        $('.datepicker').datepicker();
         }
         
         renumber()
+        
     </script>
     
 }
