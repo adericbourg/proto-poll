@@ -1,21 +1,20 @@
-@(questionForm: Form[Question])
+@(formEvent: Form[Event])
 
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("New question") {
-
-    @helper.form(action = routes.CreateQuestion.createQuestion(), 'id -> "form") {
+@main("New event") {
+	@helper.form(action = routes.CreateEvent.createEvent(), 'id -> "form") {
         <fieldset>
-            <legend>Question details</legend>
+            <legend>Event details</legend>
 
             @inputText(
-            	questionForm("title"), 
+            	formEvent("title"), 
             	'_label -> "Title",
             	'_showContraints -> false
             )
             @textarea(
-            	questionForm("description"), 
+            	formEvent("description"), 
             	'_label -> "Description",
             	'_showContraints -> false
            	)

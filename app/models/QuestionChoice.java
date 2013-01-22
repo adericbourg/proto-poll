@@ -19,9 +19,9 @@ import play.db.ebean.Model;
  * 
  */
 @Entity
-@Table(name = "choice", uniqueConstraints = @UniqueConstraint(columnNames = {
+@Table(name = "question_choice", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"label", "question_id" }))
-public class Choice extends Model {
+public class QuestionChoice extends Model {
 
 	private static final long serialVersionUID = 1L;
 

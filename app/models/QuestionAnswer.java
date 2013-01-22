@@ -21,9 +21,9 @@ import play.db.ebean.Model;
  * 
  */
 @Entity
-@Table(name = "answer", uniqueConstraints = @UniqueConstraint(columnNames = {
+@Table(name = "question_answer", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"question_id", "user_id" }))
-public class Answer extends Model {
+public class QuestionAnswer extends Model {
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,5 +40,5 @@ public class Answer extends Model {
 	public Question question;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	public List<AnswerDetail> details;
+	public List<QuestionAnswerDetail> details;
 }

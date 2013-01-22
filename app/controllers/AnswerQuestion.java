@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import models.Answer;
-import models.AnswerDetail;
-import models.Choice;
 import models.Question;
+import models.QuestionAnswer;
+import models.QuestionAnswerDetail;
+import models.QuestionChoice;
 import models.QuestionResults;
 import play.data.DynamicForm;
 import play.mvc.Content;
@@ -20,7 +20,6 @@ import play.mvc.Result;
 import services.QuestionService;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
-
 import views.html.answerQuestion;
 
 import com.google.common.base.Strings;
@@ -43,9 +42,9 @@ public class AnswerQuestion extends Controller {
 		Question poll = QuestionService.getQuestionWithAnswers(pollId);
 
 		QuestionResults results = new QuestionResults();
-		for (Answer ans : poll.answers) {
+		for (QuestionAnswer ans : poll.answers) {
 			results.registerUser(ans.user.username);
-			for (AnswerDetail detail : ans.details) {
+			for (QuestionAnswerDetail detail : ans.details) {
 				results.addAnswer(ans.user.username, detail.choice.id);
 			}
 		}
@@ -54,7 +53,7 @@ public class AnswerQuestion extends Controller {
 
 	private static Content getPollViewContent(Long id) {
 		Question question = QuestionService.getQuestion(id);
-		List<Choice> choices = QuestionService.getChoicesByQuestion(id);
+		List<QuestionChoice> choices = QuestionService.getChoicesByQuestion(id);
 
 		return answerQuestion.render(SessionUtil.currentUser(), question,
 				choices, getPollResults(id));

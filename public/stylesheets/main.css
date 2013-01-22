@@ -6,7 +6,8 @@
     display: none;
 }
 
-.choice_template {
+.choice_template,
+.date_template {
     display: none;
 }
 

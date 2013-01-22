@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import models.Answer;
-import models.AnswerDetail;
-import models.Choice;
 import models.Question;
+import models.QuestionAnswer;
+import models.QuestionAnswerDetail;
+import models.QuestionChoice;
 import models.User;
 import play.db.ebean.Model.Finder;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
@@ -28,8 +28,8 @@ public class QuestionService {
 
 	private static final Finder<Long, Question> QUESTION_FINDER = new Finder<Long, Question>(
 			Long.class, Question.class);
-	private static final Finder<Long, Choice> CHOICE_FINDER = new Finder<Long, Choice>(
-			Long.class, Choice.class);
+	private static final Finder<Long, QuestionChoice> CHOICE_FINDER = new Finder<Long, QuestionChoice>(
+			Long.class, QuestionChoice.class);
 
 	private QuestionService() {
 		// No instance.
@@ -42,7 +42,7 @@ public class QuestionService {
 		return question.id;
 	}
 
-	public static void saveChoices(Long questionId, List<Choice> choices) {
+	public static void saveChoices(Long questionId, List<QuestionChoice> choices) {
 		Question question = getQuestion(questionId);
 		question.choices = choices;
 		question.save();
@@ -52,7 +52,7 @@ public class QuestionService {
 		return QUESTION_FINDER.byId(id);
 	}
 
-	public static Choice getChoice(Long id) {
+	public static QuestionChoice getChoice(Long id) {
 		return CHOICE_FINDER.byId(id);
 	}
 
@@ -60,8 +60,8 @@ public class QuestionService {
 		return Ebean.find(Question.class).findList();
 	}
 
-	public static List<Choice> getChoicesByQuestion(Long questionId) {
-		List<Choice> choices = Ebean.find(Choice.class).where()
+	public static List<QuestionChoice> getChoicesByQuestion(Long questionId) {
+		List<QuestionChoice> choices = Ebean.find(QuestionChoice.class).where()
 				.eq("question.id", questionId).findList();
 		Ebean.sort(choices, "sortOrder");
 		return choices;
@@ -77,7 +77,7 @@ public class QuestionService {
 		Question question = getQuestionWithAnswers(questionId);
 
 		// Check if a user with same name has already answered.
-		for (Answer answer : question.answers) {
+		for (QuestionAnswer answer : question.answers) {
 			if (answer.user.username.equals(username)) {
 				throw new AnonymousUserAlreadyAnsweredPoll();
 			}
@@ -96,26 +96,26 @@ public class QuestionService {
 		}
 
 		Question question = getQuestionWithAnswers(questionId);
-		Answer answer = getOrCreateAnswer(user, question);
+		QuestionAnswer answer = getOrCreateAnswer(user, question);
 
 		// Clear all previous answers.
-		for (AnswerDetail detail : answer.details) {
+		for (QuestionAnswerDetail detail : answer.details) {
 			detail.delete();
 		}
 
 		// Map choices.
-		Map<Long, Choice> choices = new HashMap<Long, Choice>();
-		for (Choice choice : question.choices) {
+		Map<Long, QuestionChoice> choices = new HashMap<Long, QuestionChoice>();
+		for (QuestionChoice choice : question.choices) {
 			choices.put(choice.id, choice);
 		}
 
 		// Save current choices.
-		Choice choice;
-		AnswerDetail detail;
-		List<AnswerDetail> details = new ArrayList<AnswerDetail>();
+		QuestionChoice choice;
+		QuestionAnswerDetail detail;
+		List<QuestionAnswerDetail> details = new ArrayList<QuestionAnswerDetail>();
 		for (Long choiceId : choiceIds) {
 			choice = choices.get(choiceId);
-			detail = new AnswerDetail();
+			detail = new QuestionAnswerDetail();
 			detail.choice = choice;
 			details.add(detail);
 		}
@@ -123,11 +123,12 @@ public class QuestionService {
 		answer.save();
 	}
 
-	private static Answer getOrCreateAnswer(User user, Question question) {
-		ExpressionList<Answer> el = Ebean.find(Answer.class).fetch("details")
-				.where().eq("user.id", user.id).eq("question.id", question.id);
+	private static QuestionAnswer getOrCreateAnswer(User user, Question question) {
+		ExpressionList<QuestionAnswer> el = Ebean.find(QuestionAnswer.class)
+				.fetch("details").where().eq("user.id", user.id)
+				.eq("question.id", question.id);
 		if (el.findRowCount() == 0) {
-			Answer answer = new Answer();
+			QuestionAnswer answer = new QuestionAnswer();
 			answer.user = user;
 			answer.question = question;
 			return answer;
