@@ -43,7 +43,7 @@
 			})
 			.on('changeDate', function(ev){
 				initChoices();
-				$('#choices').append('<li>' + ev.date + '</li>');
+				$('#choices ul').append('<li>' + ev.date + '</li>');
 			});
 	    
 	    function initChoices() {
