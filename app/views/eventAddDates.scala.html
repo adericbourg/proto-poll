@@ -6,7 +6,6 @@
 @scripts = {
 	<link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/datepicker.css")'>
 	<script src='@routes.Assets.at("javascripts/bootstrap-datepicker.js")' type="text/javascript"></script>
-	<script src='@routes.Assets.at("javascripts/locales/bootstrap-datepicker.fr.js")' type="text/javascript"></script>
 }
 
 @main("Add dates", scripts) {
@@ -15,36 +14,52 @@
 		<div class="header">
 			<h1>@event.title</h1>
 			<blockquote>
-    			<p>@event.description</p>
-    		</blockquote>
+	   			<p>@event.description</p>
+	   		</blockquote>
 		</div>
 
-        <fieldset>
-            <legend>Dates</legend>
-            
-            <div class="row">
-            	<div class="span6" id="datepicker"></div>
-            	<div class="span6" id="choices"></div>
-            </div>
-            
-        </fieldset>
+		<fieldset>
+		    <legend>Dates</legend>
+		    
+		    <div class="row">
+		    	<div class="span6" id="datepicker"></div>
+		     	<div class="span6" id="choices"></div>
+		    </div>
+		    
+		</fieldset>
 
-        <div class="actions">
-            <input type="submit" class="btn btn-primary" value="Create" />
-            <a href="/" class="btn btn-link">Cancel</a>
-        </div>
-    }
+		<div class="actions">
+		    <input type="submit" class="btn btn-primary" value="Create" />
+		    <a href="/" class="btn btn-link">Cancel</a>
+		</div>
+	}
     
     <script type="text/javascript">
 	    $('#datepicker')
 	    	.datepicker({
-		    	weekStart: 1,
-		    	language: 'fr'
+		    	// weekStart: 1
+		    	//language: 'en'
 			})
 			.on('changeDate', function(ev){
+				var selected_date = $('#datepicker').data('date');
 	    		$('#choices:not(:has(ul))').append("<ul></ul>"); // Init list if not already done.
-				$('#choices ul').append('<li>' + ev.date + '</li>');
+				$('#choices ul').append(
+					'<li>' + selected_date + '</li>' +
+					'<input type="hidden" name="date_choice[x]" value="' + selected_date + '"/>'
+				);
+	    		renumber();
 			});
+    	
+        var renumber = function() {
+        	var count = 0;
+            $('#choices').each(function(i) {
+                $('input[type=hidden]', this).each(function() {
+                    $(this).attr('name', $(this).attr('name').replace(/date_choice\[.+?\]/g, 'date_choice[' + count + ']'))
+                	count++
+                })
+            })
+        }
+	    
     </script>
     
 }
