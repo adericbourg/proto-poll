@@ -1,0 +1,7 @@
+/* Dedicated CSS for events add. */
+
+#choices ul {
+	list-style-type: none;
+	padding:0; 
+	margin:0;
+}
