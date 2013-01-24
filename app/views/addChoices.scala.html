@@ -5,8 +5,8 @@
 
 @choiceGroup(choice: Field, className: String = "choice") = {
     <div class="@className">
+		<a href="#" class="remove-choice btn btn-danger btn-mini"><i class="icon-white icon-remove-sign"></i></a>
         <input name="choice[x].label" placeholder="Choice x"/>
-		<a href="#" class="remove-choice btn btn-danger btn-mini"><i class="icon-white icon-remove-sign"></i> Remove</a>
     </div>
 }
 
@@ -22,8 +22,8 @@
         <fieldset>
             <legend>Choices</legend>
             <div id="choices">
-    			<div class="manage">
-                    <a class="add-choice btn btn-small">Add another choice</a>
+            	<div class="manage">
+                    <a class="add-choice btn btn-mini btn-inverse"><i class="icon-white icon-plus-sign"></i></a>
                 </div>
                 @repeat(questionForm("choices")) { choice =>
                     @choiceGroup(choice)
@@ -34,6 +34,9 @@
                     questionForm("choices[x]"),
                     className = "choice_template"
                 )
+    			<div id="manage-bottom" class="manage">
+                    <a class="add-choice btn btn-mini btn-inverse"><i class="icon-white icon-plus-sign"></i></a>
+                </div>
             </div>
         </fieldset>
 
@@ -68,6 +71,11 @@
                     $(this).attr('placeholder', 'Choice ' + count)
                 })
             })
+            if (count > 10) {
+            	$('#manage-bottom').show();
+            } else {
+            	$('#manage-bottom').hide();
+            }
         }
         
         renumber()
