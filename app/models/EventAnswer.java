@@ -14,31 +14,24 @@ import javax.persistence.UniqueConstraint;
 
 import play.db.ebean.Model;
 
-/**
- * Submitted answer.
- * 
- * @author adericbourg
- * 
- */
 @Entity
-@Table(name = "answer", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"poll_id", "user_id" }))
-public class Answer extends Model {
+@Table(name = "event_answer", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"event_id", "user_id" }))
+public class EventAnswer extends Model {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "id")
 	public Long id;
-
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	public User user;
 
 	@ManyToOne
-	@JoinColumn(name = "poll_id")
-	public Poll poll;
+	@JoinColumn(name = "event_id")
+	public Event event;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	public List<AnswerDetail> details;
+	public List<EventAnswerDetail> details;
 }

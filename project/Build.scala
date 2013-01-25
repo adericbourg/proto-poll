@@ -9,7 +9,8 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       // Add your project dependencies here,
-      "commons-codec" % "commons-codec" % "1.7"
+      "commons-codec" % "commons-codec" % "1.7",
+      "org.mockito" % "mockito-all" % "1.9.0" % "test"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(

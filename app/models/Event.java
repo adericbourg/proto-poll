@@ -8,24 +8,18 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 
-import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 import com.google.common.base.Strings;
 
-/**
- * Poll.
- * 
- * @author adericbourg
- * 
- */
 @Entity
-@Table(name = "poll")
-public class Poll extends Model {
+@Table(name = "event")
+public class Event extends Model {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,7 +27,6 @@ public class Poll extends Model {
 	@Column(name = "id")
 	public Long id;
 
-	@Required(message = "Title is mandatory")
 	@Column(name = "title", nullable = false)
 	public String title;
 
@@ -42,10 +35,11 @@ public class Poll extends Model {
 
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL)
-	public List<Choice> choices;
+	@OrderBy("date ASC")
+	public List<EventChoice> dates;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	public List<Answer> answers;
+	public List<EventAnswer> answers;
 
 	@ManyToOne(optional = true)
 	public User userCreator;
@@ -53,12 +47,13 @@ public class Poll extends Model {
 	// ---
 
 	@Transient
-	public boolean hasDescription() {
+	public final boolean hasDescription() {
 		return !Strings.isNullOrEmpty(description);
 	}
 
 	@Transient
-	public boolean hasRegisteredCreator() {
+	public final boolean hasRegisteredCreator() {
 		return userCreator != null;
 	}
+
 }

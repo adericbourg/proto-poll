@@ -4,59 +4,35 @@ import static ui.tags.Messages.error;
 import static ui.tags.Messages.info;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import models.Answer;
-import models.AnswerDetail;
-import models.Choice;
-import models.Poll;
+import models.Event;
+import models.EventAnswer;
+import models.EventAnswerDetail;
 import models.PollResults;
+import play.api.templates.Html;
 import play.data.DynamicForm;
-import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.PollService;
+import services.EventService;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
-import views.html.answerPoll;
+import views.html.eventAnswer;
 
 import com.google.common.base.Strings;
 
-/**
- * Poll answer controller.
- * 
- * @author adericbourg
- * 
- */
-public class AnswerPoll extends Controller {
+public class AnswerEvent extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
 
 	public static Result view(Long id) {
-		return ok(getPollViewContent(id));
+		return ok(getEventViewContent(id));
 	}
 
-	private static PollResults getPollResults(Long pollId) {
-		Poll poll = PollService.getPollWithAnswers(pollId);
-
-		PollResults results = new PollResults();
-		for (Answer ans : poll.answers) {
-			results.registerUser(ans.user.username);
-			for (AnswerDetail detail : ans.details) {
-				results.addAnswer(ans.user.username, detail.choice.id);
-			}
-		}
-		return results;
-	}
-
-	private static Content getPollViewContent(Long id) {
-		Poll poll = PollService.getPoll(id);
-		List<Choice> choices = PollService.getChoicesByPoll(id);
-
-		return answerPoll.render(SessionUtil.currentUser(), poll, choices,
-				getPollResults(id));
+	private static Html getEventViewContent(Long id) {
+		return eventAnswer.render(SessionUtil.currentUser(),
+				EventService.getEvent(id), getPollResults(id));
 	}
 
 	public static Result answer(Long id) {
@@ -68,22 +44,35 @@ public class AnswerPoll extends Controller {
 			}
 		}
 		if (SessionUtil.isAuthenticated()) {
-			PollService.answerPoll(id, choices);
+			EventService.answerEvent(id, choices);
 		} else {
 			String username = form.data().get(USERNAME_KEY);
 			if (Strings.isNullOrEmpty(username)) {
 				error("Choose a user name.");
-				return badRequest(getPollViewContent(id));
+				return badRequest(getEventViewContent(id));
 			}
 			try {
-				PollService.answerPoll(username, id, choices);
+				EventService.answerEvent(username, id, choices);
 			} catch (AnonymousUserAlreadyAnsweredPoll e) {
 				error("Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.");
-				return badRequest(getPollViewContent(id));
+				return badRequest(getEventViewContent(id));
 			}
 		}
 		info("Thank you for answering!");
 		return view(id);
+	}
+
+	private static PollResults getPollResults(Long pollId) {
+		Event event = EventService.getEvent(pollId);
+
+		PollResults results = new PollResults();
+		for (EventAnswer ans : event.answers) {
+			results.registerUser(ans.user.username);
+			for (EventAnswerDetail detail : ans.details) {
+				results.addAnswer(ans.user.username, detail.choice.id);
+			}
+		}
+		return results;
 	}
 
 	private static boolean isUsername(String key) {

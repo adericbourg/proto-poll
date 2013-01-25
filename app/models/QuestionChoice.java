@@ -9,25 +9,35 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 /**
- * Detail of a sumitted answer: links the answer to one of the selected choices.
+ * Selectable choice in a poll.
  * 
  * @author adericbourg
  * 
  */
 @Entity
-@Table(name = "answer_detail", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"choice_id", "answer_id" }))
-public class AnswerDetail extends Model {
+@Table(name = "question_choice", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"label", "question_id" }))
+public class QuestionChoice extends Model {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "id")
 	public Long id;
 
+	@Required(message = "Enter label for this choice")
+	@Column(name = "label", nullable = false)
+	public String label;
+
+	@Required
+	@Column(name = "sort_order", nullable = false)
+	public Integer sortOrder;
+
 	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "choice_id")
-	public Choice choice;
+	@JoinColumn(name = "question_id")
+	public Question question;
 }

@@ -9,19 +9,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.joda.time.LocalDate;
+
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
-/**
- * Selectable choice in a poll.
- * 
- * @author adericbourg
- * 
- */
 @Entity
-@Table(name = "choice", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"label", "poll_id" }))
-public class Choice extends Model {
+@Table(name = "event_choice", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"date", "event_id" }))
+public class EventChoice extends Model {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,15 +25,11 @@ public class Choice extends Model {
 	@Column(name = "id")
 	public Long id;
 
-	@Required(message = "Enter label for this choice")
-	@Column(name = "label", nullable = false)
-	public String label;
-
-	@Required
-	@Column(name = "sort_order", nullable = false)
-	public Integer sortOrder;
+	@Required(message = "Enter date")
+	@Column(name = "date", nullable = false)
+	public LocalDate date;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "poll_id")
-	public Poll poll;
+	@JoinColumn(name = "event_id")
+	public Event event;
 }
