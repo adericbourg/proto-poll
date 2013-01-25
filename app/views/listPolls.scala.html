@@ -1,9 +1,21 @@
-@(questions: List[Question])
+@(questions: List[Question], events: List[Event])
 
 @main("Polls") {
-	<ul class="none">
-	    @for(question <- questions) {
-	        <li><a href="@routes.AnswerQuestion.view(question.id)" title="@question.description">@question.title</a></li>
-	    }
-	</ul>
+	@if(!questions.isEmpty) {
+		<h1>Questions</h1>
+		<ul class="none">
+			
+		    @for(question <- questions) {
+		        <li><a href="@routes.AnswerQuestion.view(question.id)" title="@question.description">@question.title</a></li>
+		    }
+		</ul>
+	}
+	@if(!events.isEmpty) {
+		<h1>Events</h1>
+		<ul class="none">
+		    @for(event <- events) {
+		        <li><a href="@routes.AnswerEvent.view(event.id)" title="@event.description">@event.title</a></li>
+		    }
+		</ul>
+	}
 }
