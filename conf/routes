@@ -37,6 +37,7 @@ GET		/event/confirm/:id			controllers.CreateEvent.confirmEventCreation(id: Long)
 
 # Answer event
 GET		/event/:id					controllers.AnswerEvent.view(id: Long)
+POST	/event/:id					controllers.AnswerEvent.answer(id: Long)
 
 # View polls
 GET		/polls						controllers.ViewPolls.polls()
