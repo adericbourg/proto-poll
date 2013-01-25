@@ -39,8 +39,7 @@ public class EventService {
 		event.save();
 	}
 
-	public static void answerEvent(Long questionId,
-			Collection<Long> choiceIds) {
+	public static void answerEvent(Long questionId, Collection<Long> choiceIds) {
 		answerEvent(SessionUtil.currentUser(), questionId, choiceIds);
 	}
 
@@ -106,5 +105,9 @@ public class EventService {
 			return answer;
 		}
 		return el.findUnique();
+	}
+
+	public static List<Event> events() {
+		return Ebean.find(Event.class).findList();
 	}
 }

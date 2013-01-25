@@ -1,7 +1,8 @@
 @(title: String, scripts: Html = Html(""))(content: Html)
 
 @**
-	If adding a script on a specific page is needed: 
+	If adding a script on a specific page is needed, set this variable before using the main template and 
+	add the variable to its constructor (@main("title", scripts)). 
 		@scripts = {
 		    <script type="text/javascript">alert("hello !");</script>
 		}
