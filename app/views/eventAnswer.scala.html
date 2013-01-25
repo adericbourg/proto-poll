@@ -1,4 +1,4 @@
-@(user: User, event: Event)
+@(user: User, event: Event, results: PollResults)
 
 @main("Answer event: " + event.title) {
 	<h1>@event.title</h1>
@@ -23,6 +23,57 @@
 			</tr>
 			</thead>
 			<tbody>
+				@for(username <- results.usernames) {
+					@if(user != null && username.equals(user.username)) {
+						<tr>
+							<td class="username">@user.username</td>
+							@for(date <- event.dates) {
+								@if(results.isCheckedChoice(username, date.id)) {
+									<td class="result answer result-ok">
+										<input type="checkbox" name="choice_@date.id" value="@date.id" checked="checked"/>
+									</td>
+								} else {
+									<td class="result answer result-ko">
+										<input type="checkbox" name="choice_@date.id" value="@date.id" />
+									</td>
+								}
+							}
+						</tr>
+					} else {
+						<tr>
+							<td>@username</td>
+							@for(date <- event.dates) {
+								@if(results.isCheckedChoice(username, date.id)) {
+									<td class="result result-ok">&#10004;</td>
+								} else {
+									<td class="result result-ko"></td>
+								}
+							}
+						</tr>
+					}
+				}
+				<tr>
+					<th>Totals</th>
+					@for(date <- event.dates) {
+						<td class="result">
+							@if(results.isBetterChoice(date.id)) {
+								<span class="badge badge-info">@results.total(date.id)</span>
+							} else {
+								@results.total(date.id)
+							}
+						</td>
+					}
+				</tr>
+				@if(user != null && !results.isAlreadyAnswered()) {
+					<tr class="info">
+						<td class="username">@user.username</td>
+						@for(date <- event.dates) {
+							<td class="result answer">
+								<input type="checkbox" name="choice_@date.id" value="@date.id" />
+							</td>
+						}
+					</tr>
+				}
 				@if(user == null) {
 					<tr class="info">
 						<td class="username">
@@ -37,6 +88,12 @@
 				}
 			</tbody>
 		</table>
+		
+		@if(results.isAlreadyAnswered()) {
+			<input class="btn btn-primary btn-large" value="Update" type="submit" />
+		} else {
+			<input class="btn btn-primary btn-large" value="Submit" type="submit" />
+		}
 	}
 	
 	<script type="text/javascript">

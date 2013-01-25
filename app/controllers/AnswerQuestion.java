@@ -12,7 +12,7 @@ import models.Question;
 import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
 import models.QuestionChoice;
-import models.QuestionResults;
+import models.PollResults;
 import play.data.DynamicForm;
 import play.mvc.Content;
 import play.mvc.Controller;
@@ -38,10 +38,10 @@ public class AnswerQuestion extends Controller {
 		return ok(getPollViewContent(id));
 	}
 
-	private static QuestionResults getPollResults(Long pollId) {
+	private static PollResults getPollResults(Long pollId) {
 		Question poll = QuestionService.getQuestionWithAnswers(pollId);
 
-		QuestionResults results = new QuestionResults();
+		PollResults results = new PollResults();
 		for (QuestionAnswer ans : poll.answers) {
 			results.registerUser(ans.user.username);
 			for (QuestionAnswerDetail detail : ans.details) {

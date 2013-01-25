@@ -38,6 +38,9 @@ public class Event extends Model {
 	@OrderBy("date ASC")
 	public List<EventChoice> dates;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	public List<EventAnswer> answers;
+
 	@ManyToOne(optional = true)
 	public User userCreator;
 
