@@ -84,7 +84,7 @@ public abstract class ProtoPollTest {
 		Helpers.stop(app);
 	}
 
-	protected static final FakeApplication getApplication() {
+	protected static FakeApplication getApplication() {
 		return app;
 	}
 }
