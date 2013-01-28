@@ -10,6 +10,7 @@ import models.Event;
 import models.EventAnswer;
 import models.EventAnswerDetail;
 import models.EventChoice;
+import models.Poll;
 import models.User;
 import play.db.ebean.Model.Finder;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
@@ -25,7 +26,9 @@ public class EventService {
 
 	public static Long createEvent(Event event) {
 		event.userCreator = SessionUtil.currentUser();
+		event.poll = new Poll(event);
 		event.save();
+		event.poll.save();
 		return event.id;
 	}
 

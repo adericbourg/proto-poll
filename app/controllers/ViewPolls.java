@@ -2,12 +2,10 @@ package controllers;
 
 import java.util.List;
 
-import models.Event;
-import models.Question;
+import models.Poll;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.EventService;
-import services.QuestionService;
+import services.PollService;
 import views.html.listPolls;
 import views.html.message;
 
@@ -21,12 +19,24 @@ import views.html.message;
  * 
  */
 public class ViewPolls extends Controller {
+
 	public static Result polls() {
-		List<Question> polls = QuestionService.questions();
-		List<Event> events = EventService.events();
-		if (polls.isEmpty() && events.isEmpty()) {
+		List<Poll> polls = PollService.polls();
+		if (polls.isEmpty()) {
 			return ok(message.render("Polls", "No poll available yet."));
 		}
-		return ok(listPolls.render(polls, events));
+		return ok(listPolls.render(polls));
+	}
+
+	public static Result viewPoll(Long id) {
+		Poll poll = PollService.getPoll(id);
+		if (poll.isEvent()) {
+			return AnswerEvent.answer(poll.event.id);
+		} else if (poll.isQuestion()) {
+			return AnswerQuestion.answer(poll.question.id);
+		} else {
+			ui.tags.Messages.error("Poll does not exist.");
+			return Application.index();
+		}
 	}
 }

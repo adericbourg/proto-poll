@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import models.Poll;
 import models.Question;
 import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
@@ -38,7 +39,9 @@ public class QuestionService {
 
 	public static Long createQuestion(Question question) {
 		question.userCreator = SessionUtil.currentUser();
+		question.poll = new Poll(question);
 		question.save();
+		question.poll.save();
 		return question.id;
 	}
 
