@@ -27,16 +27,4 @@ public class ViewPolls extends Controller {
 		}
 		return ok(listPolls.render(polls));
 	}
-
-	public static Result viewPoll(Long id) {
-		Poll poll = PollService.getPoll(id);
-		if (poll.isEvent()) {
-			return AnswerEvent.answer(poll.event.id);
-		} else if (poll.isQuestion()) {
-			return AnswerQuestion.answer(poll.question.id);
-		} else {
-			ui.tags.Messages.error("Poll does not exist.");
-			return Application.index();
-		}
-	}
 }
