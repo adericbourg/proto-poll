@@ -18,7 +18,7 @@ import play.mvc.Result;
 import services.EventService;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
-import views.html.eventAnswer;
+import views.html.event.eventAnswer;
 
 import com.google.common.base.Strings;
 

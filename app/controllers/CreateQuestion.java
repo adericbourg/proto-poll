@@ -16,9 +16,9 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.QuestionService;
-import views.html.addChoices;
-import views.html.newQuestion;
-import views.html.questionCreated;
+import views.html.question.questionAddChoices;
+import views.html.question.questionNew;
+import views.html.question.questionCreated;
 
 import com.google.common.base.Strings;
 
@@ -34,7 +34,7 @@ public class CreateQuestion extends Controller {
 			.compile("choice\\[(.*?)\\]");
 
 	public static Result newQuestion() {
-		return ok(newQuestion.render(QUESTION_FORM));
+		return ok(questionNew.render(QUESTION_FORM));
 	}
 
 	public static Result createQuestion() {
@@ -42,7 +42,7 @@ public class CreateQuestion extends Controller {
 
 		if (filledForm.hasErrors()) {
 			// Error handling.
-			return invalidForm(newQuestion.render(QUESTION_FORM));
+			return invalidForm(questionNew.render(QUESTION_FORM));
 		}
 
 		Question question = filledForm.get();
@@ -52,7 +52,7 @@ public class CreateQuestion extends Controller {
 
 	public static Result setChoices(Long questionId) {
 		Question poll = QuestionService.getQuestion(questionId);
-		return ok(addChoices.render(poll, QUESTION_FORM));
+		return ok(questionAddChoices.render(poll, QUESTION_FORM));
 	}
 
 	public static Result saveChoices(Long questionId) {

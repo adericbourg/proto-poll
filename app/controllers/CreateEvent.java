@@ -17,9 +17,9 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.EventService;
-import views.html.eventAddDates;
-import views.html.eventCreated;
-import views.html.eventNew;
+import views.html.event.eventAddDates;
+import views.html.event.eventCreated;
+import views.html.event.eventNew;
 
 import com.google.common.base.Strings;
 

@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import models.PollResults;
 import models.Question;
 import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
 import models.QuestionChoice;
-import models.PollResults;
 import play.data.DynamicForm;
 import play.mvc.Content;
 import play.mvc.Controller;
@@ -20,8 +20,7 @@ import play.mvc.Result;
 import services.QuestionService;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
-import views.html.answerQuestion;
-
+import views.html.question.questionAnswer;
 import com.google.common.base.Strings;
 
 /**
@@ -55,7 +54,7 @@ public class AnswerQuestion extends Controller {
 		Question question = QuestionService.getQuestion(id);
 		List<QuestionChoice> choices = QuestionService.getChoicesByQuestion(id);
 
-		return answerQuestion.render(SessionUtil.currentUser(), question,
+		return questionAnswer.render(SessionUtil.currentUser(), question,
 				choices, getPollResults(id));
 	}
 
