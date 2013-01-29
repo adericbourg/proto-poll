@@ -1,7 +1,6 @@
 package ui.tags;
 
 import play.mvc.Content;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
 
