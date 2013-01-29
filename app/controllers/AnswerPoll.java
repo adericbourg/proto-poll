@@ -10,9 +10,9 @@ public class AnswerPoll extends Controller {
 	public static Result viewPoll(Long id) {
 		Poll poll = PollService.getPoll(id);
 		if (poll.isEvent()) {
-			return AnswerEvent.answer(poll.event.id);
+			return AnswerEvent.view(poll.event.id);
 		} else if (poll.isQuestion()) {
-			return AnswerQuestion.answer(poll.question.id);
+			return AnswerQuestion.view(poll.question.id);
 		} else {
 			ui.tags.Messages.error("Poll does not exist.");
 			return Application.index();
