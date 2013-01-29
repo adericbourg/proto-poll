@@ -68,12 +68,12 @@ public class QuestionService {
 		return choices;
 	}
 
-	public static void answerQuestion(Long questionId,
+	public static void answerQuestionAuthenticated(Long questionId,
 			Collection<Long> choiceIds) {
 		answerQuestion(SessionUtil.currentUser(), questionId, choiceIds);
 	}
 
-	public static void answerQuestion(String username, Long questionId,
+	public static void answerQuestionAnonymous(String username, Long questionId,
 			Collection<Long> choiceIds) {
 		Question question = getQuestionWithAnswers(questionId);
 

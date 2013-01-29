@@ -68,7 +68,7 @@ public class AnswerQuestion extends Controller {
 			}
 		}
 		if (SessionUtil.isAuthenticated()) {
-			QuestionService.answerQuestion(id, choices);
+			QuestionService.answerQuestionAuthenticated(id, choices);
 		} else {
 			String username = form.data().get(USERNAME_KEY);
 			if (Strings.isNullOrEmpty(username)) {
@@ -76,7 +76,7 @@ public class AnswerQuestion extends Controller {
 				return badRequest(getPollViewContent(id));
 			}
 			try {
-				QuestionService.answerQuestion(username, id, choices);
+				QuestionService.answerQuestionAnonymous(username, id, choices);
 			} catch (AnonymousUserAlreadyAnsweredPoll e) {
 				error("Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.");
 				return badRequest(getPollViewContent(id));
