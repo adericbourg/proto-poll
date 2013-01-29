@@ -42,4 +42,13 @@ public class PollService {
 		poll.save();
 		return poll;
 	}
+
+	public static List<Poll> listUserPolls() {
+		if (!SessionUtil.isAuthenticated()) {
+			throw new RuntimeException(); // TODO change exception type.
+		}
+		return POLL_FINDER.where()
+				.eq("userCreator.id", SessionUtil.currentUser().id).orderBy("creationDate DESC")
+				.findList();
+	}
 }
