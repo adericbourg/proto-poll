@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -50,9 +49,6 @@ public class Question extends Model {
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<QuestionAnswer> answers;
 
-	@ManyToOne(optional = true)
-	public User userCreator;
-
 	@OneToOne(mappedBy = "question")
 	public Poll poll;
 
@@ -65,6 +61,6 @@ public class Question extends Model {
 
 	@Transient
 	public final boolean hasRegisteredCreator() {
-		return userCreator != null;
+		return poll.hasRegisteredCreator();
 	}
 }

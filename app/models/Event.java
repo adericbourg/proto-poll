@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -42,9 +41,6 @@ public class Event extends Model {
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<EventAnswer> answers;
 
-	@ManyToOne(optional = true)
-	public User userCreator;
-
 	@OneToOne(mappedBy = "event")
 	public Poll poll;
 
@@ -57,7 +53,6 @@ public class Event extends Model {
 
 	@Transient
 	public final boolean hasRegisteredCreator() {
-		return userCreator != null;
+		return poll.hasRegisteredCreator();
 	}
-
 }

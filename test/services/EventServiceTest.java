@@ -15,6 +15,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import util.UserTestUtil;
+import util.security.SessionUtil;
 
 public class EventServiceTest extends ProtoPollTest {
 
@@ -26,24 +27,27 @@ public class EventServiceTest extends ProtoPollTest {
 		// Assert.
 		final Event loadedEvent = EventService.getEvent(event.id);
 		assertNotNull(loadedEvent);
-		assertNull(loadedEvent.userCreator);
+		assertNotNull(event.poll);
+		assertNull(loadedEvent.poll.userCreator);
 		assertEquals(0, loadedEvent.dates.size());
 	}
 
 	@Test
 	public void testCreateEventRegistered() {
 		// Prepare.
-		final User user = UserTestUtil.getauthenticatedUser();
+		final User user = UserTestUtil.getAuthenticatedUser();
+		assertNotNull(SessionUtil.currentUser());
 
 		// Act.
 		final Event event = createEvent();
 
 		// Assert.
 		final Event loadedEvent = EventService.getEvent(event.id);
-		assertNotNull(loadedEvent.id);
-		assertNotNull(loadedEvent.userCreator);
-		assertEquals(user.id, loadedEvent.userCreator.id);
-		assertEquals(0, loadedEvent.dates.size());
+		assertNotNull("id", loadedEvent.id);
+		assertNotNull("poll", loadedEvent.poll);
+		assertNotNull("user", loadedEvent.poll.userCreator);
+		assertEquals("user id", user.id, loadedEvent.poll.userCreator.id);
+		assertEquals("size", 0, loadedEvent.dates.size());
 	}
 
 	@Test

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import models.Poll;
 import models.Question;
 import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
@@ -38,10 +37,8 @@ public class QuestionService {
 	}
 
 	public static Long createQuestion(Question question) {
-		question.userCreator = SessionUtil.currentUser();
-		question.poll = new Poll(question);
 		question.save();
-		question.poll.save();
+		PollService.initPoll(question);
 		return question.id;
 	}
 
@@ -52,7 +49,8 @@ public class QuestionService {
 	}
 
 	public static Question getQuestion(Long id) {
-		return QUESTION_FINDER.byId(id);
+		return QUESTION_FINDER.fetch("poll.userCreator").where().eq("id", id)
+				.findUnique();
 	}
 
 	public static QuestionChoice getChoice(Long id) {

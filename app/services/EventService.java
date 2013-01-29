@@ -10,7 +10,6 @@ import models.Event;
 import models.EventAnswer;
 import models.EventAnswerDetail;
 import models.EventChoice;
-import models.Poll;
 import models.User;
 import play.db.ebean.Model.Finder;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
@@ -25,15 +24,14 @@ public class EventService {
 			Long.class, Event.class);
 
 	public static Long createEvent(Event event) {
-		event.userCreator = SessionUtil.currentUser();
-		event.poll = new Poll(event);
 		event.save();
-		event.poll.save();
+		PollService.initPoll(event);
 		return event.id;
 	}
 
 	public static Event getEvent(Long id) {
-		return EVENT_FINDER.byId(id);
+		return EVENT_FINDER.fetch("poll.userCreator").where().eq("id", id)
+				.findUnique();
 	}
 
 	public static void saveDates(Long eventId, Collection<EventChoice> dates) {
