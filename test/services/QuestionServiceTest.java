@@ -3,9 +3,12 @@ package services;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import models.Question;
 import models.QuestionChoice;
@@ -17,6 +20,8 @@ import util.UserTestUtil;
 import util.security.SessionUtil;
 
 public class QuestionServiceTest extends ProtoPollTest {
+
+	private static final int CHOICE_NUMBER = 3;
 
 	@Test
 	public void testCreateQuestionAnonymousUser() {
@@ -79,10 +84,48 @@ public class QuestionServiceTest extends ProtoPollTest {
 		assertEquals(choices.get(1).label, loadedQuestion.choices.get(0).label);
 	}
 
-	private Question createQuestion() {
+	@Test
+	public void testAnswerPollAnonymous() {
+		// Prepare.
+		Question question = createQuestion();
+		question = addChoices(question);
+
+		Set<Long> choiceIds = new HashSet<Long>();
+		choiceIds.add(question.choices.get(0).id);
+
+		// Act.
+		QuestionService.answerQuestionAnonymous("test user", question.id,
+				choiceIds);
+
+		// Assert.
+		Question reloadedQuestion = QuestionService
+				.getQuestionWithAnswers(question.id);
+		assertEquals("answer count", 1, reloadedQuestion.answers.size());
+		assertEquals(choiceIds.size(),
+				reloadedQuestion.answers.get(0).details.size());
+		assertTrue(choiceIds.contains(reloadedQuestion.answers.get(0).details
+				.get(0).choice.id));
+		// FIXME Missing user checks!
+	}
+
+	private static Question createQuestion() {
 		final Question question = new Question();
 		question.title = "question title";
 		QuestionService.createQuestion(question);
 		return question;
+	}
+
+	private static Question addChoices(Question question) {
+		List<QuestionChoice> choices = new ArrayList<QuestionChoice>();
+		QuestionChoice choice;
+		for (int i = 0; i < CHOICE_NUMBER; i++) {
+			choice = new QuestionChoice();
+			choice.label = "Choice " + i;
+			choice.sortOrder = i;
+			choice.question = question;
+			choices.add(choice);
+		}
+		QuestionService.saveChoices(question.id, choices);
+		return QuestionService.getQuestion(question.id);
 	}
 }
