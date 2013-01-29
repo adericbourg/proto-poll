@@ -73,8 +73,8 @@ public class QuestionService {
 		answerQuestion(SessionUtil.currentUser(), questionId, choiceIds);
 	}
 
-	public static void answerQuestionAnonymous(String username, Long questionId,
-			Collection<Long> choiceIds) {
+	public static void answerQuestionAnonymous(String username,
+			Long questionId, Collection<Long> choiceIds) {
 		Question question = getQuestionWithAnswers(questionId);
 
 		// Check if a user with same name has already answered.

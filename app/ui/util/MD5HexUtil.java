@@ -7,14 +7,14 @@ import java.security.NoSuchAlgorithmException;
 class MD5HexUtil {
 
 	static String md5Hex(String message) {
-        String returnValue;
+		String returnValue;
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
-            returnValue = hex(md.digest(message.getBytes("CP1252")));
+			returnValue = hex(md.digest(message.getBytes("CP1252")));
 		} catch (NoSuchAlgorithmException e) {
-            returnValue = null;
+			returnValue = null;
 		} catch (UnsupportedEncodingException e) {
-            returnValue = null;
+			returnValue = null;
 		}
 		return returnValue;
 	}

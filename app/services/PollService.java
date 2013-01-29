@@ -48,7 +48,7 @@ public class PollService {
 			throw new RuntimeException(); // TODO change exception type.
 		}
 		return POLL_FINDER.where()
-				.eq("userCreator.id", SessionUtil.currentUser().id).orderBy("creationDate DESC")
-				.findList();
+				.eq("userCreator.id", SessionUtil.currentUser().id)
+				.orderBy("creationDate DESC").findList();
 	}
 }
