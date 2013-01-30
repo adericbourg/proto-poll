@@ -1,0 +1,7 @@
+@(user: User, size: Int)
+
+@import ui.util.UIUtil;
+
+@if(user.email != null) {
+	<img src="@UIUtil.getGravatarUrl(user, 16)" alt="user.getDisplay" />
+}
