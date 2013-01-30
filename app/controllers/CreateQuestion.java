@@ -51,8 +51,8 @@ public class CreateQuestion extends Controller {
 	}
 
 	public static Result setChoices(Long questionId) {
-		Question poll = QuestionService.getQuestion(questionId);
-		return ok(questionAddChoices.render(poll, QUESTION_FORM));
+		Question question = QuestionService.getQuestion(questionId);
+		return ok(questionAddChoices.render(question, QUESTION_FORM));
 	}
 
 	public static Result saveChoices(Long questionId) {
