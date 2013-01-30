@@ -1,16 +1,8 @@
 @(user: User, event: Event, results: PollResults)
 
 @main("Answer event: " + event.title) {
-	<h1>@event.title</h1>
-	<blockquote>
-		<p>
-			@event.description
-			@if(event.hasRegisteredCreator) {
-				@if(event.hasDescription) {<br />}
-				<small>Created by @event.poll.userCreator.getDisplay</small>
-			}
-		</p>
-	</blockquote>
+
+	@tags.pollHeader(event.poll, true)
 	
 	@helper.form(action = routes.AnswerEvent.answer(event.id)) {
 		<table class="table table-bordered table-hover table-condensed poll-results">

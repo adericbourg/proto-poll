@@ -49,8 +49,8 @@ public class QuestionService {
 	}
 
 	public static Question getQuestion(Long id) {
-		return QUESTION_FINDER.fetch("poll.userCreator").where().eq("id", id)
-				.findUnique();
+		return QUESTION_FINDER.fetch("poll.userCreator").fetch("poll.question")
+				.where().eq("id", id).findUnique();
 	}
 
 	public static QuestionChoice getChoice(Long id) {
@@ -75,7 +75,7 @@ public class QuestionService {
 
 	public static void answerQuestionAnonymous(String username,
 			Long questionId, Collection<Long> choiceIds) {
-		Question question = getQuestionWithAnswers(questionId);
+		Question question = getQuestion(questionId);
 
 		// Check if a user with same name has already answered.
 		for (QuestionAnswer answer : question.answers) {
@@ -96,7 +96,7 @@ public class QuestionService {
 			throw new RuntimeException("User cannot be null");
 		}
 
-		Question question = getQuestionWithAnswers(questionId);
+		Question question = getQuestion(questionId);
 		QuestionAnswer answer = getOrCreateAnswer(user, question);
 
 		// Clear all previous answers.
@@ -135,12 +135,5 @@ public class QuestionService {
 			return answer;
 		}
 		return el.findUnique();
-	}
-
-	public static Question getQuestionWithAnswers(Long questionId) {
-		return Ebean.find(Question.class).fetch("answers")
-				.fetch("answers.user").fetch("answers.details")
-				.fetch("answers.details.choice").where().eq("id", questionId)
-				.findUnique();
 	}
 }

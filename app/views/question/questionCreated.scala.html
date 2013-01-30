@@ -4,35 +4,16 @@
 @import helper.twitterBootstrap._
 @import ui.util.UIUtil;
 
-
 @main("Question created") {
 
-	<script type=”text/javascript”>
-		function select_and_copy(obj) { 
-			var content_value = eval(obj);
-			content_value.focus();
-			content_value.select();
-			if (!document.all) {
-				return; // IE only
-			}
-			range = text_val.createTextRange();
-			range.execCommand(\\’copy\\’);
-		}
-	</script>
-
-	<fieldset>
-		<legend>@question.title</legend>
-		@if(question.hasDescription) {<blockquote>@question.description</blockquote>}
-		
-		Choices:
-		<ol>
-			@for(choice <- question.choices) {
-				<li>@choice.label</li>
-			}
-		</ol>
-		
-		Share your question URL to allow people to answer<br/>
-		<input type="text" value="@UIUtil.getFullUrl(routes.AnswerPoll.viewPoll(question.poll.id).url)" onclick="select_and_copy(this)" class="input-xlarge"/>
-	</fieldset>
+	@tags.pollHeader(question.poll, false)
 	
+	@tags.sharePoll(question.poll)
+
+	Choices:
+	<ol>
+		@for(choice <- question.choices) {
+			<li>@choice.label</li>
+		}
+	</ol>
 }

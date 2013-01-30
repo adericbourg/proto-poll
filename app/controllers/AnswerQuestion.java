@@ -39,7 +39,7 @@ public class AnswerQuestion extends Controller {
 	}
 
 	private static PollResults getPollResults(Long pollId) {
-		Question poll = QuestionService.getQuestionWithAnswers(pollId);
+		Question poll = QuestionService.getQuestion(pollId);
 
 		PollResults results = new PollResults();
 		for (QuestionAnswer ans : poll.answers) {

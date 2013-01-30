@@ -30,8 +30,8 @@ public class EventService {
 	}
 
 	public static Event getEvent(Long id) {
-		return EVENT_FINDER.fetch("poll.userCreator").where().eq("id", id)
-				.findUnique();
+		return EVENT_FINDER.fetch("poll.userCreator").fetch("poll.event")
+				.where().eq("id", id).findUnique();
 	}
 
 	public static void saveDates(Long eventId, Collection<EventChoice> dates) {

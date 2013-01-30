@@ -98,8 +98,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 				choiceIds);
 
 		// Assert.
-		Question reloadedQuestion = QuestionService
-				.getQuestionWithAnswers(question.id);
+		Question reloadedQuestion = QuestionService.getQuestion(question.id);
 		assertEquals("answer count", 1, reloadedQuestion.answers.size());
 		assertEquals(choiceIds.size(),
 				reloadedQuestion.answers.get(0).details.size());

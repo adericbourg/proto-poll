@@ -1,0 +1,14 @@
+@(poll: Poll, detailed: Boolean)
+
+<h1>@poll.getTitle</h1>
+@if(poll.hasDescription || poll.hasRegisteredCreator) {
+	<blockquote>
+		@poll.getDescription
+		@if(detailed) {
+			@if(poll.hasRegisteredCreator) {
+				@if(poll.hasDescription) {<br />}
+				<small>Created by @poll.userCreator.getDisplay</small>
+			}
+		}
+	</blockquote>
+}

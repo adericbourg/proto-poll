@@ -74,6 +74,17 @@ public class Poll extends Model {
 	}
 
 	@Transient
+	public boolean hasDescription() {
+		if (isEvent()) {
+			return event.hasDescription();
+		} else if (isQuestion()) {
+			return question.hasDescription();
+		} else {
+			return false;
+		}
+	}
+
+	@Transient
 	public String getDescription() {
 		if (isEvent()) {
 			return event.description;
