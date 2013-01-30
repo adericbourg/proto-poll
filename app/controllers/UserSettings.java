@@ -15,6 +15,8 @@ import views.html.userProfile;
 
 import com.google.common.base.Strings;
 
+import controllers.security.Secured;
+
 @Security.Authenticated(Secured.class)
 public class UserSettings extends Controller {
 
