@@ -4,7 +4,6 @@ import static ui.tags.Messages.error;
 import static ui.tags.Messages.info;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -12,7 +11,6 @@ import models.PollResults;
 import models.Question;
 import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
-import models.QuestionChoice;
 import play.data.DynamicForm;
 import play.mvc.Content;
 import play.mvc.Controller;
@@ -53,10 +51,8 @@ public class AnswerQuestion extends Controller {
 
 	private static Content getPollViewContent(Long id) {
 		Question question = QuestionService.getQuestion(id);
-		List<QuestionChoice> choices = QuestionService.getChoicesByQuestion(id);
-
 		return questionAnswer.render(SessionUtil.currentUser(), question,
-				choices, getPollResults(id));
+				getPollResults(id));
 	}
 
 	public static Result answer(Long id) {

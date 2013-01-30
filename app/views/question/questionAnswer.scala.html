@@ -1,4 +1,4 @@
-@(user: User, question: Question, choices: List[QuestionChoice], results: PollResults)
+@(user: User, question: Question, results: PollResults)
 
 @main("Answer question: " + question.title) {
 	@if(results.isAlreadyAnswered()) {
@@ -14,7 +14,7 @@
 			<thead>
 			<tr>
 				<th>Participants</th>
-				@for(choice <- choices) {
+				@for(choice <- question.choices) {
 					<th class="result">@choice.label</th>
 				}
 			</tr>
@@ -24,7 +24,7 @@
 					@if(user != null && username.equals(user.username)) {
 						<tr>
 							<td class="username">@tags.gravatar(user, 24) @user.username</td>
-							@for(choice <- choices) {
+							@for(choice <- question.choices) {
 								@if(results.isCheckedChoice(username, choice.id)) {
 									<td class="result answer result-ok">
 										<input type="checkbox" name="choice_@choice.id" value="@choice.id" checked="checked"/>
@@ -39,7 +39,7 @@
 					} else {
 						<tr>
 							<td>@tags.gravatar(results.getUser(username), 24) @username</td>
-							@for(choice <- choices) {
+							@for(choice <- question.choices) {
 								@if(results.isCheckedChoice(username, choice.id)) {
 									<td class="result result-ok">&#10004;</td>
 								} else {
@@ -51,7 +51,7 @@
 				}
 				<tr>
 					<th>Totals</th>
-					@for(choice <- choices) {
+					@for(choice <- question.choices) {
 						<td class="result">
 							@if(results.isBetterChoice(choice.id)) {
 								<span class="badge badge-info">@results.total(choice.id)</span>
@@ -64,7 +64,7 @@
 				@if(user != null && !results.isAlreadyAnswered()) {
 					<tr class="info">
 						<td class="username">@tags.gravatar(user, 24) @user.username</td>
-						@for(choice <- choices) {
+						@for(choice <- question.choices) {
 							<td class="result answer">
 								<input type="checkbox" name="choice_@choice.id" value="@choice.id" />
 							</td>
@@ -76,7 +76,7 @@
 						<td class="username">
 							<input name="username" placeholder="Your name"/>
 						</td>
-						@for(choice <- choices) {
+						@for(choice <- question.choices) {
 							<td class="result answer">
 								<input type="checkbox" name="choice_@choice.id" value="@choice.id" />
 							</td>

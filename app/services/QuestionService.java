@@ -61,13 +61,6 @@ public class QuestionService {
 		return Ebean.find(Question.class).findList();
 	}
 
-	public static List<QuestionChoice> getChoicesByQuestion(Long questionId) {
-		List<QuestionChoice> choices = Ebean.find(QuestionChoice.class).where()
-				.eq("question.id", questionId).findList();
-		Ebean.sort(choices, "sortOrder");
-		return choices;
-	}
-
 	public static void answerQuestionAuthenticated(Long questionId,
 			Collection<Long> choiceIds) {
 		answerQuestion(SessionUtil.currentUser(), questionId, choiceIds);
