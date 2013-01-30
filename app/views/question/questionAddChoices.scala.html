@@ -80,6 +80,7 @@
                 	count++
                     $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'))
                     $(this).attr('placeholder', 'Choice ' + count)
+                    $(this).removeClass("last-input")
                 })
             })
             
