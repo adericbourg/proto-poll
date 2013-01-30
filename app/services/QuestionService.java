@@ -3,8 +3,10 @@ package services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import models.Question;
 import models.QuestionAnswer;
@@ -43,9 +45,23 @@ public class QuestionService {
 	}
 
 	public static void saveChoices(Long questionId, List<QuestionChoice> choices) {
+		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(choices);
 		Question question = getQuestion(questionId);
-		question.choices = choices;
+		question.choices = deduplicatedChoices;
 		question.save();
+	}
+
+	private static List<QuestionChoice> deduplicateChoices(
+			List<QuestionChoice> choices) {
+		Set<String> keys = new HashSet<String>();
+		List<QuestionChoice> deduplicated = new ArrayList<QuestionChoice>();
+		for (QuestionChoice questionChoice : choices) {
+			if (!keys.contains(questionChoice.label)) {
+				deduplicated.add(questionChoice);
+				keys.add(questionChoice.label);
+			}
+		}
+		return deduplicated;
 	}
 
 	public static Question getQuestion(Long id) {
