@@ -9,6 +9,7 @@ import models.Question;
 import org.joda.time.DateTime;
 
 import play.db.ebean.Model.Finder;
+import services.exception.NoAuthenfiedUserInSessionException;
 import util.security.SessionUtil;
 
 import com.avaje.ebean.Ebean;
@@ -45,7 +46,7 @@ public class PollService {
 
 	public static List<Poll> listUserPolls() {
 		if (!SessionUtil.isAuthenticated()) {
-			throw new RuntimeException(); // TODO change exception type.
+			throw new NoAuthenfiedUserInSessionException();
 		}
 		return POLL_FINDER.where()
 				.eq("userCreator.id", SessionUtil.currentUser().id)
