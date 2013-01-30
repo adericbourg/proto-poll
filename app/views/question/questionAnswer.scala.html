@@ -23,7 +23,7 @@
 				@for(username <- results.usernames) {
 					@if(user != null && username.equals(user.username)) {
 						<tr>
-							<td class="username">@user.username</td>
+							<td class="username">@tags.gravatar(user, 24) @user.username</td>
 							@for(choice <- choices) {
 								@if(results.isCheckedChoice(username, choice.id)) {
 									<td class="result answer result-ok">
@@ -38,7 +38,7 @@
 						</tr>
 					} else {
 						<tr>
-							<td>@username</td>
+							<td>@tags.gravatar(results.getUser(username), 24) @username</td>
 							@for(choice <- choices) {
 								@if(results.isCheckedChoice(username, choice.id)) {
 									<td class="result result-ok">&#10004;</td>
@@ -63,7 +63,7 @@
 				</tr>
 				@if(user != null && !results.isAlreadyAnswered()) {
 					<tr class="info">
-						<td class="username">@user.username</td>
+						<td class="username">@tags.gravatar(user, 24) @user.username</td>
 						@for(choice <- choices) {
 							<td class="result answer">
 								<input type="checkbox" name="choice_@choice.id" value="@choice.id" />

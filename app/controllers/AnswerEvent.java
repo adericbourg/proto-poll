@@ -67,7 +67,7 @@ public class AnswerEvent extends Controller {
 
 		PollResults results = new PollResults();
 		for (EventAnswer ans : event.answers) {
-			results.registerUser(ans.user.username);
+			results.registerUser(ans.user);
 			for (EventAnswerDetail detail : ans.details) {
 				results.addAnswer(ans.user.username, detail.choice.id);
 			}

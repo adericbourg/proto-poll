@@ -20,11 +20,14 @@ public class PollResults {
 	private final Map<String, Set<Long>> results = new TreeMap<String, Set<Long>>();
 	// Choice -> answer count.
 	private final Map<Long, Long> totals = new HashMap<Long, Long>();
+	// Users.
+	private final Map<String, User> users = new HashMap<String, User>();
 	private Long maxValue;
 	private Boolean alreadyAnswered;
 
-	public void registerUser(String username) {
-		results.put(username, new HashSet<Long>());
+	public void registerUser(User user) {
+		results.put(user.username, new HashSet<Long>());
+		users.put(user.username, user);
 	}
 
 	public void addAnswer(String username, Long choiceId) {
@@ -42,7 +45,7 @@ public class PollResults {
 	}
 
 	public boolean isCheckedChoice(String username, Long choiceId) {
-		return results.get(username) != null
+		return (results.get(username) != null)
 				&& results.get(username).contains(choiceId);
 	}
 
@@ -67,6 +70,10 @@ public class PollResults {
 			}
 		}
 		return alreadyAnswered.booleanValue();
+	}
+
+	public User getUser(String username) {
+		return users.get(username);
 	}
 
 	private void findMaxValue() {

@@ -43,7 +43,7 @@ public class AnswerQuestion extends Controller {
 
 		PollResults results = new PollResults();
 		for (QuestionAnswer ans : poll.answers) {
-			results.registerUser(ans.user.username);
+			results.registerUser(ans.user);
 			for (QuestionAnswerDetail detail : ans.details) {
 				results.addAnswer(ans.user.username, detail.choice.id);
 			}
