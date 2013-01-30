@@ -53,15 +53,26 @@
         })
 
         $('.add-choice').live('click', function(e) {
-            var template = $('.choice_template')
-            template.before('<div class="choice">' + template.html() + '</div>')
-            renumber()
+        	addChoice();
         })
-
+        
+        $('.last-input').live('keypress', function(e) {
+        	// While input is not empty, "Tab" key press will add new input.
+        	if (e.keyCode === 9 && $(this).val() != "") {
+        		addChoice()
+        	}
+        })
+        
         $('#form').submit(function() {
             $('.choice_template').remove()
         })
 
+        function addChoice() {
+        	var template = $('.choice_template')
+            template.before('<div class="choice">' + template.html() + '</div>')
+            renumber()
+        }
+        
         var renumber = function(choice) {
         	var count = 0;
             $('#choices').each(function(i) {
@@ -71,10 +82,13 @@
                     $(this).attr('placeholder', 'Choice ' + count)
                 })
             })
+            
+            $('#choices .choice input:last').addClass("last-input")
+            
             if (count > 10) {
-            	$('#manage-bottom').show();
+            	$('#manage-bottom').show()
             } else {
-            	$('#manage-bottom').hide();
+            	$('#manage-bottom').hide()
             }
         }
         
