@@ -30,8 +30,6 @@ public class QuestionService {
 
 	private static final Finder<Long, Question> QUESTION_FINDER = new Finder<Long, Question>(
 			Long.class, Question.class);
-	private static final Finder<Long, QuestionChoice> CHOICE_FINDER = new Finder<Long, QuestionChoice>(
-			Long.class, QuestionChoice.class);
 
 	private QuestionService() {
 		// No instance.
@@ -64,17 +62,9 @@ public class QuestionService {
 		return deduplicated;
 	}
 
-	public static Question getQuestion(Long id) {
+	public static Question getQuestion(Long questionId) {
 		return QUESTION_FINDER.fetch("poll.userCreator").fetch("poll.question")
-				.where().eq("id", id).findUnique();
-	}
-
-	public static QuestionChoice getChoice(Long id) {
-		return CHOICE_FINDER.byId(id);
-	}
-
-	public static List<Question> questions() {
-		return Ebean.find(Question.class).findList();
+				.where().eq("id", questionId).findUnique();
 	}
 
 	public static void answerQuestionAuthenticated(Long questionId,
