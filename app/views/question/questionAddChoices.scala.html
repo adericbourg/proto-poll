@@ -75,7 +75,7 @@
         
         var renumber = function(choice) {
         	var count = 0;
-            $('#choices').each(function(i) {
+            $('#choices .choice').each(function(i) {
                 $('input', this).each(function() {
                 	count++
                     $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'))
