@@ -42,6 +42,7 @@ public final class UserService {
 		currentUser.email = user.email;
 		currentUser.displayName = user.displayName;
 		currentUser.save();
+		SessionUtil.setUser(currentUser);
 	}
 
 	public static boolean updateUserPassword(String oldPassword,
