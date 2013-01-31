@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 import com.google.common.base.Strings;
@@ -27,6 +28,7 @@ public class Event extends Model {
 	@Column(name = "id")
 	public Long id;
 
+	@Required(message = "Title is mandatory")
 	@Column(name = "title", nullable = false)
 	public String title;
 
