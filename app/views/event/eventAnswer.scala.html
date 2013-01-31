@@ -1,5 +1,33 @@
 @(user: User, event: Event, results: PollResults)
 
+@checkValue(choice: EventChoice, username: String, results: PollResults) = {
+	@if(username != null && results.isCheckedChoice(username, choice.id)) { 
+		checked="checked" 
+	}
+}
+
+@tdClass(choice: EventChoice, username: String, results: PollResults) = {
+	@if(username == null) {
+		result answer
+	} else {
+		@if(results.isCheckedChoice(username, choice.id)) {
+			result answer result-ok
+		} else {
+			result answer result-ko
+		}
+	}
+}
+
+@answerInput(choice: EventChoice, username: String, results: PollResults, singleChoice: Boolean) = {
+	<td class="@tdClass(choice, username, results)">
+		@if(singleChoice) {
+			<input type="radio" name="choice" id="choice_@choice.id" value="@choice.id" @checkValue(choice, username, results) />
+		} else {
+			<input type="checkbox" name="choice_@choice.id" value="@choice.id" @checkValue(choice, username, results) />
+		}
+	</td>
+}
+
 @main("Answer event: " + event.title) {
 
 	@tags.pollHeader(event.poll, true)
@@ -20,15 +48,7 @@
 						<tr>
 							<td class="username">@tags.gravatar(user, 24) @user.username</td>
 							@for(date <- event.dates) {
-								@if(results.isCheckedChoice(username, date.id)) {
-									<td class="result answer result-ok">
-										<input type="checkbox" name="choice_@date.id" value="@date.id" checked="checked"/>
-									</td>
-								} else {
-									<td class="result answer result-ko">
-										<input type="checkbox" name="choice_@date.id" value="@date.id" />
-									</td>
-								}
+								@answerInput(date, username, results, event.singleAnswer)
 							}
 						</tr>
 					} else {
@@ -60,9 +80,7 @@
 					<tr class="info">
 						<td class="username">@tags.gravatar(user, 24) @user.username</td>
 						@for(date <- event.dates) {
-							<td class="result answer">
-								<input type="checkbox" name="choice_@date.id" value="@date.id" />
-							</td>
+							@answerInput(date, user.username, results, event.singleAnswer)
 						}
 					</tr>
 				}
@@ -72,9 +90,7 @@
 							<input name="username" placeholder="Your name"/>
 						</td>
 						@for(date <- event.dates) {
-							<td class="result answer">
-								<input type="checkbox" name="date_@date.id" value="@date.id" />
-							</td>
+							@answerInput(date, null, results, event.singleAnswer)
 						}
 					</tr>
 				}
@@ -90,10 +106,10 @@
 	
 	<script type="text/javascript">
         $('.answer').live('click', function(e) {
-        	$(this).find("input:checkbox").each(function(){ this.checked = !this.checked; });
+        	$(this).find("input").each(function(){ this.checked = !this.checked; });
         	return false;
         })
-        $(".answer :checkbox").click(function(e) {
+        $(".answer input").click(function(e) {
    			e.stopPropagation();
    			var val = $(this).val();
   		});

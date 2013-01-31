@@ -41,6 +41,9 @@ public class Question extends Model {
 	@Column(name = "description")
 	public String description;
 
+	@Column(name = "single_answer", nullable = false)
+	public boolean singleAnswer = false;
+
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL)
 	@OrderBy("sortOrder ASC")
