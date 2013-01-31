@@ -13,6 +13,7 @@ import models.EventAnswerDetail;
 import models.PollResults;
 import play.api.templates.Html;
 import play.data.DynamicForm;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.EventService;
@@ -22,6 +23,8 @@ import views.html.event.eventAnswer;
 
 import com.google.common.base.Strings;
 
+import controllers.AnswerPoll.PollComment;
+
 public class AnswerEvent extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
@@ -30,9 +33,18 @@ public class AnswerEvent extends Controller {
 		return ok(getEventViewContent(id));
 	}
 
+	public static Result view(Long id, Form<PollComment> formComment) {
+		return badRequest(getEventViewContent(id, formComment));
+	}
+
 	private static Html getEventViewContent(Long id) {
+		return getEventViewContent(id, AnswerPoll.FORM_COMMENT);
+	}
+
+	private static Html getEventViewContent(Long id,
+			Form<PollComment> formComment) {
 		return eventAnswer.render(SessionUtil.currentUser(),
-				EventService.getEvent(id), getPollResults(id));
+				EventService.getEvent(id), getPollResults(id), formComment);
 	}
 
 	public static Result answer(Long id) {
@@ -78,4 +90,5 @@ public class AnswerEvent extends Controller {
 	private static boolean isUsername(String key) {
 		return USERNAME_KEY.equals(key);
 	}
+
 }

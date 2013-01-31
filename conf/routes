@@ -44,5 +44,8 @@ GET		/polls						controllers.ViewPolls.polls()
 GET		/poll/:id					controllers.AnswerPoll.viewPoll(id: Long)
 GET		/user/polls					controllers.ViewPolls.userPolls()
 
+# Comment poll
+POST	/poll/:id/comment			controllers.AnswerPoll.comment(id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

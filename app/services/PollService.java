@@ -2,9 +2,11 @@ package services;
 
 import java.util.List;
 
+import models.Comment;
 import models.Event;
 import models.Poll;
 import models.Question;
+import models.User;
 
 import org.joda.time.DateTime;
 
@@ -51,5 +53,26 @@ public class PollService {
 		return POLL_FINDER.where()
 				.eq("userCreator.id", SessionUtil.currentUser().id)
 				.orderBy("creationDate DESC").findList();
+	}
+
+	public static void postComment(Long id, String comment) {
+		postComment(id, comment, SessionUtil.currentUser());
+	}
+
+	public static void postComment(Long id, String comment, String username) {
+		User user = UserService.registerAnonymousUser(username);
+		postComment(id, comment, user);
+	}
+
+	private static void postComment(Long pollId, String commentText, User user) {
+		Poll poll = getPoll(pollId);
+
+		Comment comment = new Comment();
+		comment.content = commentText;
+		comment.user = user;
+		comment.submitDate = DateTime.now();
+		comment.poll = poll;
+
+		comment.save();
 	}
 }

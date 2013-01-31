@@ -1,4 +1,7 @@
-@(user: User, event: Event, results: PollResults)
+@(user: User, event: Event, results: PollResults, formComment: Form[AnswerPoll.PollComment])
+
+@import helper._
+@import helper.twitterBootstrap._
 
 @checkValue(choice: EventChoice, username: String, results: PollResults) = {
 	@if(username != null && results.isCheckedChoice(username, choice.id)) { 
@@ -104,16 +107,44 @@
 		}
 	}
 	
+	
 	@if(event.poll.comments != null && !event.poll.comments.isEmpty) {
 		<div class="comments">
 			@for(comment <- event.poll.comments) {
-				<div class="comment">
-					<span class="user">@comment.user.getDisplay</span>
-					<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate != null) { (last edited on @comment.lastEditDate) }</span>
+				<div class="comment well">
+					<div class="comment-header">
+						<span class="user">@comment.user.getDisplay</span>
+						<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate != null) { (last edited on @comment.lastEditDate) }</span>
+					</div>
 					<span class="comment-content">@comment.content</span>
 				</div>
 			}
 		</div>
+	}
+	
+	@helper.form(action = routes.AnswerPoll.comment(event.poll.id)) {
+		<fieldset>
+			<legend>Post comment</legend>
+			@if(user ==null) {
+				@inputText(
+			       	formComment("username"), 
+			       	'_label -> "Your name",
+			       	'_showContraints -> false,
+			       	'class -> "input-xlarge"
+		        )
+			}
+			@textarea(
+	           	formComment("comment"), 
+	           	'_label -> "Comment",
+	           	'_showContraints -> false,
+	           	'class -> "input-xlarge"
+	        )
+	        
+	        <div class="actions">
+	        	<input type="submit" class="btn btn-primary" value="Post">
+	            <a href="@routes.AnswerPoll.viewPoll(event.poll.id)" class="btn btn-link">Cancel</a>
+	        </div>
+		</fieldset>
 	}
 	
 	<script type="text/javascript">

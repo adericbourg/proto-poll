@@ -12,6 +12,7 @@ import models.Question;
 import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
 import play.data.DynamicForm;
+import play.data.Form;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -36,6 +37,21 @@ public class AnswerQuestion extends Controller {
 		return ok(getPollViewContent(id));
 	}
 
+	public static Result view(Long id, Form<AnswerPoll.PollComment> formComment) {
+		return badRequest(getPollViewContent(id, formComment));
+	}
+
+	private static Content getPollViewContent(Long id) {
+		return getPollViewContent(id, AnswerPoll.FORM_COMMENT);
+	}
+
+	private static Content getPollViewContent(Long id,
+			Form<AnswerPoll.PollComment> formComment) {
+		Question question = QuestionService.getQuestion(id);
+		return questionAnswer.render(SessionUtil.currentUser(), question,
+				getPollResults(id), formComment);
+	}
+
 	private static PollResults getPollResults(Long pollId) {
 		Question poll = QuestionService.getQuestion(pollId);
 
@@ -47,12 +63,6 @@ public class AnswerQuestion extends Controller {
 			}
 		}
 		return results;
-	}
-
-	private static Content getPollViewContent(Long id) {
-		Question question = QuestionService.getQuestion(id);
-		return questionAnswer.render(SessionUtil.currentUser(), question,
-				getPollResults(id));
 	}
 
 	public static Result answer(Long id) {

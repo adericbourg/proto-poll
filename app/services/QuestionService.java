@@ -64,7 +64,8 @@ public class QuestionService {
 
 	public static Question getQuestion(Long questionId) {
 		return QUESTION_FINDER.fetch("poll.userCreator").fetch("poll.question")
-				.where().eq("id", questionId).findUnique();
+				.fetch("poll.comments").fetch("poll.comments.user").where()
+				.eq("id", questionId).findUnique();
 	}
 
 	public static void answerQuestionAuthenticated(Long questionId,
