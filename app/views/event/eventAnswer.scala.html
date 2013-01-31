@@ -109,7 +109,7 @@
 			@for(comment <- event.poll.comments) {
 				<div class="comment">
 					<span class="user">@comment.user.getDisplay</span>
-					<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate !=null) { (last edited on @comment.lastEditDate) }</span>
+					<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate != null) { (last edited on @comment.lastEditDate) }</span>
 					<span class="comment-content">@comment.content</span>
 				</div>
 			}
