@@ -17,8 +17,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.QuestionService;
 import views.html.question.questionAddChoices;
-import views.html.question.questionNew;
 import views.html.question.questionCreated;
+import views.html.question.questionNew;
 
 import com.google.common.base.Strings;
 
@@ -29,7 +29,8 @@ import com.google.common.base.Strings;
  * 
  */
 public class CreateQuestion extends Controller {
-	private static final Form<Question> QUESTION_FORM = form(Question.class);
+	private static final Form<Question> QUESTION_FORM = form(Question.class)
+			.fill(new Question());
 	private static final Pattern CHOICE_ORDER = Pattern
 			.compile("choice\\[(.*?)\\]");
 

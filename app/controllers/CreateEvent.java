@@ -24,7 +24,8 @@ import views.html.event.eventNew;
 import com.google.common.base.Strings;
 
 public class CreateEvent extends Controller {
-	private static final Form<Event> FORM_EVENT = form(Event.class);
+	private static final Form<Event> FORM_EVENT = form(Event.class).fill(
+			new Event());
 
 	public static Result newEvent() {
 		return ok(eventNew.render(FORM_EVENT));
