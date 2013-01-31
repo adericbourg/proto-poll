@@ -512,3 +512,17 @@ textarea[readonly] {
   margin-left: -20px;
   padding-left: 20px;
 }
+
+/* 
+ * Inhibation
+ */
+ 
+.inhibate-bootstrap-fix label {
+	display: block;
+	text-align: left;
+    margin-bottom: 5px;
+	font-size: 14px;
+    font-weight: normal;
+    line-height: 20px;
+    float: none;
+}
