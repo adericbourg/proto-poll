@@ -9,8 +9,10 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     "commons-codec" % "commons-codec" % "1.7",
-    "org.mockito" % "mockito-all" % "1.9.0" % "test")
+    "org.mockito" % "mockito-all" % "1.9.0" % "test"
+  )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
-    routesImport += "util.binders.UuidBinder._")
+    routesImport += "util.binders.UuidBinder._"
+  )
 }
