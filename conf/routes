@@ -33,7 +33,7 @@ GET		/event/dates/:id			controllers.CreateEvent.setDates(id: Long)
 POST	/event/dates/:id			controllers.CreateEvent.saveDates(id: Long)
 
 # Answer event
-POST	/event/:id					controllers.AnswerEvent.answer(id: Long)
+POST	/event/:uuid				controllers.AnswerEvent.answer(uuid: util.binders.UuidBinder)
 
 # Create polls
 GET		/confirm/:uuid				controllers.CreatePoll.confirmCreation(uuid: util.binders.UuidBinder)

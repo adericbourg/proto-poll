@@ -35,7 +35,7 @@
 
 	@tags.pollHeader(event.poll, true)
 	
-	@helper.form(action = routes.AnswerEvent.answer(event.id)) {
+	@helper.form(action = routes.AnswerEvent.answer(event.poll.bindId)) {
 		<table class="table table-bordered table-hover table-condensed poll-results">
 			<thead>
 			<tr>

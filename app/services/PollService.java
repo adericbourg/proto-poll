@@ -47,6 +47,14 @@ public class PollService {
 		return poll.question;
 	}
 
+	public static Event getEvent(UUID uuid) {
+		Poll poll = getPoll(uuid);
+		if ((poll == null) || !poll.isEvent()) {
+			return null;
+		}
+		return poll.event;
+	}
+
 	public static void initPoll(Event event) {
 		Poll poll = new Poll(event);
 		event.poll = initPoll(poll);

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import models.Event;
 import models.EventAnswer;
@@ -41,13 +42,13 @@ public class EventService {
 		event.save();
 	}
 
-	public static void answerEvent(Long questionId, Collection<Long> choiceIds) {
-		answerEvent(SessionUtil.currentUser(), questionId, choiceIds);
+	public static void answerEvent(UUID uuid, Collection<Long> choiceIds) {
+		answerEvent(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 
-	public static void answerEvent(String username, Long eventId,
+	public static void answerEvent(String username, UUID uuid,
 			Collection<Long> choiceIds) {
-		Event event = getEvent(eventId); // With answers
+		Event event = PollService.getEvent(uuid); // With answers
 
 		// Check if a user with same name has already answered.
 		for (EventAnswer answer : event.answers) {
@@ -59,16 +60,16 @@ public class EventService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerEvent(user, eventId, choiceIds);
+		answerEvent(user, uuid, choiceIds);
 	}
 
-	private static void answerEvent(User user, Long eventId,
+	private static void answerEvent(User user, UUID uuid,
 			Collection<Long> choiceIds) {
 		if (user == null) {
 			throw new RuntimeException("User cannot be null");
 		}
 
-		Event event = getEvent(eventId); // With answers
+		Event event = PollService.getEvent(uuid);
 		EventAnswer answer = getOrCreateAnswer(user, event);
 
 		// Clear all previous answers.

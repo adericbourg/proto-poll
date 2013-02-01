@@ -15,7 +15,6 @@ import play.data.Form;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.EventService;
 import services.PollService;
 import util.binders.UuidBinder;
 import util.security.SessionUtil;
@@ -38,7 +37,7 @@ public class AnswerPoll extends Controller {
 		UUID uuid = id.uuid();
 		Poll poll = PollService.getPoll(uuid);
 		if (poll.isEvent()) {
-			return ok(getEventViewContent(poll.event.id));
+			return ok(getEventViewContent(uuid));
 		} else if (poll.isQuestion()) {
 			return ok(getQuestionViewContent(uuid));
 		} else {
@@ -51,7 +50,7 @@ public class AnswerPoll extends Controller {
 		UUID uuid = id.uuid();
 		Poll poll = PollService.getPoll(uuid);
 		if (poll.isEvent()) {
-			return badRequest(getEventViewContent(poll.event.id, formComment));
+			return badRequest(getEventViewContent(uuid, formComment));
 		} else if (poll.isQuestion()) {
 			return badRequest(getQuestionViewContent(uuid, formComment));
 		} else {
@@ -84,12 +83,12 @@ public class AnswerPoll extends Controller {
 		return viewPoll(id);
 	}
 
-	static Html getEventViewContent(Long id) {
-		return getEventViewContent(id, FORM_COMMENT);
+	static Html getEventViewContent(UUID uuid) {
+		return getEventViewContent(uuid, FORM_COMMENT);
 	}
 
-	static Html getEventViewContent(Long id, Form<PollComment> formComment) {
-		Event event = EventService.getEvent(id);
+	static Html getEventViewContent(UUID uuid, Form<PollComment> formComment) {
+		Event event = PollService.getEvent(uuid);
 		return eventAnswer.render(SessionUtil.currentUser(), event,
 				getPollResults(event), formComment);
 	}
