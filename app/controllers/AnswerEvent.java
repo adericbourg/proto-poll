@@ -7,45 +7,18 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import models.Event;
-import models.EventAnswer;
-import models.EventAnswerDetail;
-import models.PollResults;
-import play.api.templates.Html;
 import play.data.DynamicForm;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.EventService;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
-import views.html.event.eventAnswer;
 
 import com.google.common.base.Strings;
-
-import controllers.AnswerPoll.PollComment;
 
 public class AnswerEvent extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
-
-	public static Result view(Long id) {
-		return ok(getEventViewContent(id));
-	}
-
-	public static Result view(Long id, Form<PollComment> formComment) {
-		return badRequest(getEventViewContent(id, formComment));
-	}
-
-	private static Html getEventViewContent(Long id) {
-		return getEventViewContent(id, AnswerPoll.FORM_COMMENT);
-	}
-
-	private static Html getEventViewContent(Long id,
-			Form<PollComment> formComment) {
-		return eventAnswer.render(SessionUtil.currentUser(),
-				EventService.getEvent(id), getPollResults(id), formComment);
-	}
 
 	public static Result answer(Long id) {
 		DynamicForm form = form().bindFromRequest();
@@ -61,30 +34,17 @@ public class AnswerEvent extends Controller {
 			String username = form.data().get(USERNAME_KEY);
 			if (Strings.isNullOrEmpty(username)) {
 				error("Choose a user name.");
-				return badRequest(getEventViewContent(id));
+				return badRequest(AnswerPoll.getEventViewContent(id));
 			}
 			try {
 				EventService.answerEvent(username, id, choices);
 			} catch (AnonymousUserAlreadyAnsweredPoll e) {
 				error("Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.");
-				return badRequest(getEventViewContent(id));
+				return badRequest(AnswerPoll.getEventViewContent(id));
 			}
 		}
 		info("Thank you for answering!");
-		return view(id);
-	}
-
-	private static PollResults getPollResults(Long pollId) {
-		Event event = EventService.getEvent(pollId);
-
-		PollResults results = new PollResults();
-		for (EventAnswer ans : event.answers) {
-			results.registerUser(ans.user);
-			for (EventAnswerDetail detail : ans.details) {
-				results.addAnswer(ans.user.username, detail.choice.id);
-			}
-		}
-		return results;
+		return ok(AnswerPoll.getEventViewContent(id));
 	}
 
 	private static boolean isUsername(String key) {

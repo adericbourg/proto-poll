@@ -2,13 +2,20 @@ package controllers;
 
 import java.util.UUID;
 
+import models.Event;
+import models.EventAnswer;
+import models.EventAnswerDetail;
 import models.Poll;
+import models.PollResults;
+import play.api.templates.Html;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import services.EventService;
 import services.PollService;
 import util.binders.UuidBinder;
 import util.security.SessionUtil;
+import views.html.event.eventAnswer;
 
 import com.google.common.base.Strings;
 
@@ -25,7 +32,7 @@ public class AnswerPoll extends Controller {
 	public static Result viewPoll(UuidBinder id) {
 		Poll poll = PollService.getPoll(id.uuid());
 		if (poll.isEvent()) {
-			return AnswerEvent.view(poll.event.id);
+			return ok(getEventViewContent(poll.event.id));
 		} else if (poll.isQuestion()) {
 			return AnswerQuestion.view(poll.question.id);
 		} else {
@@ -37,9 +44,9 @@ public class AnswerPoll extends Controller {
 	public static Result viewPoll(UuidBinder id, Form<PollComment> formComment) {
 		Poll poll = PollService.getPoll(id.uuid());
 		if (poll.isEvent()) {
-			return AnswerEvent.view(poll.event.id, formComment);
+			return ok(getEventViewContent(poll.event.id, formComment));
 		} else if (poll.isQuestion()) {
-			return AnswerQuestion.view(poll.question.id);
+			return AnswerQuestion.view(poll.question.id, formComment);
 		} else {
 			ui.tags.Messages.error("Poll does not exist.");
 			return Application.index();
@@ -68,5 +75,27 @@ public class AnswerPoll extends Controller {
 		}
 
 		return viewPoll(id);
+	}
+
+	static Html getEventViewContent(Long id) {
+		return getEventViewContent(id, FORM_COMMENT);
+	}
+
+	static Html getEventViewContent(Long id, Form<PollComment> formComment) {
+		return eventAnswer.render(SessionUtil.currentUser(),
+				EventService.getEvent(id), getPollResults(id), formComment);
+	}
+
+	private static PollResults getPollResults(Long pollId) {
+		Event event = EventService.getEvent(pollId);
+
+		PollResults results = new PollResults();
+		for (EventAnswer ans : event.answers) {
+			results.registerUser(ans.user);
+			for (EventAnswerDetail detail : ans.details) {
+				results.addAnswer(ans.user.username, detail.choice.id);
+			}
+		}
+		return results;
 	}
 }
