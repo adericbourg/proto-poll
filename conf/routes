@@ -40,11 +40,11 @@ GET		/confirm/:uuid				controllers.CreatePoll.confirmCreation(uuid: util.binders
 
 # View polls
 GET		/polls						controllers.ViewPolls.polls()
-GET		/poll/:id					controllers.AnswerPoll.viewPoll(id: util.binders.UuidBinder)
+GET		/poll/:uuid					controllers.AnswerPoll.viewPoll(uuid: util.binders.UuidBinder)
 GET		/user/polls					controllers.ViewPolls.userPolls()
 
 # Comment poll
-POST	/poll/:id/comment			controllers.AnswerPoll.comment(id: util.binders.UuidBinder)
+POST	/comment/:uuid				controllers.AnswerPoll.comment(uuid: util.binders.UuidBinder)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
