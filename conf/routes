@@ -25,7 +25,6 @@ POST	/question/addChoices/:id	controllers.CreateQuestion.saveChoices(id: Long)
 GET		/question/confirm/:id		controllers.CreateQuestion.confirmQuestionCreation(id: Long)
 
 # Answer question
-GET		/question/:id				controllers.AnswerQuestion.view(id: Long)
 POST	/question/:id				controllers.AnswerQuestion.answer(id: Long)
 
 #Create events
