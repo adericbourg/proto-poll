@@ -22,7 +22,6 @@ GET     /question/new               controllers.CreateQuestion.newQuestion()
 POST    /question/new               controllers.CreateQuestion.createQuestion()
 GET		/question/addChoices/:id	controllers.CreateQuestion.setChoices(id: Long)
 POST	/question/addChoices/:id	controllers.CreateQuestion.saveChoices(id: Long)
-GET		/question/confirm/:id		controllers.CreateQuestion.confirmQuestionCreation(id: Long)
 
 # Answer question
 POST	/question/:id				controllers.AnswerQuestion.answer(id: Long)
@@ -32,10 +31,12 @@ GET		/event/new					controllers.CreateEvent.newEvent()
 POST	/event/new					controllers.CreateEvent.createEvent()
 GET		/event/dates/:id			controllers.CreateEvent.setDates(id: Long)
 POST	/event/dates/:id			controllers.CreateEvent.saveDates(id: Long)
-GET		/event/confirm/:id			controllers.CreateEvent.confirmEventCreation(id: Long)
 
 # Answer event
 POST	/event/:id					controllers.AnswerEvent.answer(id: Long)
+
+# Create polls
+GET		/confirm/:uuid				controllers.CreatePoll.confirmCreation(uuid: util.binders.UuidBinder)
 
 # View polls
 GET		/polls						controllers.ViewPolls.polls()

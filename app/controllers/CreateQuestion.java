@@ -17,7 +17,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.QuestionService;
 import views.html.question.questionAddChoices;
-import views.html.question.questionCreated;
 import views.html.question.questionNew;
 
 import com.google.common.base.Strings;
@@ -72,13 +71,9 @@ public class CreateQuestion extends Controller {
 		}
 		QuestionService.saveChoices(questionId, choices);
 		info("Question successfully created.");
-		return confirmQuestionCreation(questionId);
+		return CreatePoll.confirmCreation(QuestionService
+				.getQuestion(questionId).poll.bindId());
 
-	}
-
-	public static Result confirmQuestionCreation(Long questionId) {
-		Question question = QuestionService.getQuestion(questionId);
-		return ok(questionCreated.render(question));
 	}
 
 	private static int extractSortOrder(String key) {

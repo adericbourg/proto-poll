@@ -18,7 +18,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.EventService;
 import views.html.event.eventAddDates;
-import views.html.event.eventCreated;
 import views.html.event.eventNew;
 
 import com.google.common.base.Strings;
@@ -64,11 +63,8 @@ public class CreateEvent extends Controller {
 		}
 		EventService.saveDates(eventId, dates);
 		info("Event successfully created.");
-		return confirmEventCreation(eventId);
+		return CreatePoll.confirmCreation(EventService.getEvent(eventId).poll
+				.bindId());
 	}
 
-	public static Result confirmEventCreation(Long id) {
-		Event event = EventService.getEvent(id);
-		return ok(eventCreated.render(event));
-	}
 }

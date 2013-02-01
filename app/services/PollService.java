@@ -27,7 +27,16 @@ public class PollService {
 	}
 
 	public static Poll getPoll(UUID id) {
-		return POLL_FINDER.byId(id);
+		return POLL_FINDER
+				.fetch("userCreator")
+				// Question
+				.fetch("question").fetch("question.choices")
+				.fetch("question.answers").fetch("question.answers.details")
+				// Event
+				.fetch("event").fetch("event.dates").fetch("event.answers")
+				.fetch("event.answers.details")
+				// Filter
+				.where().idEq(id).findUnique();
 	}
 
 	public static void initPoll(Event event) {
