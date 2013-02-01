@@ -39,6 +39,14 @@ public class PollService {
 				.where().idEq(id).findUnique();
 	}
 
+	public static Question getQuestion(UUID uuid) {
+		Poll poll = getPoll(uuid);
+		if ((poll == null) || !poll.isQuestion()) {
+			return null;
+		}
+		return poll.question;
+	}
+
 	public static void initPoll(Event event) {
 		Poll poll = new Poll(event);
 		event.poll = initPoll(poll);

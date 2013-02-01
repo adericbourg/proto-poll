@@ -94,7 +94,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 		choiceIds.add(question.choices.get(0).id);
 
 		// Act.
-		QuestionService.answerQuestionAnonymous("test user", question.id,
+		QuestionService.answerQuestionAnonymous("test user", question.poll.id,
 				choiceIds);
 
 		// Assert.
@@ -110,8 +110,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 	private static Question createQuestion() {
 		final Question question = new Question();
 		question.title = "question title";
-		QuestionService.createQuestion(question);
-		return question;
+		return QuestionService.createQuestion(question);
 	}
 
 	private static Question addChoices(Question question) {

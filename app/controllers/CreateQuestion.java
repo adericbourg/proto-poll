@@ -46,7 +46,7 @@ public class CreateQuestion extends Controller {
 		}
 
 		Question question = filledForm.get();
-		Long questionId = QuestionService.createQuestion(question);
+		Long questionId = QuestionService.createQuestion(question).id;
 		return setChoices(questionId);
 	}
 

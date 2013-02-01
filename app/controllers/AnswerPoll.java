@@ -17,7 +17,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.EventService;
 import services.PollService;
-import services.QuestionService;
 import util.binders.UuidBinder;
 import util.security.SessionUtil;
 import views.html.event.eventAnswer;
@@ -36,11 +35,12 @@ public class AnswerPoll extends Controller {
 	static final Form<PollComment> FORM_COMMENT = form(PollComment.class);
 
 	public static Result viewPoll(UuidBinder id) {
-		Poll poll = PollService.getPoll(id.uuid());
+		UUID uuid = id.uuid();
+		Poll poll = PollService.getPoll(uuid);
 		if (poll.isEvent()) {
 			return ok(getEventViewContent(poll.event.id));
 		} else if (poll.isQuestion()) {
-			return ok(getQuestionViewContent((poll.question.id)));
+			return ok(getQuestionViewContent(uuid));
 		} else {
 			ui.tags.Messages.error("Poll does not exist.");
 			return Application.index();
@@ -48,12 +48,12 @@ public class AnswerPoll extends Controller {
 	}
 
 	public static Result viewPoll(UuidBinder id, Form<PollComment> formComment) {
-		Poll poll = PollService.getPoll(id.uuid());
+		UUID uuid = id.uuid();
+		Poll poll = PollService.getPoll(uuid);
 		if (poll.isEvent()) {
 			return badRequest(getEventViewContent(poll.event.id, formComment));
 		} else if (poll.isQuestion()) {
-			return badRequest(getQuestionViewContent(poll.question.id,
-					formComment));
+			return badRequest(getQuestionViewContent(uuid, formComment));
 		} else {
 			ui.tags.Messages.error("Poll does not exist.");
 			return Application.index();
@@ -94,13 +94,13 @@ public class AnswerPoll extends Controller {
 				getPollResults(event), formComment);
 	}
 
-	static Content getQuestionViewContent(Long questionId) {
-		return getQuestionViewContent(questionId, AnswerPoll.FORM_COMMENT);
+	static Content getQuestionViewContent(UUID uuid) {
+		return getQuestionViewContent(uuid, AnswerPoll.FORM_COMMENT);
 	}
 
-	static Content getQuestionViewContent(Long id,
+	static Content getQuestionViewContent(UUID uuid,
 			Form<AnswerPoll.PollComment> formComment) {
-		Question question = QuestionService.getQuestion(id);
+		Question question = PollService.getQuestion(uuid);
 		return questionAnswer.render(SessionUtil.currentUser(), question,
 				getPollResults(question), formComment);
 	}

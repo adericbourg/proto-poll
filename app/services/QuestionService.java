@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import models.Question;
 import models.QuestionAnswer;
@@ -36,10 +37,10 @@ public class QuestionService {
 		throw new AssertionError();
 	}
 
-	public static Long createQuestion(Question question) {
+	public static Question createQuestion(Question question) {
 		question.save();
 		PollService.initPoll(question);
-		return question.id;
+		return question;
 	}
 
 	public static void saveChoices(Long questionId, List<QuestionChoice> choices) {
@@ -68,14 +69,15 @@ public class QuestionService {
 				.eq("id", questionId).findUnique();
 	}
 
-	public static void answerQuestionAuthenticated(Long questionId,
+	public static void answerQuestionAuthenticated(UUID uuid,
 			Collection<Long> choiceIds) {
-		answerQuestion(SessionUtil.currentUser(), questionId, choiceIds);
+		answerQuestion(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 
-	public static void answerQuestionAnonymous(String username,
-			Long questionId, Collection<Long> choiceIds) {
-		Question question = getQuestion(questionId);
+	public static void answerQuestionAnonymous(String username, UUID uuid,
+			Collection<Long> choiceIds) {
+		// FIXME It makes poll being loaded twice.
+		Question question = PollService.getQuestion(uuid);
 
 		// Check if a user with same name has already answered.
 		for (QuestionAnswer answer : question.answers) {
@@ -87,16 +89,16 @@ public class QuestionService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerQuestion(user, questionId, choiceIds);
+		answerQuestion(user, uuid, choiceIds);
 	}
 
-	private static void answerQuestion(User user, Long questionId,
+	private static void answerQuestion(User user, UUID uuid,
 			Collection<Long> choiceIds) {
 		if (user == null) {
 			throw new RuntimeException("User cannot be null");
 		}
 
-		Question question = getQuestion(questionId);
+		Question question = PollService.getQuestion(uuid);
 		QuestionAnswer answer = getOrCreateAnswer(user, question);
 
 		// Clear all previous answers.

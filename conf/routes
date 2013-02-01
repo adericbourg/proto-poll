@@ -24,7 +24,7 @@ GET		/question/addChoices/:id	controllers.CreateQuestion.setChoices(id: Long)
 POST	/question/addChoices/:id	controllers.CreateQuestion.saveChoices(id: Long)
 
 # Answer question
-POST	/question/:id				controllers.AnswerQuestion.answer(id: Long)
+POST	/question/:uuid				controllers.AnswerQuestion.answer(uuid: util.binders.UuidBinder)
 
 #Create events
 GET		/event/new					controllers.CreateEvent.newEvent()
