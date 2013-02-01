@@ -12,12 +12,16 @@ public class CreatePoll extends Controller {
 
 	public static Result confirmCreation(UuidBinder id) {
 		Poll poll = PollService.getPoll(id.uuid());
-		if (poll.isEvent()) {
+		Result result;
+		if (poll == null) {
+			result = notFound();
+		} else if (poll.isEvent()) {
 			return ok(eventCreated.render(poll.event));
 		} else if (poll.isQuestion()) {
 			return ok(questionCreated.render(poll.question));
+		} else {
+			result = badRequest();
 		}
-		return notFound();
+		return result;
 	}
-
 }
