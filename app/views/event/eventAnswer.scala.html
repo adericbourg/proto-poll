@@ -122,7 +122,7 @@
 		</div>
 	}
 	
-	@helper.form(action = routes.AnswerPoll.comment(event.poll.id)) {
+	@helper.form(action = routes.AnswerPoll.comment(event.poll.bindId)) {
 		<fieldset>
 			<legend>Post comment</legend>
 			@if(user ==null) {
@@ -142,7 +142,7 @@
 	        
 	        <div class="actions">
 	        	<input type="submit" class="btn btn-primary" value="Post">
-	            <a href="@routes.AnswerPoll.viewPoll(event.poll.id)" class="btn btn-link">Cancel</a>
+	            <a href="@routes.AnswerPoll.viewPoll(event.poll.bindId)" class="btn btn-link">Cancel</a>
 	        </div>
 		</fieldset>
 	}

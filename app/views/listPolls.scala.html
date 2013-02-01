@@ -1,9 +1,11 @@
 @(polls: List[Poll])
 
+@import util.binders.UuidBinder;
+
 @main("Polls") {
 	<ul class="none">
 	    @for(poll <- polls) {
-	        <li><a href="@routes.AnswerPoll.viewPoll(poll.id)" title="@poll.getDescription">@poll.getTitle</a></li>
+	        <li><a href="@routes.AnswerPoll.viewPoll(poll.bindId)" title="@poll.getDescription">@poll.getTitle</a></li>
 	    }
 	</ul>
 }

@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.Transient;
 import org.joda.time.DateTime;
 
 import play.db.ebean.Model;
+import util.binders.UuidBinder;
 
 @Entity
 @Table(name = "poll")
@@ -38,7 +40,7 @@ public class Poll extends Model {
 
 	@Id
 	@Column(name = "id")
-	public Long id;
+	public UUID id;
 
 	@Column(name = "creation_date", nullable = false)
 	public DateTime creationDate;
@@ -55,6 +57,13 @@ public class Poll extends Model {
 	@OneToMany
 	@OrderBy("submitDate ASC")
 	public List<Comment> comments;
+
+	// ---
+
+	@Transient
+	public UuidBinder bindId() {
+		return UuidBinder.create(id);
+	}
 
 	// ---
 

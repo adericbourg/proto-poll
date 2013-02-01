@@ -1,6 +1,7 @@
 package services;
 
 import java.util.List;
+import java.util.UUID;
 
 import models.Comment;
 import models.Event;
@@ -18,14 +19,14 @@ import com.avaje.ebean.Ebean;
 
 public class PollService {
 
-	private static final Finder<Long, Poll> POLL_FINDER = new Finder<Long, Poll>(
-			Long.class, Poll.class);
+	private static final Finder<UUID, Poll> POLL_FINDER = new Finder<UUID, Poll>(
+			UUID.class, Poll.class);
 
 	public static List<Poll> polls() {
 		return Ebean.find(Poll.class).findList();
 	}
 
-	public static Poll getPoll(Long id) {
+	public static Poll getPoll(UUID id) {
 		return POLL_FINDER.byId(id);
 	}
 
@@ -55,16 +56,16 @@ public class PollService {
 				.orderBy("creationDate DESC").findList();
 	}
 
-	public static void postComment(Long id, String comment) {
+	public static void postComment(UUID id, String comment) {
 		postComment(id, comment, SessionUtil.currentUser());
 	}
 
-	public static void postComment(Long id, String comment, String username) {
+	public static void postComment(UUID id, String comment, String username) {
 		User user = UserService.registerAnonymousUser(username);
 		postComment(id, comment, user);
 	}
 
-	private static void postComment(Long pollId, String commentText, User user) {
+	private static void postComment(UUID pollId, String commentText, User user) {
 		Poll poll = getPoll(pollId);
 
 		Comment comment = new Comment();

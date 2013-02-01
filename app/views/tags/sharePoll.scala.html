@@ -14,7 +14,7 @@
 <div class="well">
 	<span class="control-label info">Share your event URL to allow people to answer</span><br/>
 	<span class="input-append control-group info">
-		<input id="created-poll-url" class="poll_url inputInfo" type="text" value="@UIUtil.getFullUrl(routes.AnswerPoll.viewPoll(poll.id).url)" class="input-xlarge"/>
-		<a href="@UIUtil.getFullUrl(routes.AnswerPoll.viewPoll(poll.id).url)" class="btn" rel="Answer poll">Go</a>
+		<input id="created-poll-url" class="poll_url inputInfo input-xlarge" type="text" value="@UIUtil.getFullUrl(routes.AnswerPoll.viewPoll(poll.bindId).url)" class="input-xlarge"/>
+		<a href="@UIUtil.getFullUrl(routes.AnswerPoll.viewPoll(poll.bindId).url)" class="btn" rel="Answer poll">Go</a>
 	</span>
 </div>
