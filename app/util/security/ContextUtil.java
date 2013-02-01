@@ -13,12 +13,11 @@ public final class ContextUtil {
 		if (context == null) {
 			return null;
 		}
-
-		if (!context.session().containsKey(SessionUtil.USERNAME_KEY)) {
+		Context.current.set(context);
+		if (!context.session().containsKey(SessionParameters.USERNAME.getKey())) {
 			return null;
 		}
 		return UserService.findByUsername(context.session().get(
-				SessionUtil.USERNAME_KEY));
-
+				SessionParameters.USERNAME.getKey()));
 	}
 }
