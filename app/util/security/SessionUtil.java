@@ -37,7 +37,9 @@ public final class SessionUtil {
 		User user = (User) Cache.get(USERNAME.getKey());
 		if (user == null) {
 			optUser = UserService.findByUsername(getSessionParameter(USERNAME));
-			Cache.set(USERNAME.getKey(), optUser.get());
+			if (optUser.isDefined()) {
+				Cache.set(USERNAME.getKey(), optUser.get());
+			}
 		} else {
 			optUser = Option.apply(user);
 		}
