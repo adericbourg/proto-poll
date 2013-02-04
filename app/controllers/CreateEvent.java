@@ -40,7 +40,7 @@ public class CreateEvent extends Controller {
 
 		Event event = filledForm.get();
 		Long eventId = EventService.createEvent(event);
-		return setDates(eventId);
+		return redirect(routes.CreateEvent.setDates(eventId));
 	}
 
 	public static Result setDates(Long eventId) {
@@ -63,8 +63,7 @@ public class CreateEvent extends Controller {
 		}
 		EventService.saveDates(eventId, dates);
 		info("Event successfully created.");
-		return CreatePoll.confirmCreation(EventService.getEvent(eventId).poll
-				.bindId());
+		return redirect(routes.CreatePoll.confirmCreation(EventService
+				.getEvent(eventId).poll.bindId()));
 	}
-
 }

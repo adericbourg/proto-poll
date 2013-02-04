@@ -80,7 +80,7 @@ public class AnswerPoll extends Controller {
 					pollComment.username);
 		}
 
-		return viewPoll(id);
+		return redirect(routes.AnswerPoll.viewPoll(id));
 	}
 
 	static Html getEventViewContent(UUID uuid) {

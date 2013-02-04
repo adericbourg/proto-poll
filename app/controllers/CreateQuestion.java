@@ -42,12 +42,12 @@ public class CreateQuestion extends Controller {
 
 		if (filledForm.hasErrors()) {
 			// Error handling.
-			return invalidForm(questionNew.render(QUESTION_FORM));
+			return invalidForm(questionNew.render(filledForm));
 		}
 
 		Question question = filledForm.get();
 		Long questionId = QuestionService.createQuestion(question).id;
-		return setChoices(questionId);
+		return redirect(routes.CreateQuestion.setChoices(questionId));
 	}
 
 	public static Result setChoices(Long questionId) {
@@ -71,9 +71,8 @@ public class CreateQuestion extends Controller {
 		}
 		QuestionService.saveChoices(questionId, choices);
 		info("Question successfully created.");
-		return CreatePoll.confirmCreation(QuestionService
-				.getQuestion(questionId).poll.bindId());
-
+		return redirect(routes.CreatePoll.confirmCreation(QuestionService
+				.getQuestion(questionId).poll.bindId()));
 	}
 
 	private static int extractSortOrder(String key) {

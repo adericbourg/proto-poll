@@ -54,7 +54,7 @@ public class AnswerQuestion extends Controller {
 			}
 		}
 		info("Thank you for answering!");
-		return ok(AnswerPoll.getQuestionViewContent(uuid));
+		return redirect(routes.AnswerPoll.viewPoll(uuidBinded));
 	}
 
 	private static boolean isUsername(String key) {

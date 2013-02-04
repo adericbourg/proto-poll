@@ -60,7 +60,7 @@ public class Authentication extends Controller {
 
 		// Redirect to home page.
 		info("Welcome " + user.username + "! Thank you for your registration.");
-		return Application.index();
+		return redirect(routes.Application.index());
 	}
 
 	private static User getUserFromRegistration(Registration registration) {
@@ -98,7 +98,7 @@ public class Authentication extends Controller {
 
 		// Redirect to main page.
 		info("Welcome " + user.username + "!");
-		return Application.index();
+		return redirect(routes.Application.index());
 	}
 
 	public static Result logout() {

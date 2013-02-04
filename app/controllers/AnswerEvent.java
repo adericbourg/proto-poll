@@ -48,7 +48,7 @@ public class AnswerEvent extends Controller {
 			}
 		}
 		info("Thank you for answering!");
-		return ok(AnswerPoll.getEventViewContent(uuid));
+		return redirect(routes.AnswerPoll.viewPoll(id));
 	}
 
 	private static boolean isUsername(String key) {

@@ -53,7 +53,7 @@ public class UserSettings extends Controller {
 		}
 		UserService
 				.updateUserProfile(getUserFromUserProfile(formProfile.get()));
-		return profile();
+		return redirect(routes.UserSettings.profile());
 	}
 
 	private static User getUserFromUserProfile(UserProfile profile) {
@@ -99,7 +99,7 @@ public class UserSettings extends Controller {
 			warning("New password is the same as the old one. You might not want to do that.");
 		}
 		info("Password changed successfully");
-		return profile();
+		return redirect(routes.UserSettings.profile());
 	}
 
 	private static Form<UserProfile> getFormProfile() {
