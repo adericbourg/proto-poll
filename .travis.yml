@@ -1,4 +1,8 @@
 language: java # to trigger the build on a 'jvm-otp' travis worker
+jdk:
+  - oraclejdk7
+  - openjdk6
+  - openjdk7
 env:
   - PLAY_VERSION=2.0.4
 before_script:
