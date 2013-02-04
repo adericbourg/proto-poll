@@ -13,6 +13,7 @@ import models.EventAnswerDetail;
 import models.EventChoice;
 import models.User;
 import play.db.ebean.Model.Finder;
+import scala.Option;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
 
@@ -60,17 +61,17 @@ public class EventService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerEvent(user, uuid, choiceIds);
+		answerEvent(Option.apply(user), uuid, choiceIds);
 	}
 
-	private static void answerEvent(User user, UUID uuid,
+	private static void answerEvent(Option<User> user, UUID uuid,
 			Collection<Long> choiceIds) {
-		if (user == null) {
+		if (user.isEmpty()) {
 			throw new RuntimeException("User cannot be null");
 		}
 
 		Event event = PollService.getEvent(uuid);
-		EventAnswer answer = getOrCreateAnswer(user, event);
+		EventAnswer answer = getOrCreateAnswer(user.get(), event);
 
 		// Clear all previous answers.
 		for (EventAnswerDetail detail : answer.details) {

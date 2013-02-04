@@ -8,6 +8,7 @@ import models.User;
 import play.cache.Cache;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
+import scala.Option;
 import services.UserService;
 
 public final class SessionUtil {
@@ -27,17 +28,20 @@ public final class SessionUtil {
 		Cache.set(USERNAME.getKey(), user);
 	}
 
-	public static User currentUser() {
+	public static Option<User> currentUser() {
 		if (!isAuthenticated()) {
-			return null;
+			return Option.empty();
 		}
 
+		Option<User> optUser;
 		User user = (User) Cache.get(USERNAME.getKey());
 		if (user == null) {
-			user = UserService.findByUsername(getSessionParameter(USERNAME));
-			Cache.set(USERNAME.getKey(), user);
+			optUser = UserService.findByUsername(getSessionParameter(USERNAME));
+			Cache.set(USERNAME.getKey(), optUser.get());
+		} else {
+			optUser = Option.apply(user);
 		}
-		return user;
+		return optUser;
 	}
 
 	public static void clear() {

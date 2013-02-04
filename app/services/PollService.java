@@ -66,7 +66,9 @@ public class PollService {
 	}
 
 	private static Poll initPoll(Poll poll) {
-		poll.userCreator = SessionUtil.currentUser();
+		if (SessionUtil.currentUser().isDefined()) {
+			poll.userCreator = SessionUtil.currentUser().get();
+		}
 		poll.creationDate = DateTime.now();
 		poll.save();
 		return poll;
@@ -77,12 +79,16 @@ public class PollService {
 			throw new NoAuthenfiedUserInSessionException();
 		}
 		return POLL_FINDER.where()
-				.eq("userCreator.id", SessionUtil.currentUser().id)
+				.eq("userCreator.id", SessionUtil.currentUser().get().id)
 				.orderBy("creationDate DESC").findList();
 	}
 
 	public static void postComment(UUID id, String comment) {
-		postComment(id, comment, SessionUtil.currentUser());
+		if (SessionUtil.currentUser().isDefined()) {
+			postComment(id, comment, SessionUtil.currentUser().get());
+		} else {
+			throw new NoAuthenfiedUserInSessionException();
+		}
 	}
 
 	public static void postComment(UUID id, String comment, String username) {

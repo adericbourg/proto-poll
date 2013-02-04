@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import scala.Option;
 import util.security.SessionUtil;
 
 /**
@@ -62,18 +63,18 @@ public class PollResults {
 
 	public boolean isAlreadyAnswered() {
 		if (alreadyAnswered == null) {
-			User user = SessionUtil.currentUser();
-			if (user == null) {
+			Option<User> user = SessionUtil.currentUser();
+			if (user.isEmpty()) {
 				alreadyAnswered = false;
 			} else {
-				alreadyAnswered = results.containsKey(user.username);
+				alreadyAnswered = results.containsKey(user.get().username);
 			}
 		}
 		return alreadyAnswered.booleanValue();
 	}
 
-	public User getUser(String username) {
-		return users.get(username);
+	public Option<User> getUser(String username) {
+		return Option.apply(users.get(username));
 	}
 
 	private void findMaxValue() {

@@ -1,4 +1,4 @@
-@(user: User, question: Question, results: PollResults, formComment: Form[AnswerPoll.PollComment])
+@(user: Option[User], question: Question, results: PollResults, formComment: Form[AnswerPoll.PollComment])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -52,9 +52,9 @@
 			</thead>
 			<tbody>
 				@for(username <- results.usernames) {
-					@if(user != null && username.equals(user.username)) {
+					@if(user.isDefined && username.equals(user.get.username)) {
 						<tr>
-							<td class="username">@tags.gravatar(user, 24) @user.username</td>
+							<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
 							@for(choice <- question.choices) {
 								@answerInput(choice, username, results, question.singleAnswer)
 							}
@@ -84,15 +84,15 @@
 						</td>
 					}
 				</tr>
-				@if(user != null && !results.isAlreadyAnswered()) {
+				@if(user.isDefined && !results.isAlreadyAnswered()) {
 					<tr class="info">
-						<td class="username">@tags.gravatar(user, 24) @user.username</td>
+						<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
 						@for(choice <- question.choices) {
-							@answerInput(choice, user.username, results, question.singleAnswer)
+							@answerInput(choice, user.get.username, results, question.singleAnswer)
 						}
 					</tr>
 				}
-				@if(user == null) {
+				@if(user.isEmpty) {
 					<tr class="info">
 						<td class="username">
 							<input name="username" placeholder="Your name"/>

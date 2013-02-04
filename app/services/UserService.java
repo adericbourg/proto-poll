@@ -1,6 +1,7 @@
 package services;
 
 import models.User;
+import scala.Option;
 import services.exception.AlreadyRegisteredUser;
 import services.exception.NoAuthenfiedUserInSessionException;
 import ui.tags.Messages;
@@ -27,7 +28,7 @@ public final class UserService {
 		if (user.id != null) {
 			throw new IllegalArgumentException("user already has an id");
 		}
-		if (findByUsername(user.username) != null) {
+		if (findByUsername(user.username).isDefined()) {
 			throw new AlreadyRegisteredUser(user.username);
 		}
 		user.registered = true;
@@ -35,10 +36,7 @@ public final class UserService {
 	}
 
 	public static void updateUserProfile(User user) {
-		User currentUser = SessionUtil.currentUser();
-		if (currentUser == null) {
-			throw new NoAuthenfiedUserInSessionException();
-		}
+		User currentUser = getCheckedCurrentUser();
 		currentUser.email = user.email;
 		currentUser.displayName = user.displayName;
 		currentUser.save();
@@ -47,7 +45,7 @@ public final class UserService {
 
 	public static boolean updateUserPassword(String oldPassword,
 			String newPassword) {
-		User currentUser = SessionUtil.currentUser();
+		User currentUser = getCheckedCurrentUser();
 
 		if (!currentUser.passwordHash.equals(PasswordUtil.hashPassword(
 				currentUser.username, oldPassword))) {
@@ -61,7 +59,7 @@ public final class UserService {
 		return true;
 	}
 
-	public static User authenticate(String login, String password) {
+	public static Option<User> authenticate(String login, String password) {
 		String trimmedLogin = login.trim();
 		ExpressionList<User> el = Ebean
 				.find(User.class)
@@ -70,19 +68,19 @@ public final class UserService {
 				.ieq("password_hash",
 						PasswordUtil.hashPassword(login, password));
 		if (el.findRowCount() == 0) {
-			return null;
+			return Option.empty();
 		}
-		return el.findUnique();
+		return Option.apply(el.findUnique());
 	}
 
-	public static User findByUsername(String name) {
+	public static Option<User> findByUsername(String name) {
 		String trimmedUsername = name.trim();
 		ExpressionList<User> el = Ebean.find(User.class).where()
 				.ieq("username", trimmedUsername).ieq("registered", "true");
 		if (el.findRowCount() == 0) {
-			return null;
+			return Option.empty();
 		}
-		return el.findUnique();
+		return Option.apply(el.findUnique());
 	}
 
 	public static User registerAnonymousUser(String name) {
@@ -91,5 +89,13 @@ public final class UserService {
 		user.registered = false;
 		user.save();
 		return user;
+	}
+
+	private static User getCheckedCurrentUser() {
+		Option<User> currentUser = SessionUtil.currentUser();
+		if (currentUser.isEmpty()) {
+			throw new NoAuthenfiedUserInSessionException();
+		}
+		return currentUser.get();
 	}
 }

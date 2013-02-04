@@ -1,7 +1,7 @@
-@(user: User, size: Int)
+@(user: Option[User], size: Int)
 
 @import ui.util.UIUtil;
 
-@if(user.email != null) {
+@if(user.isDefined && user.get.email != null) {
 	<img src="@UIUtil.getGravatarUrl(user, size)" />
 }

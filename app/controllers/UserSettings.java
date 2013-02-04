@@ -9,7 +9,9 @@ import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import scala.Option;
 import services.UserService;
+import services.exception.NoAuthenfiedUserInSessionException;
 import util.security.SessionUtil;
 import views.html.userProfile;
 
@@ -101,8 +103,12 @@ public class UserSettings extends Controller {
 	}
 
 	private static Form<UserProfile> getFormProfile() {
-		User currentUser = SessionUtil.currentUser();
+		Option<User> optUser = SessionUtil.currentUser();
+		if (optUser.isEmpty()) {
+			throw new NoAuthenfiedUserInSessionException();
+		}
 
+		User currentUser = optUser.get();
 		UserProfile userProfileData = new UserProfile();
 		userProfileData.displayName = currentUser.displayName;
 		userProfileData.email = currentUser.email;

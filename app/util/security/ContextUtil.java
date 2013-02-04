@@ -2,6 +2,7 @@ package util.security;
 
 import models.User;
 import play.mvc.Http.Context;
+import scala.Option;
 import services.UserService;
 
 public final class ContextUtil {
@@ -9,13 +10,13 @@ public final class ContextUtil {
 		throw new AssertionError();
 	}
 
-	public static User getCurrentUser(Context context) {
+	public static Option<User> getCurrentUser(Context context) {
 		if (context == null) {
 			return null;
 		}
 		Context.current.set(context);
 		if (!context.session().containsKey(SessionParameters.USERNAME.getKey())) {
-			return null;
+			return Option.empty();
 		}
 		return UserService.findByUsername(context.session().get(
 				SessionParameters.USERNAME.getKey()));

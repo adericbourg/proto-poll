@@ -2,6 +2,7 @@ package ui.util;
 
 import models.User;
 import play.Play;
+import scala.Option;
 import util.security.SessionUtil;
 
 import com.google.common.base.Strings;
@@ -28,14 +29,20 @@ public final class UIUtil {
 		if (!SessionUtil.isAuthenticated()) {
 			return false;
 		}
-		return !Strings.isNullOrEmpty(SessionUtil.currentUser().email);
+		if (SessionUtil.currentUser().isEmpty()) {
+			return false;
+		}
+		return !Strings.isNullOrEmpty(SessionUtil.currentUser().get().email);
 	}
 
-	public static String getGravatarUrl(User user, int size) {
+	public static String getGravatarUrl(Option<User> user, int size) {
+		if (user.isEmpty()) {
+			return null;
+		}
 		return String.format(
 				Play.application().configuration()
 						.getString(GRAVATAR_PICTURE_URL),
-				MD5HexUtil.md5Hex(user.email), size);
+				MD5HexUtil.md5Hex(user.get().email), size);
 	}
 
 	public static String getGravatarUrl() {

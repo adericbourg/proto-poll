@@ -4,10 +4,12 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import models.User;
 
 import org.junit.Test;
 
+import scala.Option;
 import services.exception.AlreadyRegisteredUser;
 import util.security.PasswordUtil;
 
@@ -51,12 +53,13 @@ public class UserServiceTest extends ProtoPollTest {
 		UserService.registerUser(user);
 
 		// Act.
-		User foundUser = UserService.findByUsername(user.username);
+		Option<User> foundUser = UserService.findByUsername(user.username);
 
 		// Assert.
 		assertNotNull(foundUser);
-		assertEquals(DUMMY_USERNAME, foundUser.username);
-		assertEquals(user.id, foundUser.id);
+		assertTrue(foundUser.isDefined());
+		assertEquals(DUMMY_USERNAME, foundUser.get().username);
+		assertEquals(user.id, foundUser.get().id);
 	}
 
 	@Test
@@ -65,10 +68,11 @@ public class UserServiceTest extends ProtoPollTest {
 		User user = UserService.registerAnonymousUser(DUMMY_USERNAME);
 
 		// Act.
-		User foundUser = UserService.findByUsername(user.username);
+		Option<User> foundUser = UserService.findByUsername(user.username);
 
 		// Assert.
-		assertNull(foundUser);
+		assertNotNull(foundUser);
+		assertTrue(foundUser.isEmpty());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -105,18 +109,20 @@ public class UserServiceTest extends ProtoPollTest {
 		UserService.registerUser(user);
 
 		// Act.
-		User authentifiedUser = UserService.authenticate(DUMMY_USERNAME,
-				DUMMY_PASSWORD);
+		Option<User> authentifiedUser = UserService.authenticate(
+				DUMMY_USERNAME, DUMMY_PASSWORD);
 
 		// Assert.
 		assertNotNull(authentifiedUser);
-		assertEquals(user.id, authentifiedUser.id);
+		assertTrue(authentifiedUser.isDefined());
+		assertEquals(user.id, authentifiedUser.get().id);
 	}
 
 	@Test
 	public void testAuthenticateNonExistentUser() {
 		// Act.
-		User user = UserService.authenticate(DUMMY_USERNAME, DUMMY_PASSWORD);
+		Option<User> user = UserService.authenticate(DUMMY_USERNAME,
+				DUMMY_PASSWORD);
 
 		// Assert.
 		assertNull(user);

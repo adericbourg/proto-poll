@@ -1,4 +1,4 @@
-@(user: User, event: Event, results: PollResults, formComment: Form[AnswerPoll.PollComment])
+@(user: Option[User], event: Event, results: PollResults, formComment: Form[AnswerPoll.PollComment])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -47,9 +47,9 @@
 			</thead>
 			<tbody>
 				@for(username <- results.usernames) {
-					@if(user != null && username.equals(user.username)) {
+					@if(user.isDefined && username.equals(user.get.username)) {
 						<tr>
-							<td class="username">@tags.gravatar(user, 24) @user.username</td>
+							<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
 							@for(date <- event.dates) {
 								@answerInput(date, username, results, event.singleAnswer)
 							}
@@ -79,15 +79,15 @@
 						</td>
 					}
 				</tr>
-				@if(user != null && !results.isAlreadyAnswered()) {
+				@if(user.isDefined && !results.isAlreadyAnswered()) {
 					<tr class="info">
-						<td class="username">@tags.gravatar(user, 24) @user.username</td>
+						<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
 						@for(date <- event.dates) {
-							@answerInput(date, user.username, results, event.singleAnswer)
+							@answerInput(date, user.get.username, results, event.singleAnswer)
 						}
 					</tr>
 				}
-				@if(user == null) {
+				@if(user.isEmpty) {
 					<tr class="info">
 						<td class="username">
 							<input name="username" placeholder="Your name"/>
@@ -125,7 +125,7 @@
 	@helper.form(action = routes.AnswerPoll.comment(event.poll.bindId)) {
 		<fieldset>
 			<legend>Post comment</legend>
-			@if(user ==null) {
+			@if(user.isEmpty) {
 				@inputText(
 			       	formComment("username"), 
 			       	'_label -> "Your name",

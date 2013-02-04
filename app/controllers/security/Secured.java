@@ -1,21 +1,22 @@
 package controllers.security;
 
-import controllers.routes;
 import models.User;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
+import scala.Option;
 import util.security.ContextUtil;
+import controllers.routes;
 
 public class Secured extends Security.Authenticator {
 
 	@Override
 	public String getUsername(Context ctx) {
-		User user = ContextUtil.getCurrentUser(ctx);
-		if (user == null) {
+		Option<User> user = ContextUtil.getCurrentUser(ctx);
+		if (user.isEmpty()) {
 			return null;
 		}
-		return user.username;
+		return user.get().username;
 	}
 
 	@Override

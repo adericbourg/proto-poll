@@ -15,6 +15,7 @@ import models.QuestionAnswerDetail;
 import models.QuestionChoice;
 import models.User;
 import play.db.ebean.Model.Finder;
+import scala.Option;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
 
@@ -89,17 +90,17 @@ public class QuestionService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerQuestion(user, uuid, choiceIds);
+		answerQuestion(Option.apply(user), uuid, choiceIds);
 	}
 
-	private static void answerQuestion(User user, UUID uuid,
+	private static void answerQuestion(Option<User> user, UUID uuid,
 			Collection<Long> choiceIds) {
-		if (user == null) {
-			throw new RuntimeException("User cannot be null");
+		if (user.isEmpty()) {
+			throw new RuntimeException("User must be defined");
 		}
 
 		Question question = PollService.getQuestion(uuid);
-		QuestionAnswer answer = getOrCreateAnswer(user, question);
+		QuestionAnswer answer = getOrCreateAnswer(user.get(), question);
 
 		// Clear all previous answers.
 		for (QuestionAnswerDetail detail : answer.details) {

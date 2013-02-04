@@ -7,6 +7,7 @@ import play.data.Form;
 import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.Option;
 import services.UserService;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
@@ -83,13 +84,16 @@ public class Authentication extends Controller {
 		}
 
 		Login login = formLogin.get();
-		User user = UserService.authenticate(login.username, login.password);
-		if (user == null) {
+		Option<User> optUser = UserService.authenticate(login.username,
+				login.password);
+
+		if (optUser.isEmpty()) {
 			formLogin.reject("username", "User name and password do not match");
 			formLogin.reject("password", "");
 			return invalidForm(views.html.login.render(formLogin));
 		}
 
+		User user = optUser.get();
 		SessionUtil.setUser(user);
 
 		// Redirect to main page.
