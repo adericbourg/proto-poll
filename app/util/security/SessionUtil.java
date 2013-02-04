@@ -58,6 +58,8 @@ public final class SessionUtil {
 			return getCurrentSession().get(SESSION_KEY);
 		}
 
+		// Create new session.
+		getCurrentSession().clear();
 		String sessionId = UUID.randomUUID().toString();
 		getCurrentSession().put(SESSION_KEY, sessionId);
 		return sessionId();
