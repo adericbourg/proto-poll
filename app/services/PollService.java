@@ -23,7 +23,7 @@ public class PollService {
 			UUID.class, Poll.class);
 
 	public static List<Poll> polls() {
-		return Ebean.find(Poll.class).findList();
+		return Ebean.find(Poll.class).orderBy("creationDate DESC").findList();
 	}
 
 	public static List<Poll> listUserPolls() {
