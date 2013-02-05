@@ -27,7 +27,7 @@ public class PollService {
 	}
 
 	public static Poll getPoll(UUID id) {
-		return POLL_FINDER
+		Poll poll = POLL_FINDER
 				.fetch("userCreator")
 				// Question
 				.fetch("question").fetch("question.choices")
@@ -36,7 +36,16 @@ public class PollService {
 				.fetch("event").fetch("event.dates").fetch("event.answers")
 				.fetch("event.answers.details")
 				// Filter
-				.where().idEq(id).findUnique();
+				.orderBy("creationDate DESC").where().idEq(id).findUnique();
+		if (poll != null) {
+			if (poll.isEvent()) {
+				Ebean.sort(poll.event.dates, "date ASC");
+			}
+			if (poll.isQuestion()) {
+				Ebean.sort(poll.question.choices, "sortOrder ASC");
+			}
+		}
+		return poll;
 	}
 
 	public static Question getQuestion(UUID uuid) {
