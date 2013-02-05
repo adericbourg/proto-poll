@@ -6,7 +6,6 @@ import static ui.tags.Messages.info;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 
 import play.data.DynamicForm;
 import play.mvc.Controller;
@@ -22,8 +21,7 @@ public class AnswerEvent extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
 
-	public static Result answer(UuidBinder id) {
-		UUID uuid = id.uuid();
+	public static Result answer(UuidBinder uuid) {
 
 		DynamicForm form = form().bindFromRequest();
 		Set<Long> choices = new HashSet<Long>();
@@ -33,22 +31,22 @@ public class AnswerEvent extends Controller {
 			}
 		}
 		if (SessionUtil.isAuthenticated()) {
-			EventService.answerEvent(uuid, choices);
+			EventService.answerEvent(uuid.uuid(), choices);
 		} else {
 			String username = form.data().get(USERNAME_KEY);
 			if (Strings.isNullOrEmpty(username)) {
 				error("Choose a user name.");
-				return badRequest(AnswerPoll.getEventViewContent(uuid));
+				return badRequest(AnswerPoll.getEventViewContent(uuid.uuid()));
 			}
 			try {
-				EventService.answerEvent(username, uuid, choices);
+				EventService.answerEvent(username, uuid.uuid(), choices);
 			} catch (AnonymousUserAlreadyAnsweredPoll e) {
 				error("Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.");
-				return badRequest(AnswerPoll.getEventViewContent(uuid));
+				return badRequest(AnswerPoll.getEventViewContent(uuid.uuid()));
 			}
 		}
 		info("Thank you for answering!");
-		return redirect(routes.AnswerPoll.viewPoll(id));
+		return redirect(routes.AnswerPoll.viewPoll(uuid));
 	}
 
 	private static boolean isUsername(String key) {

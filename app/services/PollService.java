@@ -26,7 +26,16 @@ public class PollService {
 		return Ebean.find(Poll.class).findList();
 	}
 
-	public static Poll getPoll(UUID id) {
+	public static List<Poll> listUserPolls() {
+		if (!SessionUtil.isAuthenticated()) {
+			throw new NoAuthenfiedUserInSessionException();
+		}
+		return POLL_FINDER.where()
+				.eq("userCreator.id", SessionUtil.currentUser().get().id)
+				.orderBy("creationDate DESC").findList();
+	}
+
+	public static Poll getPoll(UUID uuid) {
 		Poll poll = POLL_FINDER
 				.fetch("userCreator")
 				// Question
@@ -36,7 +45,7 @@ public class PollService {
 				.fetch("event").fetch("event.dates").fetch("event.answers")
 				.fetch("event.answers.details")
 				// Filter
-				.orderBy("creationDate DESC").where().idEq(id).findUnique();
+				.orderBy("creationDate DESC").where().idEq(uuid).findUnique();
 		if (poll != null) {
 			Ebean.sort(poll.comments, "submitDate ASC");
 			if (poll.isEvent()) {
@@ -84,30 +93,22 @@ public class PollService {
 		return poll;
 	}
 
-	public static List<Poll> listUserPolls() {
-		if (!SessionUtil.isAuthenticated()) {
-			throw new NoAuthenfiedUserInSessionException();
-		}
-		return POLL_FINDER.where()
-				.eq("userCreator.id", SessionUtil.currentUser().get().id)
-				.orderBy("creationDate DESC").findList();
-	}
-
-	public static void postComment(UUID id, String comment) {
+	public static void postCommentRegistered(UUID uuid, String comment) {
 		if (SessionUtil.currentUser().isDefined()) {
-			postComment(id, comment, SessionUtil.currentUser().get());
+			postComment(uuid, comment, SessionUtil.currentUser().get());
 		} else {
 			throw new NoAuthenfiedUserInSessionException();
 		}
 	}
 
-	public static void postComment(UUID id, String comment, String username) {
+	public static void postCommentAnonymous(UUID uuid, String comment,
+			String username) {
 		User user = UserService.registerAnonymousUser(username);
-		postComment(id, comment, user);
+		postComment(uuid, comment, user);
 	}
 
-	private static void postComment(UUID pollId, String commentText, User user) {
-		Poll poll = getPoll(pollId);
+	private static void postComment(UUID uuid, String commentText, User user) {
+		Poll poll = getPoll(uuid);
 
 		Comment comment = new Comment();
 		comment.content = commentText;

@@ -39,8 +39,8 @@ public class Poll extends Model {
 	}
 
 	@Id
-	@Column(name = "id")
-	public UUID id;
+	@Column(name = "uuid")
+	public UUID uuid;
 
 	@Column(name = "creation_date", nullable = false)
 	public DateTime creationDate;
@@ -62,7 +62,7 @@ public class Poll extends Model {
 
 	@Transient
 	public UuidBinder bindId() {
-		return UuidBinder.create(id);
+		return UuidBinder.create(uuid);
 	}
 
 	// ---

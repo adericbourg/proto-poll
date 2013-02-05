@@ -33,8 +33,8 @@ public class AnswerPoll extends Controller {
 
 	static final Form<PollComment> FORM_COMMENT = form(PollComment.class);
 
-	public static Result viewPoll(UuidBinder id) {
-		UUID uuid = id.uuid();
+	public static Result viewPoll(UuidBinder uuidBinder) {
+		UUID uuid = uuidBinder.uuid();
 		Poll poll = PollService.getPoll(uuid);
 		if (poll.isEvent()) {
 			return ok(getEventViewContent(uuid));
@@ -46,8 +46,8 @@ public class AnswerPoll extends Controller {
 		}
 	}
 
-	public static Result viewPoll(UuidBinder id, Form<PollComment> formComment) {
-		UUID uuid = id.uuid();
+	public static Result viewPoll(UuidBinder uuidBinder, Form<PollComment> formComment) {
+		UUID uuid = uuidBinder.uuid();
 		Poll poll = PollService.getPoll(uuid);
 		if (poll.isEvent()) {
 			return badRequest(getEventViewContent(uuid, formComment));
@@ -59,28 +59,28 @@ public class AnswerPoll extends Controller {
 		}
 	}
 
-	public static Result comment(UuidBinder id) {
-		UUID uuid = id.uuid();
+	public static Result comment(UuidBinder uuidBinder) {
+		UUID uuid = uuidBinder.uuid();
 		Form<PollComment> submittedForm = FORM_COMMENT.bindFromRequest();
 
 		if (submittedForm.hasErrors()) {
-			return viewPoll(id, submittedForm);
+			return viewPoll(uuidBinder, submittedForm);
 		}
 
 		PollComment pollComment = submittedForm.get();
 
 		if (SessionUtil.isAuthenticated()) {
-			PollService.postComment(uuid, pollComment.comment);
+			PollService.postCommentRegistered(uuid, pollComment.comment);
 		} else {
 			if (Strings.isNullOrEmpty(pollComment.username)) {
 				submittedForm.reject("username", "Please fill your name");
-				return viewPoll(id, submittedForm);
+				return viewPoll(uuidBinder, submittedForm);
 			}
-			PollService.postComment(uuid, pollComment.comment,
+			PollService.postCommentAnonymous(uuid, pollComment.comment,
 					pollComment.username);
 		}
 
-		return redirect(routes.AnswerPoll.viewPoll(id));
+		return redirect(routes.AnswerPoll.viewPoll(uuidBinder));
 	}
 
 	static Html getEventViewContent(UUID uuid) {

@@ -10,8 +10,8 @@ import views.html.question.questionCreated;
 
 public class CreatePoll extends Controller {
 
-	public static Result confirmCreation(UuidBinder id) {
-		Poll poll = PollService.getPoll(id.uuid());
+	public static Result confirmCreation(UuidBinder uuidBinder) {
+		Poll poll = PollService.getPoll(uuidBinder.uuid());
 		Result result;
 		if (poll == null) {
 			result = notFound();

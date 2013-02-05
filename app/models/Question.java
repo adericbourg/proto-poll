@@ -61,7 +61,7 @@ public class Question extends Model {
 
 	@Transient
 	public UUID uuid() {
-		return poll == null ? null : poll.id;
+		return poll == null ? null : poll.uuid;
 	}
 
 	@Transient
