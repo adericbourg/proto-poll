@@ -25,10 +25,10 @@ public class EventService {
 	private static final Finder<Long, Event> EVENT_FINDER = new Finder<Long, Event>(
 			Long.class, Event.class);
 
-	public static Long createEvent(Event event) {
+	public static Event createEvent(Event event) {
 		event.save();
 		PollService.initPoll(event);
-		return event.id;
+		return event;
 	}
 
 	public static Event getEvent(Long id) {
@@ -37,8 +37,8 @@ public class EventService {
 				.eq("id", id).findUnique();
 	}
 
-	public static void saveDates(Long eventId, Collection<EventChoice> dates) {
-		Event event = getEvent(eventId);
+	public static void saveDates(UUID uuid, Collection<EventChoice> dates) {
+		Event event = PollService.getEvent(uuid);
 		event.dates = new ArrayList<EventChoice>(dates);
 		event.save();
 	}

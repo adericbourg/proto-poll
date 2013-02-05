@@ -66,7 +66,7 @@ public class EventServiceTest extends ProtoPollTest {
 		dates.add(date2);
 
 		// Act.
-		EventService.saveDates(event.id, dates);
+		EventService.saveDates(event.poll.id, dates);
 
 		// Assert.
 		final Event loadedEvent = EventService.getEvent(event.id);

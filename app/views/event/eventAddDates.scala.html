@@ -11,7 +11,7 @@
 
 @main("Add dates", scripts) {
 	
-	@helper.form(action = routes.CreateEvent.saveDates(event.id)) {
+	@helper.form(action = routes.CreateEvent.saveDates(event.bindId)) {
 		<div class="header">
 			<h1>@event.title</h1>
 			<blockquote>

@@ -17,6 +17,8 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.EventService;
+import services.PollService;
+import util.binders.UuidBinder;
 import views.html.event.eventAddDates;
 import views.html.event.eventNew;
 
@@ -39,16 +41,16 @@ public class CreateEvent extends Controller {
 		}
 
 		Event event = filledForm.get();
-		Long eventId = EventService.createEvent(event);
-		return redirect(routes.CreateEvent.setDates(eventId));
+		event = EventService.createEvent(event);
+		return redirect(routes.CreateEvent.setDates(event.bindId()));
 	}
 
-	public static Result setDates(Long eventId) {
-		Event event = EventService.getEvent(eventId);
+	public static Result setDates(UuidBinder uuid) {
+		Event event = PollService.getEvent(uuid.uuid());
 		return ok(eventAddDates.render(event, FORM_EVENT));
 	}
 
-	public static Result saveDates(Long eventId) {
+	public static Result saveDates(UuidBinder uuid) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		EventChoice date;
 		List<EventChoice> dates = new ArrayList<EventChoice>();
@@ -61,9 +63,8 @@ public class CreateEvent extends Controller {
 				dates.add(date);
 			}
 		}
-		EventService.saveDates(eventId, dates);
+		EventService.saveDates(uuid.uuid(), dates);
 		info("Event successfully created.");
-		return redirect(routes.CreatePoll.confirmCreation(EventService
-				.getEvent(eventId).poll.bindId()));
+		return redirect(routes.CreatePoll.confirmCreation(uuid));
 	}
 }

@@ -11,7 +11,7 @@
 }
 
 @main("Add choices") {
-    @helper.form(action = routes.CreateQuestion.saveChoices(question.id)) {
+    @helper.form(action = routes.CreateQuestion.saveChoices(question.bindId)) {
 		<div class="header">
 			<h1>@question.title</h1>
 			<blockquote>

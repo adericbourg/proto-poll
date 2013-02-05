@@ -74,7 +74,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 		choices.add(choice2);
 
 		// Act.
-		QuestionService.saveChoices(question.id, choices);
+		QuestionService.saveChoices(question.poll.id, choices);
 
 		// Assert.
 		final Question loadedQuestion = QuestionService
@@ -123,7 +123,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 			choice.question = question;
 			choices.add(choice);
 		}
-		QuestionService.saveChoices(question.id, choices);
+		QuestionService.saveChoices(question.poll.id, choices);
 		return QuestionService.getQuestion(question.id);
 	}
 }

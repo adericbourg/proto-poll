@@ -35,7 +35,7 @@
 
 	@tags.pollHeader(event.poll, true)
 	
-	@helper.form(action = routes.AnswerEvent.answer(event.poll.bindId)) {
+	@helper.form(action = routes.AnswerEvent.answer(event.bindId)) {
 		<table class="table table-bordered table-hover table-condensed poll-results">
 			<thead>
 			<tr>
@@ -122,7 +122,7 @@
 		</div>
 	}
 	
-	@helper.form(action = routes.AnswerPoll.comment(event.poll.bindId)) {
+	@helper.form(action = routes.AnswerPoll.comment(event.bindId)) {
 		<fieldset>
 			<legend>Post comment</legend>
 			@if(user.isEmpty) {
@@ -142,7 +142,7 @@
 	        
 	        <div class="actions">
 	        	<input type="submit" class="btn btn-primary" value="Post">
-	            <a href="@routes.AnswerPoll.viewPoll(event.poll.bindId)" class="btn btn-link">Cancel</a>
+	            <a href="@routes.AnswerPoll.viewPoll(event.bindId)" class="btn btn-link">Cancel</a>
 	        </div>
 		</fieldset>
 	}

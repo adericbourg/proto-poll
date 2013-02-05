@@ -20,8 +20,8 @@ POST	/user/update/security		controllers.UserSettings.updatePassword()
 # Create questions
 GET     /question/new               controllers.CreateQuestion.newQuestion()
 POST    /question/new               controllers.CreateQuestion.createQuestion()
-GET		/question/addChoices/:id	controllers.CreateQuestion.setChoices(id: Long)
-POST	/question/addChoices/:id	controllers.CreateQuestion.saveChoices(id: Long)
+GET		/question/addChoices/:uuid	controllers.CreateQuestion.setChoices(uuid: util.binders.UuidBinder)
+POST	/question/addChoices/:uuid	controllers.CreateQuestion.saveChoices(uuid: util.binders.UuidBinder)
 
 # Answer question
 POST	/question/:uuid				controllers.AnswerQuestion.answer(uuid: util.binders.UuidBinder)
@@ -29,8 +29,8 @@ POST	/question/:uuid				controllers.AnswerQuestion.answer(uuid: util.binders.Uui
 #Create events
 GET		/event/new					controllers.CreateEvent.newEvent()
 POST	/event/new					controllers.CreateEvent.createEvent()
-GET		/event/dates/:id			controllers.CreateEvent.setDates(id: Long)
-POST	/event/dates/:id			controllers.CreateEvent.saveDates(id: Long)
+GET		/event/dates/:uuid			controllers.CreateEvent.setDates(uuid: util.binders.UuidBinder)
+POST	/event/dates/:uuid			controllers.CreateEvent.saveDates(uuid: util.binders.UuidBinder)
 
 # Answer event
 POST	/event/:uuid				controllers.AnswerEvent.answer(uuid: util.binders.UuidBinder)

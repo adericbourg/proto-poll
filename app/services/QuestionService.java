@@ -44,9 +44,9 @@ public class QuestionService {
 		return question;
 	}
 
-	public static void saveChoices(Long questionId, List<QuestionChoice> choices) {
+	public static void saveChoices(UUID uuid, List<QuestionChoice> choices) {
 		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(choices);
-		Question question = getQuestion(questionId);
+		Question question = PollService.getQuestion(uuid);
 		question.choices = deduplicatedChoices;
 		question.save();
 	}

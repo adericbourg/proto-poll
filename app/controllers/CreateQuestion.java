@@ -15,7 +15,9 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import services.PollService;
 import services.QuestionService;
+import util.binders.UuidBinder;
 import views.html.question.questionAddChoices;
 import views.html.question.questionNew;
 
@@ -46,16 +48,17 @@ public class CreateQuestion extends Controller {
 		}
 
 		Question question = filledForm.get();
-		Long questionId = QuestionService.createQuestion(question).id;
-		return redirect(routes.CreateQuestion.setChoices(questionId));
+		question = QuestionService.createQuestion(question);
+		return redirect(routes.CreateQuestion
+				.setChoices(question.poll.bindId()));
 	}
 
-	public static Result setChoices(Long questionId) {
-		Question question = QuestionService.getQuestion(questionId);
+	public static Result setChoices(UuidBinder uuid) {
+		Question question = PollService.getQuestion(uuid.uuid());
 		return ok(questionAddChoices.render(question, QUESTION_FORM));
 	}
 
-	public static Result saveChoices(Long questionId) {
+	public static Result saveChoices(UuidBinder uuid) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		QuestionChoice choice;
 		List<QuestionChoice> choices = new ArrayList<QuestionChoice>();
@@ -69,10 +72,9 @@ public class CreateQuestion extends Controller {
 				choices.add(choice);
 			}
 		}
-		QuestionService.saveChoices(questionId, choices);
+		QuestionService.saveChoices(uuid.uuid(), choices);
 		info("Question successfully created.");
-		return redirect(routes.CreatePoll.confirmCreation(QuestionService
-				.getQuestion(questionId).poll.bindId()));
+		return redirect(routes.CreatePoll.confirmCreation(uuid));
 	}
 
 	private static int extractSortOrder(String key) {

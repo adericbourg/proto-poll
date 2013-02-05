@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import util.binders.UuidBinder;
 
 import com.google.common.base.Strings;
 
@@ -56,6 +57,11 @@ public class Question extends Model {
 	public Poll poll;
 
 	// ---
+
+	@Transient
+	public UuidBinder bindId() {
+		return poll == null ? null : poll.bindId();
+	}
 
 	@Transient
 	public final boolean hasDescription() {
