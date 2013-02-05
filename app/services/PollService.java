@@ -38,6 +38,7 @@ public class PollService {
 				// Filter
 				.orderBy("creationDate DESC").where().idEq(id).findUnique();
 		if (poll != null) {
+			Ebean.sort(poll.comments, "submitDate ASC");
 			if (poll.isEvent()) {
 				Ebean.sort(poll.event.dates, "date ASC");
 			}
