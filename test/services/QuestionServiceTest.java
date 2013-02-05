@@ -29,8 +29,8 @@ public class QuestionServiceTest extends ProtoPollTest {
 		final Question question = createQuestion();
 
 		// Assert.
-		final Question loadedQuestion = QuestionService
-				.getQuestion(question.id);
+		final Question loadedQuestion = PollService
+				.getQuestion(question.uuid());
 		assertNotNull(loadedQuestion);
 		assertNotNull(question.poll);
 		assertNull(loadedQuestion.poll.userCreator);
@@ -47,8 +47,8 @@ public class QuestionServiceTest extends ProtoPollTest {
 		final Question question = createQuestion();
 
 		// Assert.
-		final Question loadedQuestion = QuestionService
-				.getQuestion(question.id);
+		final Question loadedQuestion = PollService
+				.getQuestion(question.uuid());
 		assertNotNull("id", loadedQuestion.id);
 		assertNotNull("poll", loadedQuestion.poll);
 		assertNotNull("user", loadedQuestion.poll.userCreator);
@@ -74,11 +74,11 @@ public class QuestionServiceTest extends ProtoPollTest {
 		choices.add(choice2);
 
 		// Act.
-		QuestionService.saveChoices(question.poll.id, choices);
+		QuestionService.saveChoices(question.uuid(), choices);
 
 		// Assert.
-		final Question loadedQuestion = QuestionService
-				.getQuestion(question.id);
+		final Question loadedQuestion = PollService
+				.getQuestion(question.uuid());
 		assertEquals(choices.size(), loadedQuestion.choices.size());
 		assertEquals(choices.get(0).label, loadedQuestion.choices.get(1).label);
 		assertEquals(choices.get(1).label, loadedQuestion.choices.get(0).label);
@@ -94,11 +94,11 @@ public class QuestionServiceTest extends ProtoPollTest {
 		choiceIds.add(question.choices.get(0).id);
 
 		// Act.
-		QuestionService.answerQuestionAnonymous("test user", question.poll.id,
+		QuestionService.answerQuestionAnonymous("test user", question.uuid(),
 				choiceIds);
 
 		// Assert.
-		Question reloadedQuestion = QuestionService.getQuestion(question.id);
+		Question reloadedQuestion = PollService.getQuestion(question.uuid());
 		assertEquals("answer count", 1, reloadedQuestion.answers.size());
 		assertEquals(choiceIds.size(),
 				reloadedQuestion.answers.get(0).details.size());
@@ -123,7 +123,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 			choice.question = question;
 			choices.add(choice);
 		}
-		QuestionService.saveChoices(question.poll.id, choices);
-		return QuestionService.getQuestion(question.id);
+		QuestionService.saveChoices(question.uuid(), choices);
+		return PollService.getQuestion(question.uuid());
 	}
 }

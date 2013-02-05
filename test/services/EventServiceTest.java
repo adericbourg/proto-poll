@@ -25,7 +25,7 @@ public class EventServiceTest extends ProtoPollTest {
 		final Event event = createEvent();
 
 		// Assert.
-		final Event loadedEvent = EventService.getEvent(event.id);
+		final Event loadedEvent = PollService.getEvent(event.uuid());
 		assertNotNull(loadedEvent);
 		assertNotNull(event.poll);
 		assertNull(loadedEvent.poll.userCreator);
@@ -42,7 +42,7 @@ public class EventServiceTest extends ProtoPollTest {
 		final Event event = createEvent();
 
 		// Assert.
-		final Event loadedEvent = EventService.getEvent(event.id);
+		final Event loadedEvent = PollService.getEvent(event.uuid());
 		assertNotNull("id", loadedEvent.id);
 		assertNotNull("poll", loadedEvent.poll);
 		assertNotNull("user", loadedEvent.poll.userCreator);
@@ -66,10 +66,10 @@ public class EventServiceTest extends ProtoPollTest {
 		dates.add(date2);
 
 		// Act.
-		EventService.saveDates(event.poll.id, dates);
+		EventService.saveDates(event.uuid(), dates);
 
 		// Assert.
-		final Event loadedEvent = EventService.getEvent(event.id);
+		final Event loadedEvent = PollService.getEvent(event.uuid());
 		assertEquals(dates.size(), loadedEvent.dates.size());
 	}
 

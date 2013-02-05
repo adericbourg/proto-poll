@@ -14,7 +14,6 @@ import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
 import models.QuestionChoice;
 import models.User;
-import play.db.ebean.Model.Finder;
 import scala.Option;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
@@ -29,9 +28,6 @@ import com.avaje.ebean.ExpressionList;
  * 
  */
 public class QuestionService {
-
-	private static final Finder<Long, Question> QUESTION_FINDER = new Finder<Long, Question>(
-			Long.class, Question.class);
 
 	private QuestionService() {
 		// No instance.
@@ -62,12 +58,6 @@ public class QuestionService {
 			}
 		}
 		return deduplicated;
-	}
-
-	public static Question getQuestion(Long questionId) {
-		return QUESTION_FINDER.fetch("poll.userCreator").fetch("poll.question")
-				.fetch("poll.comments").fetch("poll.comments.user").where()
-				.eq("id", questionId).findUnique();
 	}
 
 	public static void answerQuestionAuthenticated(UUID uuid,

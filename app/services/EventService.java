@@ -12,7 +12,6 @@ import models.EventAnswer;
 import models.EventAnswerDetail;
 import models.EventChoice;
 import models.User;
-import play.db.ebean.Model.Finder;
 import scala.Option;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
@@ -22,19 +21,10 @@ import com.avaje.ebean.ExpressionList;
 
 public class EventService {
 
-	private static final Finder<Long, Event> EVENT_FINDER = new Finder<Long, Event>(
-			Long.class, Event.class);
-
 	public static Event createEvent(Event event) {
 		event.save();
 		PollService.initPoll(event);
 		return event;
-	}
-
-	public static Event getEvent(Long id) {
-		return EVENT_FINDER.fetch("poll.userCreator").fetch("poll.event")
-				.fetch("poll.comments").fetch("poll.comments.user").where()
-				.eq("id", id).findUnique();
 	}
 
 	public static void saveDates(UUID uuid, Collection<EventChoice> dates) {

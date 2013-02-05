@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,6 +52,11 @@ public class Event extends Model {
 	public Poll poll;
 
 	// ---
+
+	@Transient
+	public UUID uuid() {
+		return poll == null ? null : poll.id;
+	}
 
 	@Transient
 	public UuidBinder bindId() {
