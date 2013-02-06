@@ -13,7 +13,7 @@ public class UserManagement {
 
 	public static Html getUserDisplay() {
 		Option<User> user = SessionUtil.currentUser();
-		return user.isDefined() ? new Html(user.get().getDisplay()) : new Html(
+		return user.isDefined() ?  Html.apply(user.get().getDisplay()) : Html.apply(
 				"");
 	}
 
@@ -21,10 +21,10 @@ public class UserManagement {
 		Option<User> user = SessionUtil.currentUser();
 
 		if (user.isEmpty()) {
-			return new Html(
+			return Html.apply(
 					"<a class=\"btn btn-inverse btn-mini\" href=\"/login\">Login</a>");
 		}
-		return new Html(
+		return Html.apply(
 				user.get().getDisplay()
 						+ "<a class=\"btn btn-inverse btn-mini\" href=\"/logout\">Logout</a>");
 	}

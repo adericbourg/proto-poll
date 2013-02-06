@@ -1,5 +1,7 @@
 package controllers;
 
+import static play.data.Form.form;
+
 import java.util.UUID;
 
 import models.Event;
@@ -46,7 +48,8 @@ public class AnswerPoll extends Controller {
 		}
 	}
 
-	public static Result viewPoll(UuidBinder uuidBinder, Form<PollComment> formComment) {
+	public static Result viewPoll(UuidBinder uuidBinder,
+			Form<PollComment> formComment) {
 		UUID uuid = uuidBinder.uuid();
 		Poll poll = PollService.getPoll(uuid);
 		if (poll.isEvent()) {

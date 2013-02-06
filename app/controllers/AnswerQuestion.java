@@ -1,5 +1,5 @@
 package controllers;
-
+import static play.data.Form.form;
 import static ui.tags.Messages.error;
 import static ui.tags.Messages.info;
 

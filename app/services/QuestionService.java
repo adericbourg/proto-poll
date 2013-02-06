@@ -14,11 +14,11 @@ import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
 import models.QuestionChoice;
 import models.User;
+import play.db.ebean.Model.Finder;
 import scala.Option;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 
 /**
@@ -28,6 +28,9 @@ import com.avaje.ebean.ExpressionList;
  * 
  */
 public class QuestionService {
+
+	private static final Finder<Long, QuestionAnswer> ANSWER_FINDER = new Finder<Long, QuestionAnswer>(
+			Long.class, QuestionAnswer.class);
 
 	private QuestionService() {
 		// No instance.
@@ -118,13 +121,13 @@ public class QuestionService {
 	}
 
 	private static QuestionAnswer getOrCreateAnswer(User user, Question question) {
-		ExpressionList<QuestionAnswer> el = Ebean.find(QuestionAnswer.class)
-				.fetch("details").where().eq("user.id", user.id)
-				.eq("question.id", question.id);
+		ExpressionList<QuestionAnswer> el = ANSWER_FINDER.fetch("details")
+				.where().eq("user.id", user.id).eq("question.id", question.id);
 		if (el.findRowCount() == 0) {
 			QuestionAnswer answer = new QuestionAnswer();
 			answer.user = user;
 			answer.question = question;
+			answer.details = new ArrayList<QuestionAnswerDetail>();
 			return answer;
 		}
 		return el.findUnique();

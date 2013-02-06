@@ -99,7 +99,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 
 		// Assert.
 		Question reloadedQuestion = PollService.getQuestion(question.uuid());
-		assertEquals("answer count", 1, reloadedQuestion.answers.size());
+		assertEquals(1, reloadedQuestion.answers.size());
 		assertEquals(choiceIds.size(),
 				reloadedQuestion.answers.get(0).details.size());
 		assertTrue(choiceIds.contains(reloadedQuestion.answers.get(0).details

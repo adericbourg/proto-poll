@@ -1,5 +1,6 @@
 package controllers;
 
+import static play.data.Form.form;
 import static ui.tags.Messages.info;
 import static ui.tags.MessagesHelper.invalidForm;
 
