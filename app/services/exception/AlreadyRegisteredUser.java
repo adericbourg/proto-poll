@@ -12,8 +12,7 @@ public class AlreadyRegisteredUser extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param username
-	 *            User name.
+	 * @param username User name.
 	 */
 	public AlreadyRegisteredUser(String username) {
 		super("User with that username already exists: " + username);
