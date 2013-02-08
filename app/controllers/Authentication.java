@@ -104,6 +104,6 @@ public class Authentication extends Controller {
 
 	public static Result logout() {
 		SessionUtil.clear();
-		return Application.index();
+		return redirect(routes.Application.index());
 	}
 }
