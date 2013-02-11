@@ -13,7 +13,7 @@
 </script>
 
 <div class="well">
-	<span class="control-label info">@Messages.resolve("sharepoll.info")</span><br/>
+	<span class="control-label info"><i class="icon-share"></i>&nbsp;@Messages.resolve("sharepoll.info")</span><br/>
 	<span class="input-append control-group info">
 		<input id="created-poll-url" class="poll_url inputInfo input-xlarge" type="text" value="@UIUtil.getFullUrl(routes.AnswerPoll.viewPoll(poll.bindId).url)" class="input-xlarge"/>
 		<a href="@UIUtil.getFullUrl(routes.AnswerPoll.viewPoll(poll.bindId).url)" class="btn" rel="Answer poll">@Messages.resolve("sharepoll.action.go")</a>
