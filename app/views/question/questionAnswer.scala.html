@@ -3,7 +3,6 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@import ui.util.UIUtil
 @import util.user.message.Messages
 
 @checkValue(choice: QuestionChoice, username: String, results: PollResults) = {
@@ -114,45 +113,8 @@
 			<input class="btn btn-primary btn-large" value="Submit" type="submit" />
 		}
 	}
-	
-	@if(question.poll.comments != null && !question.poll.comments.isEmpty) {
-		<div class="comments">
-			@for(comment <- question.poll.comments) {
-				<div class="comment well">
-					<div class="comment-header">
-						<span class="user">@comment.user.getDisplay</span>
-						<span class="date pull-right">@UIUtil.formatDateTime(comment.submitDate) @if(comment.lastEditDate != null) { (@Messages.resolve("poll.comments.last_edited", UIUtil.formatDateTime(comment.lastEditDate))) }</span>
-					</div>
-					<span class="comment-content">@comment.content</span>
-				</div>
-			}
-		</div>
-	}
-	
-	@helper.form(action = routes.AnswerPoll.comment(question.bindId)) {
-		<fieldset>
-			<legend>@Messages.resolve("poll.comments.legend")</legend>
-			@if(user ==null) {
-				@inputText(
-			       	formComment("username"), 
-			       	'_label -> Messages.resolve("poll.comments.field.username"),
-			       	'_showContraints -> false,
-			       	'class -> "input-xlarge"
-		        )
-			}
-			@textarea(
-	           	formComment("comment"), 
-	           	'_label -> Messages.resolve("poll.comments.field.comment"),
-	           	'_showContraints -> false,
-	           	'class -> "input-xlarge"
-	        )
-	        
-	        <div class="actions">
-	        	<input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.post")'>
-	            <a href="@routes.AnswerPoll.viewPoll(question.bindId)" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
-	        </div>
-		</fieldset>
-	}
+
+	@tags.comments(question.bindId, question.poll.comments, formComment)
 	
 	<script type="text/javascript">
         $('.answer').live('click', function(e) {

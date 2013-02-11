@@ -46,7 +46,6 @@ public final class UIUtil {
 	public static String formatDateTime(DateTime dateTime) {
 		DateTimeFormatter formatter;
 		String formatPattern = Messages.resolve(DATE_TIME_FORMAT_PARAMETER);
-		System.out.println(formatPattern);
 		if (Strings.isNullOrEmpty(formatPattern)) {
 			formatter = DateTimeFormat.mediumDate();
 		} else {
