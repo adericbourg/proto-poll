@@ -1,8 +1,9 @@
 @(polls: List[Poll])
 
 @import util.binders.UuidBinder;
+@import util.user.message.Messages
 
-@main("Polls") {
+@main(Messages.resolve("listpolls.name")) {
 	<ul class="none">
 	    @for(poll <- polls) {
 	        <li><a href="@routes.AnswerPoll.viewPoll(poll.bindId)" title="@poll.getDescription">@poll.getTitle</a></li>

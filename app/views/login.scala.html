@@ -3,10 +3,12 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("Login") {
+@import util.user.message.Messages
+
+@main(Messages.resolve("login.name")) {
 
 	<div class="well well-small">
-		Not registered? <a href="@routes.Authentication.register">Create account now!</a>
+		@Messages.resolve("login.not_registered_inter") <a href="@routes.Authentication.register">@Messages.resolve("login.create_account_suggestion")</a>
 	</div>
 
 	@helper.form(action = routes.Authentication.authenticate()) {
@@ -14,20 +16,20 @@
 			<legend>Sign in</legend>
 			@inputText(
 		       	loginForm("username"), 
-		       	'_label -> "User name",
+		       	'_label -> Messages.resolve("login.field.username"),
 		       	'_showContraints -> false,
 		       	'class -> "input-xlarge"
 	        )
 	        @inputPassword(
 		       	loginForm("password"), 
-		       	'_label -> "Password",
+		       	'_label -> Messages.resolve("login.field.password"),
 		       	'_showContraints -> false,
 		       	'class -> "input-xlarge"
 	        )
 	
 	        <div class="actions">
-	            <input type="submit" class="btn btn-primary" value="Login">
-	            <a href="@routes.Application.index" class="btn btn-link">Cancel</a>
+	            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.signin")'>
+	            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
 	        </div>
 		</fieldset>
 	}

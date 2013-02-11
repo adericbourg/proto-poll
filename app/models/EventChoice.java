@@ -25,7 +25,7 @@ public class EventChoice extends Model {
 	@Column(name = "id")
 	public Long id;
 
-	@Required(message = "Enter date")
+	@Required(message = "event_choice.date.mandatory")
 	@Column(name = "date", nullable = false)
 	public LocalDate date;
 

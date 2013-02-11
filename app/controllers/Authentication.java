@@ -1,8 +1,8 @@
 package controllers;
 
 import static play.data.Form.form;
-import static ui.tags.Messages.info;
 import static ui.tags.MessagesHelper.invalidForm;
+import static util.user.message.Messages.info;
 import models.User;
 import play.data.Form;
 import play.data.validation.Constraints.Required;
@@ -12,23 +12,24 @@ import scala.Option;
 import services.UserService;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
+import controllers.message.ControllerMessage;
 
 public class Authentication extends Controller {
 
 	public static class Registration {
-		@Required(message = "User name is mandatory.")
+		@Required(message = "authentication.registration.username.mandatory")
 		public String username;
-		@Required(message = "Password is mandatory. Think about your security.")
+		@Required(message = "authentication.registration.password.mandatory")
 		public String password;
-		@Required(message = "Password confirmation is mandatory")
+		@Required(message = "authentication.registration.password_confirm.mandatory")
 		public String passwordConfirm;
 		public String email;
 	}
 
 	public static class Login {
-		@Required(message = "Please enter your user name")
+		@Required(message = "authentication.login.username.mandatory")
 		public String username;
-		@Required(message = "Please enter your password")
+		@Required(message = "authentication.login.password.mandatory")
 		public String password;
 	}
 
@@ -60,7 +61,7 @@ public class Authentication extends Controller {
 		SessionUtil.setUser(user);
 
 		// Redirect to home page.
-		info("Welcome " + user.username + "! Thank you for your registration.");
+		info(ControllerMessage.REGISTRATION_THANKS, user.getDisplay());
 		return redirect(routes.Application.index());
 	}
 
@@ -98,7 +99,7 @@ public class Authentication extends Controller {
 		SessionUtil.setUser(user);
 
 		// Redirect to main page.
-		info("Welcome " + user.username + "!");
+		info(ControllerMessage.APPLICATION_WELCOME, user.getDisplay());
 		return redirect(routes.Application.index());
 	}
 

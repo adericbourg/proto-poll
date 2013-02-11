@@ -1,5 +1,7 @@
 @(poll: Poll, detailed: Boolean)
 
+@import util.user.message.Messages
+
 <h1>@poll.getTitle</h1>
 @if(poll.hasDescription || poll.hasRegisteredCreator) {
 	<blockquote>
@@ -7,7 +9,7 @@
 		@if(detailed) {
 			@if(poll.hasRegisteredCreator) {
 				@if(poll.hasDescription) {<br />}
-				<small>Created by @poll.userCreator.getDisplay</small>
+				<small>@Messages.resolve("pollheader.created_by") @poll.userCreator.getDisplay</small>
 			}
 		}
 	</blockquote>

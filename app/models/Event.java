@@ -30,7 +30,7 @@ public class Event extends Model {
 	@Column(name = "id")
 	public Long id;
 
-	@Required(message = "Title is mandatory")
+	@Required(message = "event.title.mandatory")
 	@Column(name = "title", nullable = false)
 	public String title;
 

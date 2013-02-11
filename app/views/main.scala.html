@@ -8,12 +8,13 @@
 		}
 **@
 
+@import util.user.message.Messages
 
 <!DOCTYPE html>
 
 <html>
     <head>
-        <title>ProtoPoll :: @title</title>
+        <title>@Messages.resolve("application.name") :: @title</title>
         <!-- Le styles -->
         <link rel="stylesheet" href='@routes.Assets.at("bootstrap/css/bootstrap.min.css")'>
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/main.css")'>
@@ -42,7 +43,7 @@
 					<div class="container">
 		                <div class="row">
 		                    <div class="span3">
-	                        	<a href="/" class="brand" ><img src="http://placekitten.com/25/25" alt="ProtoPoll" /> ProtoPoll</a>
+	                        	<a href="/" class="brand" ><img src="http://placekitten.com/25/25" alt="ProtoPoll" /> @Messages.resolve("application.name")</a>
 		                    </div>
 		                    <div class="menu span9 pull-right">
 		                    	@tags.user()
@@ -54,7 +55,7 @@
         </header>
 
 	    <ul class="breadcrumb">
-    		<li><a href="@routes.Application.index">Home</a> <span class="divider">/</span></li>
+    		<li><a href="@routes.Application.index">@Messages.resolve("home.name")</a> <span class="divider">/</span></li>
     		<li class="active">@title</li>
     	</ul>
 

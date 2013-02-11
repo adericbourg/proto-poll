@@ -3,6 +3,8 @@
 @import helper._
 @import helper.twitterBootstrap._
 
+@import util.user.message.Messages
+
 @checkValue(choice: QuestionChoice, username: String, results: PollResults) = {
 	@if(username != null && results.isCheckedChoice(username, choice.id)) { 
 		checked="checked" 
@@ -31,10 +33,10 @@
 	</td>
 }
 
-@main("Answer question: " + question.title) {
+@main(Messages.resolve("question.answer.name", question.title)) {
 	@if(results.isAlreadyAnswered()) {
 		<div class="well text-warning">
-			You already answered this poll. You may update your answers if you wish.
+			@Messages.resolve("question.answer.already_answered_info")
 		</div>
 	}
 	
@@ -44,7 +46,7 @@
 		<table class="table table-bordered table-hover table-condensed poll-results">
 			<thead>
 			<tr>
-				<th>Participants</th>
+				<th>@Messages.resolve("question.answer.participants")</th>
 				@for(choice <- question.choices) {
 					<th class="result">@choice.label</th>
 				}
@@ -73,7 +75,7 @@
 					}
 				}
 				<tr>
-					<th>Totals</th>
+					<th>@Messages.resolve("question.answer.totals")</th>
 					@for(choice <- question.choices) {
 						<td class="result">
 							@if(results.isBetterChoice(choice.id)) {
@@ -95,7 +97,7 @@
 				@if(user.isEmpty) {
 					<tr class="info">
 						<td class="username">
-							<input name="username" placeholder="Your name"/>
+							<input name="username" placeholder='@Messages.resolve("question.answer.placeholder.username")'/>
 						</td>
 						@for(choice <- question.choices) {
 							@answerInput(choice, null, results, question.singleAnswer)
@@ -118,7 +120,7 @@
 				<div class="comment well">
 					<div class="comment-header">
 						<span class="user">@comment.user.getDisplay</span>
-						<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate != null) { (last edited on @comment.lastEditDate) }</span>
+						<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate != null) { (@Messages.resolve("poll.comments.last_edited", comment.lastEditDate)) }</span>
 					</div>
 					<span class="comment-content">@comment.content</span>
 				</div>
@@ -128,25 +130,25 @@
 	
 	@helper.form(action = routes.AnswerPoll.comment(question.bindId)) {
 		<fieldset>
-			<legend>Post comment</legend>
+			<legend>@Messages.resolve("poll.comments.legend")</legend>
 			@if(user ==null) {
 				@inputText(
 			       	formComment("username"), 
-			       	'_label -> "Your name",
+			       	'_label -> Messages.resolve("poll.comments.field.username"),
 			       	'_showContraints -> false,
 			       	'class -> "input-xlarge"
 		        )
 			}
 			@textarea(
 	           	formComment("comment"), 
-	           	'_label -> "Comment",
+	           	'_label -> Messages.resolve("poll.comments.field.comment"),
 	           	'_showContraints -> false,
 	           	'class -> "input-xlarge"
 	        )
 	        
 	        <div class="actions">
-	        	<input type="submit" class="btn btn-primary" value="Post">
-	            <a href="@routes.AnswerPoll.viewPoll(question.bindId)" class="btn btn-link">Cancel</a>
+	        	<input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.post")'>
+	            <a href="@routes.AnswerPoll.viewPoll(question.bindId)" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
 	        </div>
 		</fieldset>
 	}

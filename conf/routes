@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+GET		/lang/:lang/redirect/:url	controllers.Application.changeLanguage(lang: String, url: String)
 
 # Authentication
 GET		/register					controllers.Authentication.register()

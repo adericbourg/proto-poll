@@ -1,8 +1,8 @@
 package controllers;
 
 import static play.data.Form.form;
-import static ui.tags.Messages.error;
-import static ui.tags.Messages.info;
+import static util.user.message.Messages.error;
+import static util.user.message.Messages.info;
 
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -18,6 +18,8 @@ import util.binders.UuidBinder;
 import util.security.SessionUtil;
 
 import com.google.common.base.Strings;
+
+import controllers.message.ControllerMessage;
 
 /**
  * Poll answer controller.
@@ -43,18 +45,18 @@ public class AnswerQuestion extends Controller {
 		} else {
 			String username = form.data().get(USERNAME_KEY);
 			if (Strings.isNullOrEmpty(username)) {
-				error("Choose a user name.");
+				error(ControllerMessage.POLL_CHOOSE_USER_NAME);
 				return badRequest(AnswerPoll.getQuestionViewContent(uuid));
 			}
 			try {
 				QuestionService
 						.answerQuestionAnonymous(username, uuid, choices);
 			} catch (AnonymousUserAlreadyAnsweredPoll e) {
-				error("Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.");
+				error(ControllerMessage.POLL_USERNAME_ALREADY_TAKEN);
 				return badRequest(AnswerPoll.getQuestionViewContent(uuid));
 			}
 		}
-		info("Thank you for answering!");
+		info(ControllerMessage.POLL_ANSWER_SUCCESS);
 		return redirect(routes.AnswerPoll.viewPoll(uuidBinded));
 	}
 

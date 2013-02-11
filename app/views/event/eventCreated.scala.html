@@ -2,18 +2,20 @@
 
 @import helper._
 @import helper.twitterBootstrap._
-@import ui.util.UIUtil;
 
-@main("Event created") {
+@import ui.util.UIUtil
+@import util.user.message.Messages
+
+@main(Messages.resolve("event.created.name")) {
 
 	@tags.pollHeader(event.poll, false)
 	
 	@tags.sharePoll(event.poll)
 		
-	Dates:
+	@Messages.resolve("event.created.dates")
 	<ol>
 		@for(date <- event.dates) {
-			<li>@date.date.toString</li>
+			<li>@UIUtil.formatDate(date.date)</li>
 		}
 	</ol>
 }

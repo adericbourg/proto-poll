@@ -2,15 +2,17 @@
 
 @import helper._
 @import helper.twitterBootstrap._
-@import ui.util.UIUtil;
 
-@main("Question created") {
+@import ui.util.UIUtil;
+@import util.user.message.Messages
+
+@main(Messages.resolve("question.created.name")) {
 
 	@tags.pollHeader(question.poll, false)
 	
 	@tags.sharePoll(question.poll)
 
-	Choices:
+	@Messages.resolve("question.created.choices")
 	<ol>
 		@for(choice <- question.choices) {
 			<li>@choice.label</li>

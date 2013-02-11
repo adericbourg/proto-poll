@@ -3,34 +3,36 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("Register") {
+@import util.user.message.Messages
+
+@main(Messages.resolve("register.name")) {
 
 	@helper.form(action = routes.Authentication.saveRegistration()) {
 		<fieldset>
 			<legend>Registration form</legend>
 			@inputText(
 		       	registrationForm("username"), 
-		       	'_label -> "User name",
+		       	'_label -> Messages.resolve("register.field.username"),
 		       	'_showContraints -> true
 	        )
 	        @inputPassword(
 		       	registrationForm("password"), 
-		       	'_label -> "Password",
+		       	'_label -> Messages.resolve("register.field.password"),
 		       	'_showContraints -> true
 	        )
 	        @inputPassword(
 		       	registrationForm("passwordConfirm"), 
-		       	'_label -> "Confirm password",
+		       	'_label -> Messages.resolve("register.field.password_confirmation"),
 		       	'_showContraints -> true
 	        )
 	        @inputText(
 		       	registrationForm("email"), 
-		       	'_label -> "E-mail",
+		       	'_label -> Messages.resolve("register.field.email"),
 		       	'_showContraints -> true
 	        )
 	        <div class="actions">
-	            <input type="submit" class="btn btn-primary" value="Sign in">
-	            <a href="@routes.Application.index" class="btn btn-link">Cancel</a>
+	            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.signup")'>
+	            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
 	        </div>
         </fieldset>
 	}

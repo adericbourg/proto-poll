@@ -1,6 +1,7 @@
 package controllers;
 
 import static play.data.Form.form;
+import static util.user.message.Messages.error;
 
 import java.util.UUID;
 
@@ -25,6 +26,8 @@ import views.html.question.questionAnswer;
 
 import com.google.common.base.Strings;
 
+import controllers.message.ControllerMessage;
+
 public class AnswerPoll extends Controller {
 
 	public static class PollComment {
@@ -43,7 +46,7 @@ public class AnswerPoll extends Controller {
 		} else if (poll.isQuestion()) {
 			return ok(getQuestionViewContent(uuid));
 		} else {
-			ui.tags.Messages.error("Poll does not exist.");
+			error(ControllerMessage.POLL_DOES_NOT_EXIST);
 			return Application.index();
 		}
 	}
@@ -57,7 +60,7 @@ public class AnswerPoll extends Controller {
 		} else if (poll.isQuestion()) {
 			return badRequest(getQuestionViewContent(uuid, formComment));
 		} else {
-			ui.tags.Messages.error("Poll does not exist.");
+			error(ControllerMessage.POLL_DOES_NOT_EXIST);
 			return Application.index();
 		}
 	}

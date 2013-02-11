@@ -4,9 +4,10 @@ import models.User;
 import scala.Option;
 import services.exception.AlreadyRegisteredUser;
 import services.exception.NoAuthenfiedUserInSessionException;
-import ui.tags.Messages;
+import services.messages.ServiceMessage;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
+import util.user.message.Messages;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
@@ -39,6 +40,7 @@ public final class UserService {
 		User currentUser = getCheckedCurrentUser();
 		currentUser.email = user.email;
 		currentUser.displayName = user.displayName;
+		currentUser.preferredLocale = user.preferredLocale;
 		currentUser.save();
 		SessionUtil.setUser(currentUser);
 	}
@@ -49,7 +51,7 @@ public final class UserService {
 
 		if (!currentUser.passwordHash.equals(PasswordUtil.hashPassword(
 				currentUser.username, oldPassword))) {
-			Messages.error("Wrong old password");
+			Messages.error(ServiceMessage.LOGIN_WRONG_OLD_PASSWORD);
 			return false;
 		}
 

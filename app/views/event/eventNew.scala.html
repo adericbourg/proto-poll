@@ -3,33 +3,35 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("New event") {
+@import util.user.message.Messages
+
+@main(Messages.resolve("event.new.name")) {
 	@helper.form(action = routes.CreateEvent.createEvent()) {
         <fieldset>
-            <legend>Event details</legend>
+            <legend>@Messages.resolve("event.new.legend")</legend>
 
             @inputText(
             	formEvent("title"), 
-            	'_label -> "Title",
+            	'_label -> Messages.resolve("event.new.field.title"),
             	'_showContraints -> false,
             	'class -> "input-xxlarge"
             )
             @textarea(
             	formEvent("description"), 
-            	'_label -> "Description",
+            	'_label -> Messages.resolve("event.new.field.description"),
             	'_showContraints -> false,
             	'class -> "input-xxlarge"
            	)
            	@tags.inputRadioGroup(
            		formEvent("singleAnswer"),
            		options = Seq("false"->"Yes", "true"->"No"),
-           		'_label -> "Users may select multiple choices"
+           		'_label -> Messages.resolve("event.new.field.single_answer")
            	)
         </fieldset>
 
         <div class="actions">
-            <input type="submit" class="btn btn-primary" value="Create">
-            <a href="@routes.Application.index" class="btn btn-link">Cancel</a>
+            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.create")'>
+            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
         </div>
     }
 }

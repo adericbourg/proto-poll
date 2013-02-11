@@ -3,6 +3,8 @@
 @import helper._
 @import helper.twitterBootstrap._
 
+@import util.user.message.Messages
+
 @choiceGroup(choice: Field, className: String = "choice") = {
     <div class="@className">
        <a class="remove-choice btn btn-danger btn-mini"><i class="icon-white icon-remove-sign"></i></a>
@@ -10,7 +12,7 @@
     </div>
 }
 
-@main("Add choices") {
+@main(Messages.resolve("question.add_choices.name")) {
     @helper.form(action = routes.CreateQuestion.saveChoices(question.bindId)) {
 		<div class="header">
 			<h1>@question.title</h1>
@@ -20,7 +22,7 @@
 		</div>
 
         <fieldset>
-            <legend>Choices</legend>
+            <legend>@Messages.resolve("question.add_choices.legend")</legend>
             <div id="choices">
             	<div class="manage">
                     <a class="add-choice btn btn-mini btn-inverse"><i class="icon-white icon-plus-sign"></i></a>
@@ -41,8 +43,8 @@
         </fieldset>
 
         <div class="actions">
-            <input type="submit" class="btn btn-primary" value="Create" />
-            <a href="/" class="btn btn-link">Cancel</a>
+            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.create")' />
+            <a href="/" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
         </div>
     }
 
@@ -79,7 +81,7 @@
                 $('input', this).each(function() {
                 	count++
                     $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'))
-                    $(this).attr('placeholder', 'Choice ' + count)
+                    $(this).attr('placeholder', '@Messages.resolve("question.add_choices.placeholder.choice") ' + count)
                     $(this).removeClass("last-input")
                 })
             })

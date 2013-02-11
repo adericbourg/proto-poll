@@ -36,7 +36,7 @@ public class Question extends Model {
 	@Column(name = "id")
 	public Long id;
 
-	@Required(message = "Title is mandatory")
+	@Required(message = "question.title.mandatory")
 	@Column(name = "title", nullable = false)
 	public String title;
 

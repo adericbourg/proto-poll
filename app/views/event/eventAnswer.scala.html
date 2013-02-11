@@ -3,6 +3,9 @@
 @import helper._
 @import helper.twitterBootstrap._
 
+@import ui.util.UIUtil
+@import util.user.message.Messages
+
 @checkValue(choice: EventChoice, username: String, results: PollResults) = {
 	@if(username != null && results.isCheckedChoice(username, choice.id)) { 
 		checked="checked" 
@@ -31,7 +34,7 @@
 	</td>
 }
 
-@main("Answer event: " + event.title) {
+@main(Messages.resolve("event.answer.name", event.title)) {
 
 	@tags.pollHeader(event.poll, true)
 	
@@ -39,9 +42,9 @@
 		<table class="table table-bordered table-hover table-condensed poll-results">
 			<thead>
 			<tr>
-				<th>Participants</th>
+				<th>@Messages.resolve("evant.answer.participants")</th>
 				@for(date <- event.dates) {
-					<th class="result">@date.date</th>
+					<th class="result">@UIUtil.formatDate(date.date)</th>
 				}
 			</tr>
 			</thead>
@@ -68,7 +71,7 @@
 					}
 				}
 				<tr>
-					<th>Totals</th>
+					<th>@Messages.resolve("evant.answer.totals")</th>
 					@for(date <- event.dates) {
 						<td class="result">
 							@if(results.isBetterChoice(date.id)) {
@@ -90,7 +93,7 @@
 				@if(user.isEmpty) {
 					<tr class="info">
 						<td class="username">
-							<input name="username" placeholder="Your name"/>
+							<input name="username" placeholder='@Messages.resolve("evant.answer.placeholder.username")'/>
 						</td>
 						@for(date <- event.dates) {
 							@answerInput(date, null, results, event.singleAnswer)
@@ -101,9 +104,9 @@
 		</table>
 		
 		@if(results.isAlreadyAnswered()) {
-			<input class="btn btn-primary btn-large" value="Update" type="submit" />
+			<input class="btn btn-primary btn-large" value='@Messages.resolve("common.action.update")' type="submit" />
 		} else {
-			<input class="btn btn-primary btn-large" value="Submit" type="submit" />
+			<input class="btn btn-primary btn-large" value='@Messages.resolve("common.action.submit")' type="submit" />
 		}
 	}
 	
@@ -114,7 +117,7 @@
 				<div class="comment well">
 					<div class="comment-header">
 						<span class="user">@comment.user.getDisplay</span>
-						<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate != null) { (last edited on @comment.lastEditDate) }</span>
+						<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate != null) { (@Messages.resolve("poll.comments.last_edited", comment.lastEditDate) }</span>
 					</div>
 					<span class="comment-content">@comment.content</span>
 				</div>
@@ -124,25 +127,25 @@
 	
 	@helper.form(action = routes.AnswerPoll.comment(event.bindId)) {
 		<fieldset>
-			<legend>Post comment</legend>
+			<legend>@Messages.resolve("poll.comments.legend")</legend>
 			@if(user.isEmpty) {
 				@inputText(
 			       	formComment("username"), 
-			       	'_label -> "Your name",
+			       	'_label -> Messages.resolve("poll.comments.field.username"),
 			       	'_showContraints -> false,
 			       	'class -> "input-xlarge"
 		        )
 			}
 			@textarea(
 	           	formComment("comment"), 
-	           	'_label -> "Comment",
+	           	'_label -> Messages.resolve("poll.comments.field.comment"),
 	           	'_showContraints -> false,
 	           	'class -> "input-xlarge"
 	        )
 	        
 	        <div class="actions">
-	        	<input type="submit" class="btn btn-primary" value="Post">
-	            <a href="@routes.AnswerPoll.viewPoll(event.bindId)" class="btn btn-link">Cancel</a>
+	        	<input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.post")'>
+	            <a href="@routes.AnswerPoll.viewPoll(event.bindId)" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
 	        </div>
 		</fieldset>
 	}

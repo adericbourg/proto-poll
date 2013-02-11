@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Locale;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -43,6 +45,9 @@ public class User extends Model {
 	@Required
 	@Column(name = "is_registered", nullable = false)
 	public Boolean registered = false;
+
+	@Column(name = "locale")
+	public Locale preferredLocale;
 
 	@Transient
 	public String getDisplay() {

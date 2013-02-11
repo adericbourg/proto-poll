@@ -3,6 +3,8 @@ package ui.tags;
 import play.mvc.Content;
 import play.mvc.Result;
 import play.mvc.Results;
+import ui.user.message.UserMessage;
+import util.user.message.Messages;
 
 public final class MessagesHelper {
 	private MessagesHelper() {
@@ -10,7 +12,7 @@ public final class MessagesHelper {
 	}
 
 	public static void invalidForm() {
-		Messages.error("Please fix errors below");
+		Messages.error(UserMessage.FIX_ERRORS);
 	}
 
 	public static Result invalidForm(Content content) {

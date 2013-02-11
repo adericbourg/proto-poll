@@ -1,0 +1,159 @@
+application.name=ProtoPoll
+
+#
+# UI
+#
+
+common.action.create=Create
+common.action.update=Update
+common.action.submit=Submit
+common.action.post=Post
+common.action.cancel=Cancel
+common.action.signin=Sign in
+common.action.signup=Sign up
+common.action.logout=Log out
+
+home.name=Home
+home.h1=Welcome to ProtoPoll!
+home.create_classic_poll=Create classic poll
+home.plan_event=Plan event
+home.development=Development
+home.list_all_polls=List all polls
+
+listpolls.name=Polls
+listpolls.no_poll_available=No poll available yet.
+
+login.name=Login
+login.not_registered_inter=Not registered?
+login.create_account_suggestion=Create account now!
+login.field.username=User name
+login.field.password=Password
+
+register.name=Register
+register.field.username=User name
+register.field.password=Password
+register.field.password_confirmation=Password confirmation
+register.field.email=E-mail
+
+profile.name=Profile
+profile.informations.legend=Your informations
+profile.informations.field.display_name=Your name
+profile.informations.field.email=E-mail
+profile.informations.field.lang=Preferred language
+profile.password.legend=Change your password
+profile.password.current=Current password
+profile.password.new=Desired password
+profile.password.confirm_new=Confirm desired password
+
+pollheader.created_by=Created by
+
+sharepoll.info=Share this URL to let people answer
+sharepoll.action.go=Go
+
+user.polls=My polls
+user.profile=Profile
+user.field.username=User name
+user.field.password=Password
+user.language_select=Language
+
+event.new.name=New event
+event.new.legend=Event details
+event.new.field.title=Title
+event.new.field.description=Description
+event.new.field.single_answer=Users may select multiple choices
+
+event.add_dates.name=Add dates
+event.add_dates.legend=Dates
+
+event.created.name=Event created
+event.created.dates=Dates: 
+
+event.answer.name=Answer event: {0}
+evant.answer.participants=Participants
+evant.answer.totals=Totals
+evant.answer.placeholder.username=Your name
+
+question.new.name=New question
+question.new.legend=Question details
+question.new.field.title=Title
+question.new.field.description=Description
+question.new.field.single_answer=Users may select multiple choices
+
+question.add_choices.name=Add choices
+question.add_choices.legend=Choices
+question.add_choices.placeholder.choice=Choice
+
+question.created.name=Question created
+question.created.choices=Choices:
+
+question.answer.name=Answer question: {0}
+question.answer.already_answered_info=You already answered this poll. You may update your answers if you wish.
+question.answer.participants=Participants
+question.answer.totals=Totals
+question.answer.placeholder.username=Your name
+
+poll.comments.last_edited=last edited on {0}
+poll.comments.legend=Post comment
+poll.comments.field.username=Your name
+poll.comments.field.comment=Comment
+
+#
+# Controller
+#
+
+access.forbidden.not_authentified=You cannot access this page since you are not authenticated.
+
+authentication.welcome=Welcome {0}!
+
+registration.thanks=Welcome {0}! Thank you for your registration.
+
+password.change.successful=Password changed successfully
+password.change.same_as_old=New password is the same as the old one. You might not want to do that.
+password.change.new_do_not_match=Passwords do not match
+password.change.new_do_not_match_confirmation=""
+
+poll.does_not_exist=Poll does not exist
+poll.answer.choose_user_name=Please fill your name
+poll.answer.username_already_taken=Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.
+poll.answer.thanks=Thank you for answering!
+
+event.creation.successful=Event successfully created.
+question.creation.successful=Question successfully created.
+
+#
+# Service
+#
+
+login.wrong_old_password=Wrong old password
+
+#
+# Model validation
+#
+
+event.title.mandatory=Title is mandatory
+
+event_choice.date.mandatory=Enter date
+
+question.title.mandatory=Title is mandatory
+
+
+question_choice.label.mandatory=Enter label for this choice
+
+authentication.registration.username.mandatory=User name is mandatory.
+authentication.registration.password.mandatory=Password is mandatory. Think about your security.
+authentication.registration.password_confirm.mandatory=Password confirmation is mandatory.
+
+authentication.login.username.mandatory=Please enter your user name
+authentication.login.password.mandatory=Please enter your password
+
+user.profile.email.mandatory=You cannot remove your email address
+
+user.security.old_password.mandatory=Enter your current password
+user.security.new_password.mandatory=Enter your new password
+user.security.new_password_confirm.mandatory=Enter your new password confirmation
+
+#
+# Technical i18n
+#
+
+date.format=MM/dd/yyyy

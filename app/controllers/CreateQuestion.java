@@ -1,8 +1,8 @@
 package controllers;
 
 import static play.data.Form.form;
-import static ui.tags.Messages.info;
 import static ui.tags.MessagesHelper.invalidForm;
+import static util.user.message.Messages.info;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,8 @@ import views.html.question.questionAddChoices;
 import views.html.question.questionNew;
 
 import com.google.common.base.Strings;
+
+import controllers.message.ControllerMessage;
 
 /**
  * Managing poll controller. Create, edit, add choices.
@@ -74,7 +76,7 @@ public class CreateQuestion extends Controller {
 			}
 		}
 		QuestionService.saveChoices(uuid.uuid(), choices);
-		info("Question successfully created.");
+		info(ControllerMessage.QUESTION_SUCCESSFULLY_CREATED);
 		return redirect(routes.CreatePoll.confirmCreation(uuid));
 	}
 
