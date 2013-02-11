@@ -157,6 +157,7 @@ user.security.new_password_confirm.mandatory=Saisissez la confirmation de votre 
 #
 
 date.format=dd/MM/yyyy
+datetime.format=dd/MM/yyyy à k:m
 
 #
 # Override Play! validation messages

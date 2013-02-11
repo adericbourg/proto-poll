@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 
 import models.User;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -24,6 +25,7 @@ public final class UIUtil {
 	private static final String ROOT_URL = "application.base.url";
 	private static final String GRAVATAR_PICTURE_URL = "gravatar.picture.url";
 	private static final String DATE_FORMAT_PARAMETER = "date.format";
+	private static final String DATE_TIME_FORMAT_PARAMETER = "datetime.format";
 	private static final int GRAVATAR_DEFAULT_SIZE = 25;
 
 	private UIUtil() {
@@ -39,6 +41,18 @@ public final class UIUtil {
 			formatter = DateTimeFormat.forPattern(formatPattern);
 		}
 		return formatter.print(date);
+	}
+
+	public static String formatDateTime(DateTime dateTime) {
+		DateTimeFormatter formatter;
+		String formatPattern = Messages.resolve(DATE_TIME_FORMAT_PARAMETER);
+		System.out.println(formatPattern);
+		if (Strings.isNullOrEmpty(formatPattern)) {
+			formatter = DateTimeFormat.mediumDate();
+		} else {
+			formatter = DateTimeFormat.forPattern(formatPattern);
+		}
+		return formatter.print(dateTime);
 	}
 
 	public static String urlEncode(Request request) {

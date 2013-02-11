@@ -117,7 +117,7 @@
 				<div class="comment well">
 					<div class="comment-header">
 						<span class="user">@comment.user.getDisplay</span>
-						<span class="date pull-right">@comment.submitDate @if(comment.lastEditDate != null) { (@Messages.resolve("poll.comments.last_edited", comment.lastEditDate) }</span>
+						<span class="date pull-right">@UIUtil.formatDateTime(comment.submitDate) @if(comment.lastEditDate != null) { (@Messages.resolve("poll.comments.last_edited", UIUtil.formatDateTime(comment.lastEditDate)) }</span>
 					</div>
 					<span class="comment-content">@comment.content</span>
 				</div>
