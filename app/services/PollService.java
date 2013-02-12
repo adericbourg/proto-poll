@@ -12,6 +12,7 @@ import models.User;
 import org.joda.time.DateTime;
 
 import play.db.ebean.Model.Finder;
+import play.db.ebean.Transactional;
 import services.exception.NoAuthenfiedUserInSessionException;
 import util.security.SessionUtil;
 
@@ -22,10 +23,12 @@ public class PollService {
 	private static final Finder<UUID, Poll> POLL_FINDER = new Finder<UUID, Poll>(
 			UUID.class, Poll.class);
 
+	@Transactional
 	public static List<Poll> polls() {
 		return Ebean.find(Poll.class).orderBy("creationDate DESC").findList();
 	}
 
+	@Transactional
 	public static List<Poll> listUserPolls() {
 		if (!SessionUtil.isAuthenticated()) {
 			throw new NoAuthenfiedUserInSessionException();
@@ -35,6 +38,7 @@ public class PollService {
 				.orderBy("creationDate DESC").findList();
 	}
 
+	@Transactional
 	public static Poll getPoll(UUID uuid) {
 		Poll poll = POLL_FINDER
 				.fetch("userCreator")
@@ -58,6 +62,7 @@ public class PollService {
 		return poll;
 	}
 
+	@Transactional
 	public static Question getQuestion(UUID uuid) {
 		Poll poll = getPoll(uuid);
 		if ((poll == null) || !poll.isQuestion()) {
@@ -66,6 +71,7 @@ public class PollService {
 		return poll.question;
 	}
 
+	@Transactional
 	public static Event getEvent(UUID uuid) {
 		Poll poll = getPoll(uuid);
 		if ((poll == null) || !poll.isEvent()) {
@@ -74,12 +80,12 @@ public class PollService {
 		return poll.event;
 	}
 
-	public static void initPoll(Event event) {
+	static void initPoll(Event event) {
 		Poll poll = new Poll(event);
 		event.poll = initPoll(poll);
 	}
 
-	public static void initPoll(Question question) {
+	static void initPoll(Question question) {
 		Poll poll = new Poll(question);
 		question.poll = initPoll(poll);
 	}
@@ -93,6 +99,7 @@ public class PollService {
 		return poll;
 	}
 
+	@Transactional
 	public static void postCommentRegistered(UUID uuid, String comment) {
 		if (SessionUtil.currentUser().isDefined()) {
 			postComment(uuid, comment, SessionUtil.currentUser().get());
@@ -101,6 +108,7 @@ public class PollService {
 		}
 	}
 
+	@Transactional
 	public static void postCommentAnonymous(UUID uuid, String comment,
 			String username) {
 		User user = UserService.registerAnonymousUser(username);

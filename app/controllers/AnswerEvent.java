@@ -34,7 +34,7 @@ public class AnswerEvent extends Controller {
 			}
 		}
 		if (SessionUtil.isAuthenticated()) {
-			EventService.answerEvent(uuid.uuid(), choices);
+			EventService.answerEventRegistered(uuid.uuid(), choices);
 		} else {
 			String username = form.data().get(USERNAME_KEY);
 			if (Strings.isNullOrEmpty(username)) {
@@ -42,7 +42,7 @@ public class AnswerEvent extends Controller {
 				return badRequest(AnswerPoll.getEventViewContent(uuid.uuid()));
 			}
 			try {
-				EventService.answerEvent(username, uuid.uuid(), choices);
+				EventService.answerEventAnonymous(username, uuid.uuid(), choices);
 			} catch (AnonymousUserAlreadyAnsweredPoll e) {
 				error(ControllerMessage.POLL_USERNAME_ALREADY_TAKEN);
 				return badRequest(AnswerPoll.getEventViewContent(uuid.uuid()));

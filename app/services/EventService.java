@@ -12,6 +12,7 @@ import models.EventAnswer;
 import models.EventAnswerDetail;
 import models.EventChoice;
 import models.User;
+import play.db.ebean.Transactional;
 import scala.Option;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
@@ -21,23 +22,27 @@ import com.avaje.ebean.ExpressionList;
 
 public class EventService {
 
+	@Transactional
 	public static Event createEvent(Event event) {
 		event.save();
 		PollService.initPoll(event);
 		return event;
 	}
 
+	@Transactional
 	public static void saveDates(UUID uuid, Collection<EventChoice> dates) {
 		Event event = PollService.getEvent(uuid);
 		event.dates = new ArrayList<EventChoice>(dates);
 		event.save();
 	}
 
-	public static void answerEvent(UUID uuid, Collection<Long> choiceIds) {
+	@Transactional
+	public static void answerEventRegistered(UUID uuid, Collection<Long> choiceIds) {
 		answerEvent(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 
-	public static void answerEvent(String username, UUID uuid,
+	@Transactional
+	public static void answerEventAnonymous(String username, UUID uuid,
 			Collection<Long> choiceIds) {
 		Event event = PollService.getEvent(uuid); // With answers
 
@@ -99,9 +104,5 @@ public class EventService {
 			return answer;
 		}
 		return el.findUnique();
-	}
-
-	public static List<Event> events() {
-		return Ebean.find(Event.class).findList();
 	}
 }

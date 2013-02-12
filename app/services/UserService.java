@@ -1,6 +1,7 @@
 package services;
 
 import models.User;
+import play.db.ebean.Transactional;
 import scala.Option;
 import services.exception.AlreadyRegisteredUser;
 import services.exception.NoAuthenfiedUserInSessionException;
@@ -18,6 +19,7 @@ import com.avaje.ebean.ExpressionList;
  * @author adericbourg
  * 
  */
+
 public final class UserService {
 
 	private UserService() {
@@ -25,6 +27,7 @@ public final class UserService {
 		throw new AssertionError();
 	}
 
+	@Transactional
 	public static void registerUser(User user) {
 		if (user.id != null) {
 			throw new IllegalArgumentException("user already has an id");
@@ -36,15 +39,17 @@ public final class UserService {
 		user.save();
 	}
 
+	@Transactional
 	public static void updateUserProfile(User user) {
 		User currentUser = getCheckedCurrentUser();
 		currentUser.email = user.email;
 		currentUser.displayName = user.displayName;
 		currentUser.preferredLocale = user.preferredLocale;
-		currentUser.save();
+		currentUser.update();
 		SessionUtil.setUser(currentUser);
 	}
 
+	@Transactional
 	public static boolean updateUserPassword(String oldPassword,
 			String newPassword) {
 		User currentUser = getCheckedCurrentUser();
@@ -61,6 +66,7 @@ public final class UserService {
 		return true;
 	}
 
+	@Transactional
 	public static Option<User> authenticate(String login, String password) {
 		String trimmedLogin = login.trim();
 		ExpressionList<User> el = Ebean
@@ -75,6 +81,7 @@ public final class UserService {
 		return Option.apply(el.findUnique());
 	}
 
+	@Transactional
 	public static Option<User> findByUsername(String name) {
 		String trimmedUsername = name.trim();
 		ExpressionList<User> el = Ebean.find(User.class).where()
@@ -85,6 +92,7 @@ public final class UserService {
 		return Option.apply(el.findUnique());
 	}
 
+	@Transactional
 	public static User registerAnonymousUser(String name) {
 		User user = new User();
 		user.username = name.trim();

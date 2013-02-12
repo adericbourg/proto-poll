@@ -8,6 +8,7 @@ import java.util.Locale;
 import org.apache.commons.lang3.LocaleUtils;
 
 import play.Play;
+import play.db.ebean.Transactional;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -22,6 +23,7 @@ public class ReferentialService {
 		throw new AssertionError();
 	}
 
+	@Transactional
 	public static List<Locale> getLanguages() {
 		String langsParam = Play.application().configuration()
 				.getString(APPLICATION_LANGS);

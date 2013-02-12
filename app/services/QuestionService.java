@@ -15,6 +15,7 @@ import models.QuestionAnswerDetail;
 import models.QuestionChoice;
 import models.User;
 import play.db.ebean.Model.Finder;
+import play.db.ebean.Transactional;
 import scala.Option;
 import services.exception.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
@@ -37,12 +38,14 @@ public class QuestionService {
 		throw new AssertionError();
 	}
 
+	@Transactional
 	public static Question createQuestion(Question question) {
 		question.save();
 		PollService.initPoll(question);
 		return question;
 	}
 
+	@Transactional
 	public static void saveChoices(UUID uuid, List<QuestionChoice> choices) {
 		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(choices);
 		Question question = PollService.getQuestion(uuid);
@@ -63,11 +66,13 @@ public class QuestionService {
 		return deduplicated;
 	}
 
+	@Transactional
 	public static void answerQuestionAuthenticated(UUID uuid,
 			Collection<Long> choiceIds) {
 		answerQuestion(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 
+	@Transactional
 	public static void answerQuestionAnonymous(String username, UUID uuid,
 			Collection<Long> choiceIds) {
 		// FIXME It makes poll being loaded twice.
