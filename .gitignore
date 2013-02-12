@@ -18,3 +18,4 @@ server.pid
 /project/project
 /project/target
 /target
+/dist
