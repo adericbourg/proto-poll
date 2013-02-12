@@ -14,6 +14,7 @@ import models.Question;
 import models.QuestionChoice;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
@@ -38,10 +39,12 @@ public class CreateQuestion extends Controller {
 	private static final Pattern CHOICE_ORDER = Pattern
 			.compile("choice\\[(.*?)\\]");
 
+	@Transactional
 	public static Result newQuestion() {
 		return ok(questionNew.render(QUESTION_FORM));
 	}
 
+	@Transactional
 	public static Result createQuestion() {
 		Form<Question> filledForm = QUESTION_FORM.bindFromRequest();
 
@@ -56,11 +59,13 @@ public class CreateQuestion extends Controller {
 				.setChoices(question.poll.bindId()));
 	}
 
+	@Transactional
 	public static Result setChoices(UuidBinder uuid) {
 		Question question = PollService.getQuestion(uuid.uuid());
 		return ok(questionAddChoices.render(question, QUESTION_FORM));
 	}
 
+	@Transactional
 	public static Result saveChoices(UuidBinder uuid) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		QuestionChoice choice;

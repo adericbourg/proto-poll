@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import play.data.DynamicForm;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.QuestionService;
@@ -31,6 +32,7 @@ public class AnswerQuestion extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
 
+	@Transactional
 	public static Result answer(UuidBinder uuidBinded) {
 		UUID uuid = uuidBinded.uuid();
 		DynamicForm form = form().bindFromRequest();

@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Poll;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
@@ -10,6 +11,7 @@ import views.html.question.questionCreated;
 
 public class CreatePoll extends Controller {
 
+	@Transactional
 	public static Result confirmCreation(UuidBinder uuidBinder) {
 		Poll poll = PollService.getPoll(uuidBinder.uuid());
 		Result result;

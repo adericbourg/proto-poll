@@ -6,6 +6,7 @@ import static util.user.message.Messages.info;
 import models.User;
 import play.data.Form;
 import play.data.validation.Constraints.Required;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import scala.Option;
@@ -36,10 +37,12 @@ public class Authentication extends Controller {
 	private static Form<Registration> FORM_REGISTRATION = form(Registration.class);
 	private static Form<Login> FORM_LOGIN = form(Login.class);
 
+	@Transactional
 	public static Result register() {
 		return ok(views.html.register.render(FORM_REGISTRATION));
 	}
 
+	@Transactional
 	public static Result saveRegistration() {
 		Form<Registration> filledForm = FORM_REGISTRATION.bindFromRequest();
 
@@ -75,10 +78,12 @@ public class Authentication extends Controller {
 		return user;
 	}
 
+	@Transactional
 	public static Result login() {
 		return ok(views.html.login.render(FORM_LOGIN));
 	}
 
+	@Transactional
 	public static Result authenticate() {
 		Form<Login> formLogin = FORM_LOGIN.bindFromRequest();
 		if (formLogin.hasErrors()) {
@@ -103,6 +108,7 @@ public class Authentication extends Controller {
 		return redirect(routes.Application.index());
 	}
 
+	@Transactional
 	public static Result logout() {
 		SessionUtil.clear();
 		return redirect(routes.Application.index());

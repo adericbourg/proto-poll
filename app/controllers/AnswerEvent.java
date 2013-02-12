@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import play.data.DynamicForm;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.EventService;
@@ -24,6 +25,7 @@ public class AnswerEvent extends Controller {
 
 	private static final String USERNAME_KEY = "data[username]";
 
+	@Transactional
 	public static Result answer(UuidBinder uuid) {
 
 		DynamicForm form = form().bindFromRequest();
@@ -42,7 +44,8 @@ public class AnswerEvent extends Controller {
 				return badRequest(AnswerPoll.getEventViewContent(uuid.uuid()));
 			}
 			try {
-				EventService.answerEventAnonymous(username, uuid.uuid(), choices);
+				EventService.answerEventAnonymous(username, uuid.uuid(),
+						choices);
 			} catch (AnonymousUserAlreadyAnsweredPoll e) {
 				error(ControllerMessage.POLL_USERNAME_ALREADY_TAKEN);
 				return badRequest(AnswerPoll.getEventViewContent(uuid.uuid()));

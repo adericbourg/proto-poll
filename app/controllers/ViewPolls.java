@@ -3,6 +3,7 @@ package controllers;
 import java.util.List;
 
 import models.Poll;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
@@ -24,6 +25,7 @@ import controllers.message.ControllerMessage;
  */
 public class ViewPolls extends Controller {
 
+	@Transactional
 	public static Result polls() {
 		List<Poll> polls = PollService.polls();
 		if (polls.isEmpty()) {
@@ -32,6 +34,7 @@ public class ViewPolls extends Controller {
 		return ok(listPolls.render(polls));
 	}
 
+	@Transactional
 	public static Result userPolls() {
 		if (!SessionUtil.isAuthenticated()) {
 			Messages.error(ControllerMessage.ACCESS_FORBIDDEN_NOT_AUTHENTIFIED);

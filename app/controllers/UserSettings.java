@@ -10,6 +10,7 @@ import org.apache.commons.lang3.LocaleUtils;
 
 import play.data.Form;
 import play.data.validation.Constraints.Required;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -47,11 +48,13 @@ public class UserSettings extends Controller {
 	private static final Form<UserProfile> FORM_USER_PROFILE = form(UserProfile.class);
 	private static final Form<UserSecurity> FORM_USER_SECURITY = form(UserSecurity.class);
 
+	@Transactional
 	public static Result profile() {
 		return ok(userProfile.render(ReferentialService.getLanguages(),
 				getFormProfile(), FORM_USER_SECURITY));
 	}
 
+	@Transactional
 	public static Result updateProfile() {
 		Form<UserProfile> formProfile = getFormProfile().bindFromRequest(
 				"email", "displayName", "localeCode");
@@ -74,6 +77,7 @@ public class UserSettings extends Controller {
 		return user;
 	}
 
+	@Transactional
 	public static Result updatePassword() {
 		Form<UserSecurity> formSecurity = FORM_USER_SECURITY.bindFromRequest();
 

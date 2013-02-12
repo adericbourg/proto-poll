@@ -15,6 +15,7 @@ import org.joda.time.LocalDate;
 
 import play.data.DynamicForm;
 import play.data.Form;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import scala.Option;
@@ -33,10 +34,12 @@ public class CreateEvent extends Controller {
 	private static final Form<Event> FORM_EVENT = form(Event.class).fill(
 			new Event());
 
+	@Transactional
 	public static Result newEvent() {
 		return ok(eventNew.render(FORM_EVENT));
 	}
 
+	@Transactional
 	public static Result createEvent() {
 		Form<Event> filledForm = FORM_EVENT.bindFromRequest();
 
@@ -50,6 +53,7 @@ public class CreateEvent extends Controller {
 		return redirect(routes.CreateEvent.setDates(event.bindId()));
 	}
 
+	@Transactional
 	public static Result setDates(UuidBinder uuid) {
 		Event event = PollService.getEvent(uuid.uuid());
 		Option<String> locale;
@@ -61,6 +65,7 @@ public class CreateEvent extends Controller {
 		return ok(eventAddDates.render(event, FORM_EVENT, locale));
 	}
 
+	@Transactional
 	public static Result saveDates(UuidBinder uuid) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		EventChoice date;

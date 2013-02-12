@@ -15,6 +15,7 @@ import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
 import play.api.templates.Html;
 import play.data.Form;
+import play.db.ebean.Transactional;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -38,6 +39,7 @@ public class AnswerPoll extends Controller {
 
 	static final Form<PollComment> FORM_COMMENT = form(PollComment.class);
 
+	@Transactional
 	public static Result viewPoll(UuidBinder uuidBinder) {
 		UUID uuid = uuidBinder.uuid();
 		Poll poll = PollService.getPoll(uuid);
@@ -51,6 +53,7 @@ public class AnswerPoll extends Controller {
 		}
 	}
 
+	@Transactional
 	public static Result viewPoll(UuidBinder uuidBinder,
 			Form<PollComment> formComment) {
 		UUID uuid = uuidBinder.uuid();
@@ -65,6 +68,7 @@ public class AnswerPoll extends Controller {
 		}
 	}
 
+	@Transactional
 	public static Result comment(UuidBinder uuidBinder) {
 		UUID uuid = uuidBinder.uuid();
 		Form<PollComment> submittedForm = FORM_COMMENT.bindFromRequest();
