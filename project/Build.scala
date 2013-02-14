@@ -11,6 +11,7 @@ object ApplicationBuild extends Build {
     javaCore, 
     javaJdbc, 
     javaEbean,
+    "mysql" % "mysql-connector-java" % "5.1.22",
     "commons-codec" % "commons-codec" % "1.7",
     "org.mockito" % "mockito-all" % "1.9.0" % "test"
   )
