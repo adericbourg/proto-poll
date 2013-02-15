@@ -3,6 +3,7 @@
 @import helper._
 @import helper.twitterBootstrap._
 
+@import ui.util.Language
 @import util.user.message.Messages
 
 @main(Messages.resolve("profile.name")) {
@@ -22,14 +23,16 @@
 		            	'_label -> Messages.resolve("profile.informations.field.email"),
 		            	'_showContraints -> false
 		            )
-		            @select(
-   						formUserProfile("localeCode"),
- 						locales.map{
-   							l => l.toString -> (l.getLanguage)
-   						},
-   						'_label -> Messages.resolve("profile.informations.field.lang"), 
-   						'_default -> ""
-					)
+		            @if(Language.displayLanguageSelection) {
+			            @select(
+	   						formUserProfile("localeCode"),
+	 						locales.map{
+	   							l => l.toString -> (l.getLanguage)
+	   						},
+	   						'_label -> Messages.resolve("profile.informations.field.lang"), 
+	   						'_default -> ""
+						)
+					}
 		        </fieldset>
 		
 		        <div class="actions">

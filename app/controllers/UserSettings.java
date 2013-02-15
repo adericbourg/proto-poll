@@ -4,6 +4,10 @@ import static play.data.Form.form;
 import static ui.tags.MessagesHelper.invalidForm;
 import static util.user.message.Messages.info;
 import static util.user.message.Messages.warning;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import models.User;
 
 import org.apache.commons.lang3.LocaleUtils;
@@ -18,6 +22,7 @@ import scala.Option;
 import services.ReferentialService;
 import services.UserService;
 import services.exception.NoAuthenfiedUserInSessionException;
+import ui.util.Language;
 import util.security.SessionUtil;
 import views.html.userProfile;
 
@@ -56,8 +61,7 @@ public class UserSettings extends Controller {
 
 	@Transactional
 	public static Result updateProfile() {
-		Form<UserProfile> formProfile = getFormProfile().bindFromRequest(
-				"email", "displayName", "localeCode");
+		Form<UserProfile> formProfile = bindProfileUpdateFromRequest();
 		if (formProfile.hasErrors()) {
 			return invalidForm(userProfile.render(
 					ReferentialService.getLanguages(), formProfile,
@@ -66,6 +70,23 @@ public class UserSettings extends Controller {
 		UserService
 				.updateUserProfile(getUserFromUserProfile(formProfile.get()));
 		return redirect(routes.UserSettings.profile());
+	}
+
+	private static Form<UserProfile> bindProfileUpdateFromRequest() {
+		String[] updatableFields = getBindableFieldsForProfileUpdate();
+		Form<UserProfile> formProfile = getFormProfile().bindFromRequest(
+				updatableFields);
+		return formProfile;
+	}
+
+	private static String[] getBindableFieldsForProfileUpdate() {
+		List<String> updatableFields = new ArrayList<String>();
+		updatableFields.add("email");
+		updatableFields.add("displayName");
+		if (Language.displayLanguageSelection()) {
+			updatableFields.add("localeCode");
+		}
+		return updatableFields.toArray(new String[updatableFields.size()]);
 	}
 
 	private static User getUserFromUserProfile(UserProfile profile) {

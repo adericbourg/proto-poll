@@ -7,6 +7,11 @@ import services.ReferentialService;
 import util.security.SessionUtil;
 
 public class Language {
+
+	public static boolean displayLanguageSelection() {
+		return availableLanguages().size() > 1;
+	}
+
 	public static List<Locale> availableLanguages() {
 		return ReferentialService.getLanguages();
 	}

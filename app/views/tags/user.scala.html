@@ -38,24 +38,26 @@
 		</li>
 	</ul>	
 } else {
-    <ul class="nav pull-right">
-    	<li class="dropdown">
-			<a href="#" data-toggle="dropdown" class="dropdown-toggle">
-				<i class="icon-white icon-flag"></i> @Messages.resolve("user.language_select")
-				<b class="caret"></b>
-			</a>
-			<ul class="dropdown-menu closed">
-				@for(locale <- Language.availableLanguages) {
-					<li>
-						<a href="@routes.Application.changeLanguage(locale.toString, UIUtil.urlEncode(request))">
-							<img src='@routes.Assets.at("images/flags/tiny/" + locale.getLanguage + ".png")' alt="@locale.getLanguage"/> @locale.getLanguage
-							@if(Language.isCurrentLanguage(locale.getLanguage)) { <i class="icon-ok"></i> }
-						</a>
-					</li>
-				}
-			</ul>
-		</li>
-    </ul>
+	@if(Language.displayLanguageSelection) {
+	    <ul class="nav pull-right">
+	    	<li class="dropdown">
+				<a href="#" data-toggle="dropdown" class="dropdown-toggle">
+					<i class="icon-white icon-flag"></i> @Messages.resolve("user.language_select")
+					<b class="caret"></b>
+				</a>
+				<ul class="dropdown-menu closed">
+					@for(locale <- Language.availableLanguages) {
+						<li>
+							<a href="@routes.Application.changeLanguage(locale.toString, UIUtil.urlEncode(request))">
+								<img src='@routes.Assets.at("images/flags/tiny/" + locale.getLanguage + ".png")' alt="@locale.getLanguage"/> @locale.getLanguage
+								@if(Language.isCurrentLanguage(locale.getLanguage)) { <i class="icon-ok"></i> }
+							</a>
+						</li>
+					}
+				</ul>
+			</li>
+	    </ul>
+    }
     <form class="navbar-form pull-right" action="@routes.Authentication.authenticate" method="POST">
 	    <input name="username" type="text" class="span2" placeholder='@Messages.resolve("user.field.username")'>
 	    <input name="password" type="password" class="span2" placeholder='@Messages.resolve("user.field.password")'>
