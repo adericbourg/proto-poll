@@ -11,8 +11,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import scala.Option;
 import services.UserService;
+import services.exception.AlreadyRegisteredUser;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
+import util.user.message.Messages;
 import controllers.message.ControllerMessage;
 
 public class Authentication extends Controller {
@@ -58,7 +60,13 @@ public class Authentication extends Controller {
 			return invalidForm(views.html.register.render(filledForm));
 		}
 		User user = getUserFromRegistration(registration);
-		UserService.registerUser(user);
+
+		try {
+			UserService.registerUser(user);
+		} catch (AlreadyRegisteredUser e) {
+			Messages.error(e.getMessageKey(), e.getParams());
+			return invalidForm(views.html.register.render(filledForm));
+		}
 
 		// Automatically log user in.
 		SessionUtil.setUser(user);

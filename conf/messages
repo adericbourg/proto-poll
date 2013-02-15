@@ -125,6 +125,7 @@ question.creation.successful=Question successfully created.
 #
 
 login.wrong_old_password=Wrong old password
+register.username_already_exists=User with that username already exists: {0}
 
 #
 # Model validation

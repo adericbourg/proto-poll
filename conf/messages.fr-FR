@@ -125,6 +125,7 @@ question.creation.successful=Question créée avec succès.
 #
 
 login.wrong_old_password=Ancien mot de passe incorrect
+register.username_already_exists=Ce nom d''utilisateur est déjà utilisé : {0}
 
 #
 # Model validation

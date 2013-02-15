@@ -69,6 +69,10 @@ public final class Messages {
 
 	// --- MESSAGE UTIL
 
+	public static String resolve(MessageKey messageKey, Object... params) {
+		return resolve(messageKey.getCode(), params);
+	}
+
 	public static String resolve(String code, Object... params) {
 		if (SessionUtil.preferredLang().isDefined()) {
 			return play.i18n.Messages.get(SessionUtil.preferredLang().get(),
