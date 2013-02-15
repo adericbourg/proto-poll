@@ -1,5 +1,8 @@
 package services.exception;
 
+import services.messages.ServiceMessage;
+import util.exceptions.UserException;
+
 /**
  * Exception thrown when trying to register a user whose username is already
  * used by another registered user.
@@ -7,7 +10,7 @@ package services.exception;
  * @author adericbourg
  * 
  */
-public class AlreadyRegisteredUser extends RuntimeException {
+public class AlreadyRegisteredUser extends UserException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,6 +18,6 @@ public class AlreadyRegisteredUser extends RuntimeException {
 	 * @param username User name.
 	 */
 	public AlreadyRegisteredUser(String username) {
-		super("User with that username already exists: " + username);
+		super(ServiceMessage.ALREADY_REGISTERED_USER, username);
 	}
 }
