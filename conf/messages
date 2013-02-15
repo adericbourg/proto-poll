@@ -13,6 +13,9 @@ common.action.signin=Sign in
 common.action.signup=Sign up
 common.action.logout=Log out
 
+common.label.yes=Yes
+common.label.no=No
+
 home.name=Home
 home.h1=Welcome to ProtoPoll!
 home.create_classic_poll=Create classic poll

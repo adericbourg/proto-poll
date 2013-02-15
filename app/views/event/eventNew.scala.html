@@ -24,7 +24,7 @@
            	)
            	@tags.inputRadioGroup(
            		formEvent("singleAnswer"),
-           		options = Seq("false"->"Yes", "true"->"No"),
+           		options = Seq("false"->Messages.resolve("common.label.yes"), "true"->Messages.resolve("common.label.no")),
            		'_label -> Messages.resolve("event.new.field.single_answer")
            	)
         </fieldset>

@@ -13,6 +13,9 @@ common.action.signin=Connexion
 common.action.signup=S''enregistrer
 common.action.logout=Déconnexion
 
+common.label.yes=Oui
+common.label.no=Non
+
 home.name=Accueil
 home.h1=Bienvenue sur ProtoPoll!
 home.create_classic_poll=Créer un sondage
