@@ -1,38 +1,73 @@
 package util.user.message;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Queue;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import play.mvc.Http.Context;
+import play.mvc.Http.Flash;
 import util.security.SessionUtil;
 
 public final class Messages {
 
-	private static class Message {
-		private MessageKey messageKey;
-		private Object[] params;
+	private static final String INFO_COUNT = "_info_count";
+	private static final String WARN_COUNT = "_warn_count";
+	private static final String ERROR_COUNT = "_err_count";
 
-		private Message(MessageKey messageKey, Object... params) {
-			this.messageKey = messageKey;
-			this.params = params;
-		}
-
-		private String resolve() {
-			return Messages.resolve(messageKey.getCode(), params);
-		}
-	}
-
-	private static final ThreadLocal<Queue<Message>> INFO_QUEUE = new ThreadLocal<Queue<Message>>();
-	private static final ThreadLocal<Queue<Message>> WARNING_QUEUE = new ThreadLocal<Queue<Message>>();
-	private static final ThreadLocal<Queue<Message>> ERROR_QUEUE = new ThreadLocal<Queue<Message>>();
+	private static final String INFO_PREFIX = "info_";
+	private static final String WARN_PREFIX = "warn_";
+	private static final String ERROR_PREFIX = "err_";
 
 	private Messages() {
 		// No instance.
 		throw new AssertionError();
 	}
 
-	// --- UTIL ---
+	// --- INFO ---
+
+	public static void info(MessageKey messageKey, Object... params) {
+		flash(INFO_PREFIX, INFO_COUNT, messageKey, params);
+	}
+
+	public static List<String> listInfo() {
+		return new ArrayList<String>(mapInfos().values());
+	}
+
+	private static Map<String, String> mapInfos() {
+		return mapByPrefix(INFO_PREFIX);
+	}
+
+	// --- WARNING ---
+
+	public static void warning(MessageKey messageKey, Object... params) {
+		flash(WARN_PREFIX, WARN_COUNT, messageKey, params);
+	}
+
+	public static List<String> listWarning() {
+		return new ArrayList<String>(mapWarnings().values());
+	}
+
+	private static Map<String, String> mapWarnings() {
+		return mapByPrefix(WARN_PREFIX);
+	}
+
+	// --- ERROR ---
+
+	public static void error(MessageKey messageKey, Object... params) {
+		flash(ERROR_PREFIX, ERROR_COUNT, messageKey, params);
+	}
+
+	public static List<String> listError() {
+		return new ArrayList<String>(mapErrors().values());
+	}
+
+	private static Map<String, String> mapErrors() {
+		return mapByPrefix(ERROR_PREFIX);
+	}
+
+	// --- MESSAGE UTIL
 
 	public static String resolve(String code, Object... params) {
 		if (SessionUtil.preferredLang().isDefined()) {
@@ -42,94 +77,25 @@ public final class Messages {
 		return play.i18n.Messages.get(code, params);
 	}
 
-	// --- INFO ---
+	private static synchronized void flash(String prefix, String counterKey,
+			MessageKey messageKey, Object... params) {
+		int count = flash().get(counterKey) == null ? 0 : Integer
+				.valueOf(flash().get(counterKey));
+		flash().put(prefix + ++count, resolve(messageKey.getCode(), params));
+		flash().put(counterKey, String.valueOf(count));
+	}
 
-	public static void info(MessageKey messageKey, Object... params) {
-		if (INFO_QUEUE.get() == null) {
-			INFO_QUEUE.set(new LinkedList<Message>());
+	private static Map<String, String> mapByPrefix(String prefix) {
+		Map<String, String> messages = new LinkedHashMap<String, String>();
+		for (Entry<String, String> entry : flash().entrySet()) {
+			if (entry.getKey().startsWith(prefix)) {
+				messages.put(entry.getKey(), entry.getValue());
+			}
 		}
-		INFO_QUEUE.get().add(new Message(messageKey, params));
+		return messages;
 	}
 
-	public static List<String> listInfo() {
-		List<String> infos = new ArrayList<String>();
-		if (hasInfo()) {
-			do {
-				infos.add(popInfo());
-			} while (hasInfo());
-		}
-		return infos;
+	private static Flash flash() {
+		return Context.current().flash();
 	}
-
-	private static String popInfo() {
-		if (INFO_QUEUE.get() == null) {
-			return null;
-		}
-		return INFO_QUEUE.get().poll().resolve();
-	}
-
-	private static boolean hasInfo() {
-		return (INFO_QUEUE.get() != null) && !INFO_QUEUE.get().isEmpty();
-	}
-
-	// --- WARNING ---
-
-	public static void warning(MessageKey messageKey, Object... params) {
-		if (WARNING_QUEUE.get() == null) {
-			WARNING_QUEUE.set(new LinkedList<Message>());
-		}
-		WARNING_QUEUE.get().add(new Message(messageKey, params));
-	}
-
-	public static List<String> listWarning() {
-		List<String> warnings = new ArrayList<String>();
-		if (hasWarning()) {
-			do {
-				warnings.add(popWarning());
-			} while (hasWarning());
-		}
-		return warnings;
-	}
-
-	private static String popWarning() {
-		if (WARNING_QUEUE.get() == null) {
-			return null;
-		}
-		return WARNING_QUEUE.get().poll().resolve();
-	}
-
-	private static boolean hasWarning() {
-		return (WARNING_QUEUE.get() != null) && !WARNING_QUEUE.get().isEmpty();
-	}
-
-	// --- ERROR ---
-
-	public static void error(MessageKey messageKey, Object... params) {
-		if (ERROR_QUEUE.get() == null) {
-			ERROR_QUEUE.set(new LinkedList<Message>());
-		}
-		ERROR_QUEUE.get().add(new Message(messageKey, params));
-	}
-
-	public static List<String> listError() {
-		List<String> errors = new ArrayList<String>();
-		if (hasError()) {
-			do {
-				errors.add(popError());
-			} while (hasError());
-		}
-		return errors;
-	}
-
-	private static String popError() {
-		if (ERROR_QUEUE.get() == null) {
-			return null;
-		}
-		return ERROR_QUEUE.get().poll().resolve();
-	}
-
-	private static boolean hasError() {
-		return (ERROR_QUEUE.get() != null) && !ERROR_QUEUE.get().isEmpty();
-	}
-
 }
