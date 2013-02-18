@@ -16,14 +16,14 @@ common.action.logout=Log out
 common.label.yes=Yes
 common.label.no=No
 
+error.fix_errors_below=Please fix error(s) below
+
 home.name=Home
 home.h1=Welcome to ProtoPoll!
 home.create_classic_poll=Create classic poll
 home.plan_event=Plan event
 home.development=Development
 home.list_all_polls=List all polls
-
-error.fix_errors_below=Please fix error(s) below
 
 listpolls.name=Polls
 listpolls.no_poll_available=No poll available yet.
