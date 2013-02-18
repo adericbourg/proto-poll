@@ -11,6 +11,7 @@ import util.security.SessionUtil;
 import util.user.message.Messages;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 
 /**
@@ -84,8 +85,11 @@ public final class UserService {
 	@Transactional
 	public static Option<User> findByUsername(String name) {
 		String trimmedUsername = name.trim();
-		ExpressionList<User> el = Ebean.find(User.class).where()
-				.ieq("username", trimmedUsername).ieq("registered", "true");
+		ExpressionList<User> el = Ebean
+				.find(User.class)
+				.where()
+				.ieq("username", trimmedUsername)
+				.or(Expr.ieq("registered", "1"), Expr.ieq("registered", "true"));
 		if (el.findRowCount() == 0) {
 			return Option.empty();
 		}
