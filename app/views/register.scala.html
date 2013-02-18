@@ -9,7 +9,7 @@
 
 	@helper.form(action = routes.Authentication.saveRegistration()) {
 		<fieldset>
-			<legend>Registration form</legend>
+			<legend>@Messages.resolve("register.legend")</legend>
 			@inputText(
 		       	registrationForm("username"), 
 		       	'_label -> Messages.resolve("register.field.username"),

@@ -33,6 +33,7 @@ login.field.username=Nom d'utilisateur
 login.field.password=Mot de passe
 
 register.name=Enregistrement
+register.legend=Informations
 register.field.username=Utilisateur
 register.field.password=Mot de passe
 register.field.password_confirmation=Confirmation du mot de passe
