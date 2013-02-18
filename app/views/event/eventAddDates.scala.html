@@ -1,4 +1,4 @@
-@(event: Event, formEvent: Form[Event], locale: Option[String])
+@(poll: Poll, formEvent: Form[Event], locale: Option[String])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -16,11 +16,11 @@
 
 @main(Messages.resolve("event.add_dates.name"), scripts) {
 	
-	@helper.form(action = routes.CreateEvent.saveDates(event.bindId)) {
+	@helper.form(action = routes.CreateEvent.saveDates(poll.bindId)) {
 		<div class="header">
-			<h1>@event.title</h1>
+			<h1>@poll.title</h1>
 			<blockquote>
-	   			<p>@event.description</p>
+	   			<p>@poll.description</p>
 	   		</blockquote>
 		</div>
 

@@ -134,12 +134,9 @@ register.username_already_exists=Ce nom d''utilisateur est déjà utilisé : {0}
 # Model validation
 #
 
-event.title.mandatory=Le titre est obligatoire
+poll.title.mandatory=Le titre est obligatoire
 
 event_choice.date.mandatory=Saisissez une date
-
-question.title.mandatory=Le titre est obligatoire
-
 
 question_choice.label.mandatory=Saisissez une valeur pour ce choix
 

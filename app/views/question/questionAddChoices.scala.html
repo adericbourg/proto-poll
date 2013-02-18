@@ -1,4 +1,4 @@
-@(question: Question, questionForm: Form[Question])
+@(poll: Poll, questionForm: Form[Question])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -13,11 +13,11 @@
 }
 
 @main(Messages.resolve("question.add_choices.name")) {
-    @helper.form(action = routes.CreateQuestion.saveChoices(question.bindId)) {
+    @helper.form(action = routes.CreateQuestion.saveChoices(poll.bindId)) {
 		<div class="header">
-			<h1>@question.title</h1>
+			<h1>@poll.title</h1>
 			<blockquote>
-    			<p>@question.description</p>
+    			<p>@poll.description</p>
     		</blockquote>
 		</div>
 

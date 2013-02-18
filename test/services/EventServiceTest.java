@@ -9,6 +9,7 @@ import java.util.List;
 
 import models.Event;
 import models.EventChoice;
+import models.Poll;
 import models.User;
 
 import org.joda.time.LocalDate;
@@ -74,9 +75,9 @@ public class EventServiceTest extends ProtoPollTest {
 	}
 
 	private Event createEvent() {
-		final Event event = new Event();
-		event.title = "event title";
-		EventService.createEvent(event);
-		return event;
+		Poll poll = Poll.initEvent();
+		poll.title = "event title";
+		PollService.createPoll(poll);
+		return PollService.getPoll(poll.uuid).event;
 	}
 }

@@ -23,13 +23,6 @@ import com.avaje.ebean.ExpressionList;
 public class EventService {
 
 	@Transactional
-	public static Event createEvent(Event event) {
-		event.save();
-		PollService.initPoll(event);
-		return event;
-	}
-
-	@Transactional
 	public static void saveDates(UUID uuid, Collection<EventChoice> dates) {
 		Event event = PollService.getEvent(uuid);
 		event.dates = new ArrayList<EventChoice>(dates);
@@ -37,7 +30,8 @@ public class EventService {
 	}
 
 	@Transactional
-	public static void answerEventRegistered(UUID uuid, Collection<Long> choiceIds) {
+	public static void answerEventRegistered(UUID uuid,
+			Collection<Long> choiceIds) {
 		answerEvent(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 

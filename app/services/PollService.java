@@ -23,6 +23,33 @@ public class PollService {
 	private static final Finder<UUID, Poll> POLL_FINDER = new Finder<UUID, Poll>(
 			UUID.class, Poll.class);
 
+	public static Poll createPoll(Poll poll) {
+		if (poll.uuid != null) {
+			throw new IllegalArgumentException("Poll is already saved");
+		}
+		if (!poll.isEvent() && !poll.isQuestion()) {
+			throw new IllegalArgumentException(
+					"Poll is must be a question or an event");
+		}
+		if (poll.isEvent() && poll.isQuestion()) {
+			throw new IllegalArgumentException(
+					"Poll is must be a question or an event but not both");
+		}
+
+		if (poll.isEvent()) {
+			poll.event.save();
+		}
+		if (poll.isQuestion()) {
+			poll.question.save();
+		}
+		if (SessionUtil.currentUser().isDefined()) {
+			poll.userCreator = SessionUtil.currentUser().get();
+		}
+		poll.creationDate = DateTime.now();
+		poll.save();
+		return poll;
+	}
+
 	@Transactional
 	public static List<Poll> polls() {
 		return Ebean.find(Poll.class).orderBy("creationDate DESC").findList();
@@ -78,25 +105,6 @@ public class PollService {
 			return null;
 		}
 		return poll.event;
-	}
-
-	static void initPoll(Event event) {
-		Poll poll = new Poll(event);
-		event.poll = initPoll(poll);
-	}
-
-	static void initPoll(Question question) {
-		Poll poll = new Poll(question);
-		question.poll = initPoll(poll);
-	}
-
-	private static Poll initPoll(Poll poll) {
-		if (SessionUtil.currentUser().isDefined()) {
-			poll.userCreator = SessionUtil.currentUser().get();
-		}
-		poll.creationDate = DateTime.now();
-		poll.save();
-		return poll;
 	}
 
 	@Transactional

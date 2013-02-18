@@ -1,4 +1,4 @@
-@(user: Option[User], event: Event, results: PollResults, formComment: Form[AnswerPoll.PollComment])
+@(user: Option[User], poll: Poll, results: PollResults, formComment: Form[AnswerPoll.PollComment])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -34,16 +34,16 @@
 	</td>
 }
 
-@main(Messages.resolve("event.answer.name", event.title)) {
+@main(Messages.resolve("event.answer.name", poll.title)) {
 
-	@tags.pollHeader(event.poll, true)
+	@tags.pollHeader(poll, true)
 	
-	@helper.form(action = routes.AnswerEvent.answer(event.bindId)) {
+	@helper.form(action = routes.AnswerEvent.answer(poll.bindId)) {
 		<table class="table table-bordered table-hover table-condensed poll-results">
 			<thead>
 			<tr>
 				<th>@Messages.resolve("evant.answer.participants")</th>
-				@for(date <- event.dates) {
+				@for(date <- poll.event.dates) {
 					<th class="result">@UIUtil.formatDate(date.date)</th>
 				}
 			</tr>
@@ -53,14 +53,14 @@
 					@if(user.isDefined && username.equals(user.get.username)) {
 						<tr>
 							<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
-							@for(date <- event.dates) {
-								@answerInput(date, username, results, event.singleAnswer)
+							@for(date <- poll.event.dates) {
+								@answerInput(date, username, results, poll.singleAnswer)
 							}
 						</tr>
 					} else {
 						<tr>
 							<td>@tags.gravatar(results.getUser(username), 24) @username</td>
-							@for(date <- event.dates) {
+							@for(date <- poll.event.dates) {
 								@if(results.isCheckedChoice(username, date.id)) {
 									<td class="result result-ok">&#10004;</td>
 								} else {
@@ -72,7 +72,7 @@
 				}
 				<tr>
 					<th>@Messages.resolve("evant.answer.totals")</th>
-					@for(date <- event.dates) {
+					@for(date <- poll.event.dates) {
 						<td class="result">
 							@if(results.isBetterChoice(date.id)) {
 								<span class="badge badge-info">@results.total(date.id)</span>
@@ -85,8 +85,8 @@
 				@if(user.isDefined && !results.isAlreadyAnswered()) {
 					<tr class="info">
 						<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
-						@for(date <- event.dates) {
-							@answerInput(date, user.get.username, results, event.singleAnswer)
+						@for(date <- poll.event.dates) {
+							@answerInput(date, user.get.username, results, poll.singleAnswer)
 						}
 					</tr>
 				}
@@ -95,8 +95,8 @@
 						<td class="username">
 							<input name="username" placeholder='@Messages.resolve("evant.answer.placeholder.username")'/>
 						</td>
-						@for(date <- event.dates) {
-							@answerInput(date, null, results, event.singleAnswer)
+						@for(date <- poll.event.dates) {
+							@answerInput(date, null, results, poll.singleAnswer)
 						}
 					</tr>
 				}
@@ -111,7 +111,7 @@
 	}
 	
 	
-	@tags.comments(event.bindId, event.poll.comments, formComment)
+	@tags.comments(poll.bindId, poll.comments, formComment)
 	
 	<script type="text/javascript">
         $('.answer').live('click', function(e) {

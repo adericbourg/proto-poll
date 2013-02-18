@@ -14,11 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 
-import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import util.binders.UuidBinder;
-
-import com.google.common.base.Strings;
 
 @Entity
 @Table(name = "event")
@@ -29,16 +26,6 @@ public class Event extends Model {
 	@Id
 	@Column(name = "id")
 	public Long id;
-
-	@Required(message = "event.title.mandatory")
-	@Column(name = "title", nullable = false)
-	public String title;
-
-	@Column(name = "description")
-	public String description;
-
-	@Column(name = "single_answer", nullable = false)
-	public boolean singleAnswer = false;
 
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL)
@@ -61,15 +48,5 @@ public class Event extends Model {
 	@Transient
 	public UuidBinder bindId() {
 		return poll == null ? null : poll.bindId();
-	}
-
-	@Transient
-	public final boolean hasDescription() {
-		return !Strings.isNullOrEmpty(description);
-	}
-
-	@Transient
-	public final boolean hasRegisteredCreator() {
-		return poll.hasRegisteredCreator();
 	}
 }

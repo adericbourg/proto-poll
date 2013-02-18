@@ -6,7 +6,7 @@
 @main(Messages.resolve("listpolls.name")) {
 	<ul class="none">
 	    @for(poll <- polls) {
-	        <li><a href="@routes.AnswerPoll.viewPoll(poll.bindId)" title="@poll.getDescription">@poll.getTitle</a></li>
+	        <li><a href="@routes.AnswerPoll.viewPoll(poll.bindId)" title="@poll.description">@poll.title</a></li>
 	    }
 	</ul>
 }

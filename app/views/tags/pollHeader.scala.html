@@ -2,10 +2,10 @@
 
 @import util.user.message.Messages
 
-<h1>@poll.getTitle</h1>
+<h1>@poll.title</h1>
 @if(poll.hasDescription || poll.hasRegisteredCreator) {
 	<blockquote>
-		@poll.getDescription
+		@poll.description
 		@if(detailed) {
 			@if(poll.hasRegisteredCreator) {
 				@if(poll.hasDescription) {<br />}

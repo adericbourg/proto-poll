@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import models.Poll;
 import models.Question;
 import models.QuestionChoice;
 import models.User;
@@ -108,9 +109,10 @@ public class QuestionServiceTest extends ProtoPollTest {
 	}
 
 	private static Question createQuestion() {
-		final Question question = new Question();
-		question.title = "question title";
-		return QuestionService.createQuestion(question);
+		Poll poll = Poll.initQuestion();
+		poll.title = "question title";
+		PollService.createPoll(poll);
+		return PollService.getPoll(poll.uuid).question;
 	}
 
 	private static Question addChoices(Question question) {

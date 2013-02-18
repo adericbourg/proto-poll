@@ -98,9 +98,9 @@ public class AnswerPoll extends Controller {
 	}
 
 	static Html getEventViewContent(UUID uuid, Form<PollComment> formComment) {
-		Event event = PollService.getEvent(uuid);
-		return eventAnswer.render(SessionUtil.currentUser(), event,
-				getPollResults(event), formComment);
+		Poll poll = PollService.getPoll(uuid);
+		return eventAnswer.render(SessionUtil.currentUser(), poll,
+				getPollResults(poll.event), formComment);
 	}
 
 	static Content getQuestionViewContent(UUID uuid) {
@@ -109,9 +109,9 @@ public class AnswerPoll extends Controller {
 
 	static Content getQuestionViewContent(UUID uuid,
 			Form<AnswerPoll.PollComment> formComment) {
-		Question question = PollService.getQuestion(uuid);
-		return questionAnswer.render(SessionUtil.currentUser(), question,
-				getPollResults(question), formComment);
+		Poll poll = PollService.getPoll(uuid);
+		return questionAnswer.render(SessionUtil.currentUser(), poll,
+				getPollResults(poll.question), formComment);
 	}
 
 	private static PollResults getPollResults(Event event) {

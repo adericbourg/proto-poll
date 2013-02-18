@@ -1,4 +1,4 @@
-@(formEvent: Form[Event])
+@(pollForm: Form[Poll])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -6,24 +6,24 @@
 @import util.user.message.Messages
 
 @main(Messages.resolve("event.new.name")) {
-	@helper.form(action = routes.CreateEvent.createEvent()) {
+	@helper.form(action = routes.CreatePoll.createEvent()) {
         <fieldset>
             <legend>@Messages.resolve("event.new.legend")</legend>
 
             @inputText(
-            	formEvent("title"), 
+            	pollForm("title"), 
             	'_label -> Messages.resolve("event.new.field.title"),
             	'_showContraints -> false,
             	'class -> "input-xxlarge"
             )
             @textarea(
-            	formEvent("description"), 
+            	pollForm("description"), 
             	'_label -> Messages.resolve("event.new.field.description"),
             	'_showContraints -> false,
             	'class -> "input-xxlarge"
            	)
            	@tags.inputRadioGroup(
-           		formEvent("singleAnswer"),
+           		pollForm("singleAnswer"),
            		options = Seq("false"->Messages.resolve("common.label.yes"), "true"->Messages.resolve("common.label.no")),
            		'_label -> Messages.resolve("event.new.field.single_answer")
            	)

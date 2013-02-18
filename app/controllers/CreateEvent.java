@@ -1,7 +1,6 @@
 package controllers;
 
 import static play.data.Form.form;
-import static ui.tags.MessagesHelper.invalidForm;
 import static util.user.message.Messages.info;
 
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.Map.Entry;
 
 import models.Event;
 import models.EventChoice;
+import models.Poll;
 
 import org.joda.time.LocalDate;
 
@@ -24,7 +24,6 @@ import services.PollService;
 import util.binders.UuidBinder;
 import util.security.SessionUtil;
 import views.html.event.eventAddDates;
-import views.html.event.eventNew;
 
 import com.google.common.base.Strings;
 
@@ -35,34 +34,15 @@ public class CreateEvent extends Controller {
 			new Event());
 
 	@Transactional
-	public static Result newEvent() {
-		return ok(eventNew.render(FORM_EVENT));
-	}
-
-	@Transactional
-	public static Result createEvent() {
-		Form<Event> filledForm = FORM_EVENT.bindFromRequest();
-
-		if (filledForm.hasErrors()) {
-			// Error handling.
-			return invalidForm(eventNew.render(FORM_EVENT));
-		}
-
-		Event event = filledForm.get();
-		event = EventService.createEvent(event);
-		return redirect(routes.CreateEvent.setDates(event.bindId()));
-	}
-
-	@Transactional
 	public static Result setDates(UuidBinder uuid) {
-		Event event = PollService.getEvent(uuid.uuid());
+		Poll poll = PollService.getPoll(uuid.uuid());
 		Option<String> locale;
 		if (SessionUtil.preferredLang().isDefined()) {
 			locale = Option.apply(SessionUtil.preferredLang().get().language());
 		} else {
 			locale = Option.empty();
 		}
-		return ok(eventAddDates.render(event, FORM_EVENT, locale));
+		return ok(eventAddDates.render(poll, FORM_EVENT, locale));
 	}
 
 	@Transactional

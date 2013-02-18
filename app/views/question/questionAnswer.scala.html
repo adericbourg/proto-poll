@@ -1,4 +1,4 @@
-@(user: Option[User], question: Question, results: PollResults, formComment: Form[AnswerPoll.PollComment])
+@(user: Option[User], poll: Poll, results: PollResults, formComment: Form[AnswerPoll.PollComment])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -33,21 +33,21 @@
 	</td>
 }
 
-@main(Messages.resolve("question.answer.name", question.title)) {
+@main(Messages.resolve("question.answer.name", poll.title)) {
 	@if(results.isAlreadyAnswered()) {
 		<div class="well text-warning">
 			@Messages.resolve("question.answer.already_answered_info")
 		</div>
 	}
 	
-	@tags.pollHeader(question.poll, true)
+	@tags.pollHeader(poll, true)
 	
-	@helper.form(action = routes.AnswerQuestion.answer(question.bindId)) {
+	@helper.form(action = routes.AnswerQuestion.answer(poll.bindId)) {
 		<table class="table table-bordered table-hover table-condensed poll-results">
 			<thead>
 			<tr>
 				<th>@Messages.resolve("question.answer.participants")</th>
-				@for(choice <- question.choices) {
+				@for(choice <- poll.question.choices) {
 					<th class="result">@choice.label</th>
 				}
 			</tr>
@@ -57,14 +57,14 @@
 					@if(user.isDefined && username.equals(user.get.username)) {
 						<tr>
 							<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
-							@for(choice <- question.choices) {
-								@answerInput(choice, username, results, question.singleAnswer)
+							@for(choice <- poll.question.choices) {
+								@answerInput(choice, username, results, poll.singleAnswer)
 							}
 						</tr>
 					} else {
 						<tr>
 							<td>@tags.gravatar(results.getUser(username), 24) @username</td>
-							@for(choice <- question.choices) {
+							@for(choice <- poll.question.choices) {
 								@if(results.isCheckedChoice(username, choice.id)) {
 									<td class="result result-ok">&#10004;</td>
 								} else {
@@ -76,7 +76,7 @@
 				}
 				<tr>
 					<th>@Messages.resolve("question.answer.totals")</th>
-					@for(choice <- question.choices) {
+					@for(choice <- poll.question.choices) {
 						<td class="result">
 							@if(results.isBetterChoice(choice.id)) {
 								<span class="badge badge-info">@results.total(choice.id)</span>
@@ -89,8 +89,8 @@
 				@if(user.isDefined && !results.isAlreadyAnswered()) {
 					<tr class="info">
 						<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
-						@for(choice <- question.choices) {
-							@answerInput(choice, user.get.username, results, question.singleAnswer)
+						@for(choice <- poll.question.choices) {
+							@answerInput(choice, user.get.username, results, poll.singleAnswer)
 						}
 					</tr>
 				}
@@ -99,8 +99,8 @@
 						<td class="username">
 							<input name="username" placeholder='@Messages.resolve("question.answer.placeholder.username")'/>
 						</td>
-						@for(choice <- question.choices) {
-							@answerInput(choice, null, results, question.singleAnswer)
+						@for(choice <- poll.question.choices) {
+							@answerInput(choice, null, results, poll.singleAnswer)
 						}
 					</tr>
 				}
@@ -114,7 +114,7 @@
 		}
 	}
 
-	@tags.comments(question.bindId, question.poll.comments, formComment)
+	@tags.comments(poll.bindId, poll.comments, formComment)
 	
 	<script type="text/javascript">
         $('.answer').live('click', function(e) {

@@ -1,7 +1,6 @@
 package controllers;
 
 import static play.data.Form.form;
-import static ui.tags.MessagesHelper.invalidForm;
 import static util.user.message.Messages.info;
 
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import models.Poll;
 import models.Question;
 import models.QuestionChoice;
 import play.data.DynamicForm;
@@ -21,7 +21,6 @@ import services.PollService;
 import services.QuestionService;
 import util.binders.UuidBinder;
 import views.html.question.questionAddChoices;
-import views.html.question.questionNew;
 
 import com.google.common.base.Strings;
 
@@ -40,29 +39,9 @@ public class CreateQuestion extends Controller {
 			.compile("choice\\[(.*?)\\]");
 
 	@Transactional
-	public static Result newQuestion() {
-		return ok(questionNew.render(QUESTION_FORM));
-	}
-
-	@Transactional
-	public static Result createQuestion() {
-		Form<Question> filledForm = QUESTION_FORM.bindFromRequest();
-
-		if (filledForm.hasErrors()) {
-			// Error handling.
-			return invalidForm(questionNew.render(filledForm));
-		}
-
-		Question question = filledForm.get();
-		question = QuestionService.createQuestion(question);
-		return redirect(routes.CreateQuestion
-				.setChoices(question.poll.bindId()));
-	}
-
-	@Transactional
 	public static Result setChoices(UuidBinder uuid) {
-		Question question = PollService.getQuestion(uuid.uuid());
-		return ok(questionAddChoices.render(question, QUESTION_FORM));
+		Poll poll = PollService.getPoll(uuid.uuid());
+		return ok(questionAddChoices.render(poll, QUESTION_FORM));
 	}
 
 	@Transactional

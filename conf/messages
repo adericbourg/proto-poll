@@ -134,12 +134,9 @@ register.username_already_exists=User with that username already exists: {0}
 # Model validation
 #
 
-event.title.mandatory=Title is mandatory
+poll.title.mandatory=Title is mandatory
 
 event_choice.date.mandatory=Enter date
-
-question.title.mandatory=Title is mandatory
-
 
 question_choice.label.mandatory=Enter label for this choice
 

@@ -15,8 +15,11 @@ import javax.persistence.Transient;
 
 import org.joda.time.DateTime;
 
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import util.binders.UuidBinder;
+
+import com.google.common.base.Strings;
 
 @Entity
 @Table(name = "poll")
@@ -24,11 +27,11 @@ public class Poll extends Model {
 
 	private static final long serialVersionUID = 1L;
 
-	public Poll(Event event) {
+	private Poll(Event event) {
 		this(null, event);
 	}
 
-	public Poll(Question question) {
+	private Poll(Question question) {
 		this(question, null);
 	}
 
@@ -42,8 +45,21 @@ public class Poll extends Model {
 	@Column(name = "uuid")
 	public UUID uuid;
 
+	@Required(message = "poll.title.mandatory")
+	@Column(name = "title", nullable = false)
+	public String title;
+
+	@Column(name = "description")
+	public String description;
+
+	@Column(name = "single_answer", nullable = false)
+	public boolean singleAnswer = false;
+
 	@Column(name = "creation_date", nullable = false)
 	public DateTime creationDate;
+
+	@ManyToOne(optional = true)
+	public User userCreator;
 
 	@OneToOne
 	public final Question question;
@@ -51,12 +67,19 @@ public class Poll extends Model {
 	@OneToOne
 	public final Event event;
 
-	@ManyToOne(optional = true)
-	public User userCreator;
-
 	@OneToMany
 	@OrderBy("submitDate ASC")
 	public List<Comment> comments;
+
+	// ---
+
+	public static Poll initQuestion() {
+		return new Poll(new Question());
+	}
+
+	public static Poll initEvent() {
+		return new Poll(new Event());
+	}
 
 	// ---
 
@@ -84,32 +107,6 @@ public class Poll extends Model {
 
 	@Transient
 	public boolean hasDescription() {
-		if (isEvent()) {
-			return event.hasDescription();
-		} else if (isQuestion()) {
-			return question.hasDescription();
-		} else {
-			return false;
-		}
-	}
-
-	@Transient
-	public String getDescription() {
-		if (isEvent()) {
-			return event.description;
-		} else if (isQuestion()) {
-			return question.description;
-		}
-		return null;
-	}
-
-	@Transient
-	public String getTitle() {
-		if (isEvent()) {
-			return event.title;
-		} else if (isQuestion()) {
-			return question.title;
-		}
-		return null;
+		return !Strings.isNullOrEmpty(description);
 	}
 }

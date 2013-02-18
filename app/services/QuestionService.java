@@ -39,13 +39,6 @@ public class QuestionService {
 	}
 
 	@Transactional
-	public static Question createQuestion(Question question) {
-		question.save();
-		PollService.initPoll(question);
-		return question;
-	}
-
-	@Transactional
 	public static void saveChoices(UUID uuid, List<QuestionChoice> choices) {
 		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(choices);
 		Question question = PollService.getQuestion(uuid);
