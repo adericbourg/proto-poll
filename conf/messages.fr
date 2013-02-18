@@ -23,6 +23,8 @@ home.plan_event=Planifier un événement
 home.development=Développement
 home.list_all_polls=Lister tous les sondages
 
+error.fix_errors_below=Veuillez corriger les erreurs ci-dessous
+
 listpolls.name=Sondages
 listpolls.no_poll_available=Aucun sondage.
 

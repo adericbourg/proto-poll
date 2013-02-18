@@ -23,6 +23,8 @@ home.plan_event=Plan event
 home.development=Development
 home.list_all_polls=List all polls
 
+error.fix_errors_below=Please fix error(s) below
+
 listpolls.name=Polls
 listpolls.no_poll_available=No poll available yet.
 
