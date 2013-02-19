@@ -45,6 +45,7 @@ public final class SessionUtil {
 			return Option.empty();
 		}
 
+		// Fetch current user.
 		Option<User> optUser;
 		User user = (User) Cache.get(USERNAME.getKey());
 		if (user == null) {
@@ -55,6 +56,13 @@ public final class SessionUtil {
 		} else {
 			optUser = Option.apply(user);
 		}
+
+		// If current user was not found, session cookie might be outdated.
+		// Clear session.
+		if (optUser.isEmpty()) {
+			clear();
+		}
+
 		return optUser;
 	}
 
