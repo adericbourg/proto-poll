@@ -44,7 +44,7 @@ public class CreatePoll extends Controller {
 	private static void fillPoll(Poll poll, Form<Poll> filledForm) {
 		Poll filled = filledForm.get();
 		poll.title = filled.title;
-		poll.description = filled.title;
+		poll.description = filled.description;
 		poll.singleAnswer = filled.singleAnswer;
 	}
 
