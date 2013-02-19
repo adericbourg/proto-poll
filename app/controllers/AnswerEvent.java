@@ -23,7 +23,7 @@ import controllers.message.ControllerMessage;
 
 public class AnswerEvent extends Controller {
 
-	private static final String USERNAME_KEY = "data[username]";
+	private static final String USERNAME_KEY = "username";
 
 	@Transactional
 	public static Result answer(UuidBinder uuid) {
