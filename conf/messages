@@ -12,6 +12,7 @@ common.action.cancel=Cancel
 common.action.signin=Sign in
 common.action.signup=Sign up
 common.action.logout=Log out
+common.action.close_tip=Got it!
 
 common.label.yes=Yes
 common.label.no=No
@@ -46,10 +47,14 @@ profile.informations.legend=Your informations
 profile.informations.field.display_name=Your name
 profile.informations.field.email=E-mail
 profile.informations.field.lang=Preferred language
+profile.informations.tip.gravatar_info.title=E-mail address
+profile.informations.tip.gravatar_info.line_1=This e-mail address will be used to find your avatar image from Gravatar.
+profile.informations.tip.gravatar_info.line_2=To set or update your avatar, connect to
 profile.password.legend=Change your password
 profile.password.current=Current password
 profile.password.new=Desired password
 profile.password.confirm_new=Confirm desired password
+
 
 pollheader.created_by=Created by
 
