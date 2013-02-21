@@ -23,9 +23,9 @@
 	}
 }
 
-@answerInput(choice: QuestionChoice, username: String, results: PollResults, singleChoice: Boolean) = {
+@answerInput(choice: QuestionChoice, username: String, results: PollResults, poll: Poll) = {
 	<td class="@tdClass(choice, username, results)">
-		@if(singleChoice) {
+		@if(poll.singleAnswer && !poll.hasSingleChoice) {
 			<input type="radio" name="choice" id="choice_@choice.id" value="@choice.id" @checkValue(choice, username, results) />
 		} else {
 			<input type="checkbox" name="choice_@choice.id" value="@choice.id" @checkValue(choice, username, results) />
@@ -58,7 +58,7 @@
 						<tr>
 							<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
 							@for(choice <- poll.question.choices) {
-								@answerInput(choice, username, results, poll.singleAnswer)
+								@answerInput(choice, username, results, poll)
 							}
 						</tr>
 					} else {
@@ -90,7 +90,7 @@
 					<tr class="info">
 						<td class="username">@tags.gravatar(user, 24) @user.get.username</td>
 						@for(choice <- poll.question.choices) {
-							@answerInput(choice, user.get.username, results, poll.singleAnswer)
+							@answerInput(choice, user.get.username, results, poll)
 						}
 					</tr>
 				}
@@ -100,7 +100,7 @@
 							<input name="username" placeholder='@Messages.resolve("question.answer.placeholder.username")'/>
 						</td>
 						@for(choice <- poll.question.choices) {
-							@answerInput(choice, null, results, poll.singleAnswer)
+							@answerInput(choice, null, results, poll)
 						}
 					</tr>
 				}

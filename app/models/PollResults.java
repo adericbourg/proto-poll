@@ -73,6 +73,11 @@ public class PollResults {
 		return alreadyAnswered.booleanValue();
 	}
 
+	public boolean hasSingleChoice() {
+		System.out.println("totals: " + totals.size());
+		return totals.size() <= 1;
+	}
+
 	public Option<User> getUser(String username) {
 		return Option.apply(users.get(username));
 	}

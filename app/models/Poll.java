@@ -109,4 +109,15 @@ public class Poll extends Model {
 	public boolean hasDescription() {
 		return !Strings.isNullOrEmpty(description);
 	}
+
+	@Transient
+	public boolean hasSingleChoice() {
+		if (isEvent()) {
+			return event.hasSingleChoice();
+		}
+		if (isQuestion()) {
+			return question.hasSingleChoice();
+		}
+		return false;
+	}
 }

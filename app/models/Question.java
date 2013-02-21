@@ -55,4 +55,11 @@ public class Question extends Model {
 	public UuidBinder bindId() {
 		return poll == null ? null : poll.bindId();
 	}
+
+	// ---
+
+	@Transient
+	public boolean hasSingleChoice() {
+		return choices.size() <= 1;
+	}
 }

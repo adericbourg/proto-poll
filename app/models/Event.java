@@ -49,4 +49,11 @@ public class Event extends Model {
 	public UuidBinder bindId() {
 		return poll == null ? null : poll.bindId();
 	}
+
+	// --
+
+	@Transient
+	public boolean hasSingleChoice() {
+		return dates.size() <= 1;
+	}
 }
