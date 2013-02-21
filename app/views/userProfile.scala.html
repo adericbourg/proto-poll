@@ -72,42 +72,42 @@
 	</div>
 	
 	<!-- Dialogs -->
-    <a id="gravatar-tip-link" href="#">
-    	<i class="icon-info-sign"></i>
+	<a id="gravatar-tip-link" href="#">
+		<i class="icon-info-sign"></i>
 	</a>
 	
 	<div id="gravatar-tip-message" title='@Messages.resolve("profile.informations.tip.gravatar_info.title")'>
-        <p>
-        	<i class="icon-info-sign"></i> @Messages.resolve("profile.informations.tip.gravatar_info.line_1")
-        </p>
-        <p>
-        	@Messages.resolve("profile.informations.tip.gravatar_info.line_2") <a href="https://www.gravatar.com" target="_blank">https://www.gravatar.com</a>.
-        </p>
-    </div>
+		<p>
+			<i class="icon-info-sign"></i> @Messages.resolve("profile.informations.tip.gravatar_info.line_1")
+		</p>
+		<p>
+			@Messages.resolve("profile.informations.tip.gravatar_info.line_2") <a href="https://www.gravatar.com" target="_blank">https://www.gravatar.com</a>.
+		</p>
+	</div>
     
     
-    <script type="text/javascript">  
-    $('#gravatar-tip-link').click(function () {
-   		$('#gravatar-tip-message').dialog('open');
-   		return false;
-  	});
-    
-    $("#gravatar-tip-message").dialog({
-    	autoOpen: false,
-    	modal: true,
-    	buttons: {
-    		'@Messages.resolve("common.action.close_tip")': function () {
-    			$(this).dialog("close");
-    		}
-    	}
-   	});
-    
-    $(document).ready(function() {
-    	registerGravatarTipLink()
-    });
-    
-    function registerGravatarTipLink() {
-    	$('#email_field .help-inline').append($('#gravatar-tip-link'))
-    }
+	<script type="text/javascript">  
+		$('#gravatar-tip-link').click(function () {
+			$('#gravatar-tip-message').dialog('open');
+			return false;
+		});
+
+		$("#gravatar-tip-message").dialog({
+			autoOpen: false,
+			modal: true,
+			buttons: {
+				'@Messages.resolve("common.action.close_tip")': function () {
+					$(this).dialog("close");
+				}
+			}
+		});
+
+		$(document).ready(function() {
+			registerGravatarTipLink()
+		});
+
+		function registerGravatarTipLink() {
+			$('#email_field .help-inline').append($('#gravatar-tip-link'))
+		}
     </script>
 }
