@@ -108,9 +108,9 @@
 		</table>
 		
 		@if(results.isAlreadyAnswered()) {
-			<input class="btn btn-primary btn-large" value="Update" type="submit" />
+			<input class="btn btn-primary btn-large" value='@Messages.resolve("common.action.update")' type="submit" />
 		} else {
-			<input class="btn btn-primary btn-large" value="Submit" type="submit" />
+			<input class="btn btn-primary btn-large" value='@Messages.resolve("common.action.submit")' type="submit" />
 		}
 	}
 
