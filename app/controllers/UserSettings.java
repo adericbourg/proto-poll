@@ -36,9 +36,9 @@ public class UserSettings extends Controller {
 
 	public static class UserProfile {
 		public String displayName;
-		@Required(message = "user.profile.email.mandatory")
-		public String email;
 		public String localeCode;
+		public String email;
+		public String avatarEmail;
 	}
 
 	public static class UserSecurity {
@@ -81,17 +81,17 @@ public class UserSettings extends Controller {
 
 	private static String[] getBindableFieldsForProfileUpdate() {
 		List<String> updatableFields = new ArrayList<String>();
-		updatableFields.add("email");
 		updatableFields.add("displayName");
 		if (Language.displayLanguageSelection()) {
 			updatableFields.add("localeCode");
 		}
+		updatableFields.add("avatarEmail");
 		return updatableFields.toArray(new String[updatableFields.size()]);
 	}
 
 	private static User getUserFromUserProfile(UserProfile profile) {
 		User user = new User();
-		user.email = profile.email;
+		user.avatarEmail = profile.avatarEmail;
 		user.displayName = profile.displayName;
 		user.preferredLocale = Strings.isNullOrEmpty(profile.localeCode) ? null
 				: LocaleUtils.toLocale(profile.localeCode);
@@ -154,6 +154,7 @@ public class UserSettings extends Controller {
 		userProfileData.email = currentUser.email;
 		userProfileData.localeCode = currentUser.preferredLocale == null ? null
 				: currentUser.preferredLocale.toString();
+		userProfileData.avatarEmail = currentUser.avatarEmail;
 		return FORM_USER_PROFILE.fill(userProfileData);
 	}
 }

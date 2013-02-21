@@ -26,6 +26,7 @@ public class Authentication extends Controller {
 		public String password;
 		@Required(message = "authentication.registration.password_confirm.mandatory")
 		public String passwordConfirm;
+		@Required(message = "authentication.registration.email.mandatory")
 		public String email;
 	}
 

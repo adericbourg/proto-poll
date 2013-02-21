@@ -19,7 +19,6 @@ import com.avaje.ebean.ExpressionList;
  * @author adericbourg
  * 
  */
-
 public final class UserService {
 
 	private UserService() {
@@ -42,7 +41,7 @@ public final class UserService {
 	@Transactional
 	public static void updateUserProfile(User user) {
 		User currentUser = getCheckedCurrentUser();
-		currentUser.email = user.email;
+		currentUser.avatarEmail = user.avatarEmail;
 		currentUser.displayName = user.displayName;
 		currentUser.preferredLocale = user.preferredLocale;
 		currentUser.update();

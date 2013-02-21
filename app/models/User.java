@@ -42,6 +42,9 @@ public class User extends Model {
 	@Column(name = "email")
 	public String email;
 
+	@Column(name = "avatar_email")
+	public String avatarEmail;
+
 	@Required
 	@Column(name = "is_registered", nullable = false)
 	public Boolean registered = false;

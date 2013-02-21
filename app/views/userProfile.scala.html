@@ -21,7 +21,8 @@
 		            @inputText(
 		            	formUserProfile("email"), 
 		            	'_label -> Messages.resolve("profile.informations.field.email"),
-		            	'_showContraints -> false
+		            	'_showContraints -> false,
+		            	'readonly -> "readonly"
 		            )
 		            @if(Language.displayLanguageSelection) {
 			            @select(
@@ -33,6 +34,11 @@
 	   						'_default -> ""
 						)
 					}
+					 @inputText(
+		            	formUserProfile("avatarEmail"), 
+		            	'_label -> Messages.resolve("profile.informations.field.avatar_email"),
+		            	'_showContraints -> false
+		            )
 		        </fieldset>
 		
 		        <div class="actions">
@@ -107,7 +113,7 @@
 		});
 
 		function registerGravatarTipLink() {
-			$('#email_field .help-inline').append($('#gravatar-tip-link'))
+			$('#avatarEmail_field .help-inline').append($('#gravatar-tip-link'))
 		}
 	</script>
 }

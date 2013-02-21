@@ -88,14 +88,18 @@ public final class UIUtil {
 		return !Strings.isNullOrEmpty(SessionUtil.currentUser().get().email);
 	}
 
-	public static String getGravatarUrl(Option<User> user, int size) {
-		if (user.isEmpty()) {
+	public static String getGravatarUrl(Option<User> optUser, int size) {
+		if (optUser.isEmpty()) {
 			return null;
 		}
+
+		User user = optUser.get();
+		String email = Strings.isNullOrEmpty(user.avatarEmail) ? user.email
+				: user.avatarEmail;
 		return String.format(
 				Play.application().configuration()
 						.getString(GRAVATAR_PICTURE_URL),
-				MD5HexUtil.md5Hex(user.get().email), size);
+				MD5HexUtil.md5Hex(email), size);
 	}
 
 	public static String getGravatarUrl() {

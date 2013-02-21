@@ -140,6 +140,7 @@ public class UserServiceTest extends ProtoPollTest {
 		initUser.username = DUMMY_USERNAME;
 		initUser.passwordHash = DUMMY_PASSWORD_HASHED;
 		initUser.email = DUMMY_EMAIL;
+		initUser.avatarEmail = "avatar" + DUMMY_EMAIL;
 		initUser.preferredLocale = Locale.CANADA;
 		UserService.registerUser(initUser);
 
@@ -148,6 +149,7 @@ public class UserServiceTest extends ProtoPollTest {
 		User modifiedUser = UserService.findByUsername(initUser.username).get();
 		modifiedUser.preferredLocale = Locale.FRANCE;
 		modifiedUser.email = DUMMY_EMAIL + "mod";
+		modifiedUser.avatarEmail = "avatar" + DUMMY_EMAIL + "mod";
 		modifiedUser.displayName = initUser.displayName + "mod";
 		modifiedUser.id = -1L;
 
@@ -160,20 +162,20 @@ public class UserServiceTest extends ProtoPollTest {
 		assertEquals(initUser.registered, sessionUser.registered);
 		assertEquals(initUser.username, sessionUser.username);
 		assertEquals(initUser.passwordHash, sessionUser.passwordHash);
+		assertEquals(initUser.email, initUser.email);
 		assertEquals(modifiedUser.displayName, sessionUser.displayName);
 		assertEquals(modifiedUser.preferredLocale, sessionUser.preferredLocale);
-		assertEquals(modifiedUser.email, sessionUser.email);
+		assertEquals(modifiedUser.avatarEmail, sessionUser.avatarEmail);
 
 		User loadedUser = UserService.findByUsername(initUser.username).get();
 		assertEquals(initUser.id, loadedUser.id);
 		assertEquals(initUser.registered, loadedUser.registered);
 		assertEquals(initUser.username, loadedUser.username);
 		assertEquals(initUser.passwordHash, loadedUser.passwordHash);
-		// FIXME: It should work (since it works using the UI) but does not...
-		// assertEquals(modifiedUser.displayName, loadedUser.displayName);
-		// assertEquals(modifiedUser.preferredLocale,
-		// loadedUser.preferredLocale);
-		// assertEquals(modifiedUser.email, loadedUser.email);
+		assertEquals(initUser.email, loadedUser.email);
+		assertEquals(modifiedUser.displayName, loadedUser.displayName);
+		assertEquals(modifiedUser.preferredLocale, loadedUser.preferredLocale);
+		assertEquals(modifiedUser.avatarEmail, loadedUser.avatarEmail);
 
 	}
 }
