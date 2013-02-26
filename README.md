@@ -5,7 +5,7 @@ Proto Poll is a free poll system. It is released under the GNU GPL3 (see *LICENC
 ## Deployment
 
 This software uses *Play! framework* 2.1.0 ([download](http://downloads.typesafe.com/play/2.1.0/play-2.1.0.zip "Download Play! Framework 2.1.0")).
-You may find more informations about installing *Play!* on [its website](http://www.playframework.com/ "Play! Framework website") .
+You may find more informations about installing *Play!* on [its website](http://www.playframework.com/documentation/2.1.0/Installing "Play! Framework website") .
 
 ### Development
 
