@@ -22,11 +22,13 @@ import com.google.common.base.Strings;
 public final class UIUtil {
 
 	private static final String ENCODING = "UTF-8";
+	private static final String DATE_SORT_FORMAT = "yyyyMMdd|HHmmss|SSS";
+	private static final int GRAVATAR_DEFAULT_SIZE = 25;
+
 	private static final String ROOT_URL = "application.base.url";
 	private static final String GRAVATAR_PICTURE_URL = "gravatar.picture.url";
 	private static final String DATE_FORMAT_PARAMETER = "date.format";
 	private static final String DATE_TIME_FORMAT_PARAMETER = "datetime.format";
-	private static final int GRAVATAR_DEFAULT_SIZE = 25;
 
 	private UIUtil() {
 		throw new AssertionError();
@@ -52,6 +54,10 @@ public final class UIUtil {
 			formatter = DateTimeFormat.forPattern(formatPattern);
 		}
 		return formatter.print(dateTime);
+	}
+
+	public static String formatDateTimeSortable(DateTime dateTime) {
+		return DateTimeFormat.forPattern(DATE_SORT_FORMAT).print(dateTime);
 	}
 
 	public static String urlEncode(Request request) {

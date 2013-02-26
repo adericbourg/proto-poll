@@ -29,6 +29,10 @@ home.list_all_polls=List all polls
 
 listpolls.name=Polls
 listpolls.no_poll_available=No poll available yet.
+listpolls.table.header.type=Type
+listpolls.table.header.creation_date=Creation date
+listpolls.table.header.title=Title
+listpolls.table.link.view_poll=View poll
 
 login.name=Login
 login.not_registered_inter=Not registered?

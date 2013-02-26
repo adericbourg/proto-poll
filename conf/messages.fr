@@ -29,6 +29,10 @@ home.list_all_polls=Lister tous les sondages
 
 listpolls.name=Sondages
 listpolls.no_poll_available=Aucun sondage.
+listpolls.table.header.type=Type
+listpolls.table.header.creation_date=Date de création
+listpolls.table.header.title=Titre
+listpolls.table.link.view_poll=Accéder au sondage
 
 login.name=Connexion
 login.not_registered_inter=Pas encore inscrit ?
