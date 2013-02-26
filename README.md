@@ -9,7 +9,7 @@ You may find more informations about installing *Play!* on [its website](http://
 
 ### Development
 
-If you want to use the embedded H2 database, juste launch:
+If you want to use the embedded H2 database, just launch:
 ```
 play run
 ``` 
