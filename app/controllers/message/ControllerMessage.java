@@ -16,6 +16,10 @@ public enum ControllerMessage implements MessageKey {
 	/***/
 	POLL_DOES_NOT_EXIST("poll.does_not_exist"),
 	/***/
+	POLL_ANSWER_DOES_NOT_EXIST("poll.answer_does_not_exist"),
+	/***/
+	POLL_ANSWER_DELETED("poll.answer_deleted"),
+	/***/
 	EVENT_SUCCESSFULLY_CREATED("event.creation.successful"),
 	/***/
 	QUESTION_SUCCESSFULLY_CREATED("question.creation.successful"),

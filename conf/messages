@@ -9,6 +9,7 @@ common.action.update=Update
 common.action.submit=Submit
 common.action.post=Post
 common.action.cancel=Cancel
+common.action.delete=Delete
 common.action.signin=Sign in
 common.action.signup=Sign up
 common.action.logout=Log out
@@ -104,6 +105,10 @@ question.answer.participants=Participants
 question.answer.totals=Totals
 question.answer.placeholder.username=Your name
 
+poll.answer.delete.title=Delete answer
+poll.answer.delete.question=Are you sure?
+poll.answer.delete.explanation=Once removed, you won''t be able to recover your answer. However, you will be able to submit a new answer if you wish.
+
 poll.comments.last_edited=last edited on {0}
 poll.comments.legend=Post comment
 poll.comments.field.username=Your name
@@ -128,6 +133,8 @@ poll.does_not_exist=Poll does not exist
 poll.answer.choose_user_name=Please fill your name
 poll.answer.username_already_taken=Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.
 poll.answer.thanks=Thank you for answering!
+poll.answer_deleted=Your answer has been deleted. 
+poll.answer_does_not_exist=No answer deleted: you did not answer to this poll.
 
 event.creation.successful=Event successfully created.
 question.creation.successful=Question successfully created.

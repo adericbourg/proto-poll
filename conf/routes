@@ -42,6 +42,7 @@ GET		/confirm/:uuid				controllers.CreatePoll.confirmCreation(uuid: util.binders
 # View polls
 GET		/polls						controllers.ViewPolls.polls()
 GET		/poll/:uuid					controllers.AnswerPoll.viewPoll(uuid: util.binders.UuidBinder)
+GET		/poll/:uuid/remove			controllers.AnswerPoll.removeUserAnswer(uuid: util.binders.UuidBinder)
 GET		/user/polls					controllers.ViewPolls.userPolls()
 
 # Comment poll

@@ -5,14 +5,17 @@ import java.util.UUID;
 
 import models.Comment;
 import models.Event;
+import models.EventAnswer;
 import models.Poll;
 import models.Question;
+import models.QuestionAnswer;
 import models.User;
 
 import org.joda.time.DateTime;
 
 import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
+import services.exception.NoAnswerFoundException;
 import services.exception.NoAuthenfiedUserInSessionException;
 import util.security.SessionUtil;
 
@@ -133,5 +136,52 @@ public class PollService {
 		comment.poll = poll;
 
 		comment.save();
+	}
+
+	@Transactional
+	public static void removeCurrentUserAnswer(UUID uuid) {
+		if (!SessionUtil.isAuthenticated()) {
+			throw new NoAuthenfiedUserInSessionException();
+		}
+
+		Poll poll = getPoll(uuid);
+		User user = SessionUtil.currentUser().get();
+		if (poll.isEvent()) {
+			removeEventCurrentUserAnswer(poll.event, user);
+		}
+		if (poll.isQuestion()) {
+			removeQuestionCurrentUserAnswer(poll.question, user);
+		}
+	}
+
+	private static void removeEventCurrentUserAnswer(Event event, User user) {
+		Long userId = user.id;
+		EventAnswer toBeDeleted = null;
+		for (EventAnswer answer : event.answers) {
+			if (answer.user.id.equals(userId)) {
+				toBeDeleted = answer;
+				break;
+			}
+		}
+		if (toBeDeleted == null) {
+			throw new NoAnswerFoundException();
+		}
+		toBeDeleted.delete();
+	}
+
+	private static void removeQuestionCurrentUserAnswer(Question question,
+			User user) {
+		Long userId = user.id;
+		QuestionAnswer toBeDeleted = null;
+		for (QuestionAnswer answer : question.answers) {
+			if (answer.user.id.equals(userId)) {
+				toBeDeleted = answer;
+				break;
+			}
+		}
+		if (toBeDeleted == null) {
+			throw new NoAnswerFoundException();
+		}
+		toBeDeleted.delete();
 	}
 }

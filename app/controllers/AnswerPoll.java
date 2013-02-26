@@ -20,8 +20,11 @@ import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
+import services.exception.NoAnswerFoundException;
+import services.exception.NoAuthenfiedUserInSessionException;
 import util.binders.UuidBinder;
 import util.security.SessionUtil;
+import util.user.message.Messages;
 import views.html.event.eventAnswer;
 import views.html.question.questionAnswer;
 
@@ -90,6 +93,19 @@ public class AnswerPoll extends Controller {
 					pollComment.username);
 		}
 
+		return redirect(routes.AnswerPoll.viewPoll(uuidBinder));
+	}
+
+	@Transactional
+	public static Result removeUserAnswer(UuidBinder uuidBinder) {
+		try {
+			PollService.removeCurrentUserAnswer(uuidBinder.uuid());
+			Messages.info(ControllerMessage.POLL_ANSWER_DELETED);
+		} catch (NoAuthenfiedUserInSessionException e) {
+			Messages.error(ControllerMessage.ACCESS_FORBIDDEN_NOT_AUTHENTIFIED);
+		} catch (NoAnswerFoundException e) {
+			Messages.error(ControllerMessage.POLL_ANSWER_DOES_NOT_EXIST);
+		}
 		return redirect(routes.AnswerPoll.viewPoll(uuidBinder));
 	}
 

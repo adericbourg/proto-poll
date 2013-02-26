@@ -9,6 +9,7 @@ common.action.update=Mettre à jour
 common.action.submit=Envoyer
 common.action.post=Poster
 common.action.cancel=Annuler
+common.action.delete=Supprimer
 common.action.signin=Connexion
 common.action.signup=S''enregistrer
 common.action.logout=Déconnexion
@@ -103,6 +104,10 @@ question.answer.participants=Participants
 question.answer.totals=Totaux
 question.answer.placeholder.username=Votre nom
 
+poll.answer.delete.title=Suppression
+poll.answer.delete.question=Êtes-vous certain de vouloir supprimer votre réponse ?
+poll.answer.delete.explanation=Une fois supprimée, votre réponse ne pourra pas être restaurée. Cependant, vous pourrez répondre à nouveau au sondage si vous le souhaitez.
+
 poll.comments.last_edited=Dernière modification le {0}
 poll.comments.legend=Poster un commentaire
 poll.comments.field.username=Votre nom
@@ -127,6 +132,8 @@ poll.does_not_exist=Le sondage n''existe pas
 poll.answer.choose_user_name=Saisissez votre nom s''il vous plaît
 poll.answer.username_already_taken=Votre nom d''utilisateur est déjà utilisé. Si vous souhaitez modifier vos réponses, vous devez être enregistré.
 poll.answer.thanks=Merci d''avoir répondu !
+poll.answer_deleted=Votre réponse a bien été effacée.
+poll.answer_does_not_exist=Aucune réponse supprimée : vous n''aviez pas répondu à ce sondage. 
 
 event.creation.successful=Événement créé avec succès.
 question.creation.successful=Question créée avec succès.
