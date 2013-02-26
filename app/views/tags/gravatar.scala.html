@@ -3,5 +3,5 @@
 @import ui.util.UIUtil;
 
 @if(user.isDefined && user.get.email != null) {
-	<img src="@UIUtil.getGravatarUrl(user, size)" />
+	<img src="@UIUtil.getGravatarUrl(user, size)" class="pull-right"/>
 }
