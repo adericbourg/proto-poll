@@ -131,7 +131,7 @@ password.change.new_do_not_match_confirmation=""
 
 poll.does_not_exist=Poll does not exist
 poll.answer.choose_user_name=Please fill your name
-poll.answer.username_already_taken=Your user name has already been used by someone else. If you want to be able to modifiy your answers, you have to be registered.
+poll.answer.username_already_taken=Your user name has already been used by someone else. If you want to be able to modify your answers, you have to be registered.
 poll.answer.thanks=Thank you for answering!
 poll.answer_deleted=Your answer has been deleted. 
 poll.answer_does_not_exist=No answer deleted: you did not answer to this poll.
@@ -144,7 +144,7 @@ question.creation.successful=Question successfully created.
 #
 
 login.wrong_old_password=Wrong old password
-register.username_already_exists=User with that username already exists: {0}
+register.username_already_exists=User with that user name already exists: {0}
 
 #
 # Model validation
