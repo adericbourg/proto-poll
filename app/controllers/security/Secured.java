@@ -5,6 +5,7 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
 import scala.Option;
+import ui.util.UIUtil;
 import util.security.ContextUtil;
 import controllers.routes;
 
@@ -21,6 +22,7 @@ public class Secured extends Security.Authenticator {
 
 	@Override
 	public Result onUnauthorized(Context ctx) {
-		return redirect(routes.Authentication.login());
+		return redirect(routes.Authentication.onWorkLogin(UIUtil.urlEncode(ctx
+				.request())));
 	}
 }

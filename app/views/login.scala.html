@@ -1,8 +1,10 @@
-@(loginForm: Form[Authentication.Login])
+@(loginForm: Form[Authentication.Login], path: Option[String])
 
 @import helper._
 @import helper.twitterBootstrap._
 
+@import ui.util.UIUtil
+@import util.binders.OptionStringBinder
 @import util.user.message.Messages
 
 @main(Messages.resolve("login.name")) {
@@ -11,7 +13,7 @@
 		@Messages.resolve("login.not_registered_inter") <a href="@routes.Authentication.register">@Messages.resolve("login.create_account_suggestion")</a>
 	</div>
 
-	@helper.form(action = routes.Authentication.authenticate()) {
+	@helper.form(action = routes.Authentication.authenticate(OptionStringBinder.create(UIUtil.urlEncode(path)))) {
 		<fieldset>
 			<legend>Sign in</legend>
 			@inputText(

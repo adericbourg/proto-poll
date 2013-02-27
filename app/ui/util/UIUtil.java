@@ -12,8 +12,10 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import play.Play;
+import play.mvc.Http.Context;
 import play.mvc.Http.Request;
 import scala.Option;
+import util.binders.OptionStringBinder;
 import util.security.SessionUtil;
 import util.user.message.Messages;
 
@@ -61,8 +63,19 @@ public final class UIUtil {
 	}
 
 	public static String urlEncode(Request request) {
+		return urlEncode(request.uri());
+	}
+
+	public static Option<String> urlEncode(Option<String> url) {
+		if (url.isEmpty()) {
+			return url;
+		}
+		return Option.apply(urlEncode(url.get()));
+	}
+
+	public static String urlEncode(String url) {
 		try {
-			return URLEncoder.encode(request.uri(), ENCODING);
+			return URLEncoder.encode(url, ENCODING);
 		} catch (UnsupportedEncodingException e) {
 			return "";
 		}
@@ -82,6 +95,11 @@ public final class UIUtil {
 			return rootUrl + relativeUrl.substring(1);
 		}
 		return rootUrl + relativeUrl;
+	}
+
+	public static OptionStringBinder currentPath() {
+		String url = urlEncode(Context.current().request());
+		return OptionStringBinder.create(Option.apply(url));
 	}
 
 	public static boolean displayGravatar() {

@@ -19,7 +19,7 @@
 			</a>
 			<ul class="dropdown-menu closed">
 				<li>
-					<a href="@routes.ViewPolls.userPolls">
+					<a href="@routes.UserViewPolls.userPolls">
 						<i class="icon-list"></i> @Messages.resolve("user.polls")
 					</a>
 				</li>
@@ -58,7 +58,7 @@
 			</li>
 	    </ul>
     }
-    <form class="navbar-form pull-right" action="@routes.Authentication.authenticate" method="POST">
+    <form class="navbar-form pull-right" action="@routes.Authentication.authenticate(UIUtil.currentPath)" method="POST">
 	    <input name="username" type="text" class="span2" placeholder='@Messages.resolve("user.field.username")'>
 	    <input name="password" type="password" class="span2" placeholder='@Messages.resolve("user.field.password")'>
 	    <button type="submit" class="btn">@Messages.resolve("common.action.signin")</button>

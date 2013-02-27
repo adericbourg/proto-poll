@@ -12,6 +12,8 @@ import play.mvc.Result;
 import scala.Option;
 import services.UserService;
 import services.exception.AlreadyRegisteredUser;
+import ui.util.UIUtil;
+import util.binders.OptionStringBinder;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
 import util.user.message.Messages;
@@ -89,14 +91,21 @@ public class Authentication extends Controller {
 
 	@Transactional
 	public static Result login() {
-		return ok(views.html.login.render(FORM_LOGIN));
+		return onWorkLogin(null);
 	}
 
 	@Transactional
-	public static Result authenticate() {
+	public static Result onWorkLogin(String url) {
+		return ok(views.html.login.render(FORM_LOGIN, Option.apply(url)));
+	}
+
+	@Transactional
+	public static Result authenticate(OptionStringBinder urlBinder) {
+		Option<String> url = urlBinder.option();
+
 		Form<Login> formLogin = FORM_LOGIN.bindFromRequest();
 		if (formLogin.hasErrors()) {
-			return invalidForm(views.html.login.render(formLogin));
+			return invalidForm(views.html.login.render(formLogin, url));
 		}
 
 		Login login = formLogin.get();
@@ -106,14 +115,17 @@ public class Authentication extends Controller {
 		if (optUser.isEmpty()) {
 			formLogin.reject("username", "User name and password do not match");
 			formLogin.reject("password", "");
-			return invalidForm(views.html.login.render(formLogin));
+			return invalidForm(views.html.login.render(formLogin, url));
 		}
 
 		User user = optUser.get();
 		SessionUtil.setUser(user);
 
-		// Redirect to main page.
+		// Redirect to page.
 		info(ControllerMessage.APPLICATION_WELCOME, user.getDisplay());
+		if (url.isDefined()) {
+			return redirect(UIUtil.fullUrlDecode(url.get()));
+		}
 		return redirect(routes.Application.index());
 	}
 
