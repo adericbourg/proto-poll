@@ -5,12 +5,6 @@ import scala.Option;
 
 public class OptionStringBinder implements PathBindable<OptionStringBinder> {
 
-	public static void main(String[] args) {
-		OptionStringBinder toto = create(Option.apply("coucou"));
-		System.out.println(Option.apply("coucou").toString());
-		System.out.println(toto.unbind("coucou"));
-	}
-
 	private Option<String> option;
 
 	public static OptionStringBinder create(Option<String> option) {
