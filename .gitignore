@@ -12,10 +12,12 @@ logs
 precompiled
 tmp
 test-result
-eclipse
 server.pid
 
 /project/project
 /project/target
 /target
 /dist
+
+nbproject/
+build.xml
