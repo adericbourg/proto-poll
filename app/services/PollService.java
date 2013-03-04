@@ -15,8 +15,8 @@ import org.joda.time.DateTime;
 
 import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
-import services.exception.NoAnswerFoundException;
-import services.exception.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAnswerFoundException;
+import services.exception.poll.NoAuthenfiedUserInSessionException;
 import util.security.SessionUtil;
 
 import com.avaje.ebean.Ebean;

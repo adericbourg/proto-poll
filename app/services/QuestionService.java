@@ -17,7 +17,7 @@ import models.User;
 import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
 import scala.Option;
-import services.exception.AnonymousUserAlreadyAnsweredPoll;
+import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
 
 import com.avaje.ebean.ExpressionList;

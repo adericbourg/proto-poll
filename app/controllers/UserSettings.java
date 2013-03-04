@@ -21,7 +21,7 @@ import play.mvc.Security;
 import scala.Option;
 import services.ReferentialService;
 import services.UserService;
-import services.exception.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenfiedUserInSessionException;
 import ui.util.Language;
 import util.security.SessionUtil;
 import views.html.userProfile;

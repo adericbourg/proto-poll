@@ -1,4 +1,4 @@
-package services.exception;
+package services.exception.poll;
 
 import util.exceptions.UserException;
 

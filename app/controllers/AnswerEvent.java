@@ -13,7 +13,7 @@ import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.EventService;
-import services.exception.AnonymousUserAlreadyAnsweredPoll;
+import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.binders.UuidBinder;
 import util.security.SessionUtil;
 

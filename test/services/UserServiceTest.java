@@ -12,7 +12,7 @@ import models.User;
 import org.junit.Test;
 
 import scala.Option;
-import services.exception.AlreadyRegisteredUser;
+import services.exception.user.AlreadyRegisteredUser;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
 

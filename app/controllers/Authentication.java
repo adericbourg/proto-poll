@@ -11,7 +11,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import scala.Option;
 import services.UserService;
-import services.exception.AlreadyRegisteredUser;
+import services.exception.user.AlreadyRegisteredUser;
 import ui.util.UIUtil;
 import util.binders.OptionStringBinder;
 import util.security.PasswordUtil;

@@ -1,4 +1,4 @@
-package services.exception;
+package services.exception.user;
 
 public class AnonymousUserAlreadyAnsweredPoll extends RuntimeException {
 

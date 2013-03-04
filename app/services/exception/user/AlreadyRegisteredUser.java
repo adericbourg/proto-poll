@@ -1,4 +1,4 @@
-package services.exception;
+package services.exception.user;
 
 import services.messages.ServiceMessage;
 import util.exceptions.UserException;
