@@ -1,4 +1,4 @@
-# Proto Poll
+# Proto Poll [![Build Status](https://travis-ci.org/adericbourg/proto-poll.png?branch=dev)](https://travis-ci.org/adericbourg/proto-poll)
 
 Proto Poll is a free poll system. It is released under the GNU GPL3 (see *LICENCE*). 
 
