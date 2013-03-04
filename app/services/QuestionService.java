@@ -17,6 +17,7 @@ import models.User;
 import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
 import scala.Option;
+import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
 
@@ -41,6 +42,11 @@ public class QuestionService {
 	@Transactional
 	public static void saveChoices(UUID uuid, List<QuestionChoice> choices) {
 		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(choices);
+
+		if (deduplicatedChoices.isEmpty()) {
+			throw new NoChoiceException();
+		}
+
 		Question question = PollService.getQuestion(uuid);
 		question.choices = deduplicatedChoices;
 		question.save();
@@ -50,10 +56,12 @@ public class QuestionService {
 			List<QuestionChoice> choices) {
 		Set<String> keys = new HashSet<String>();
 		List<QuestionChoice> deduplicated = new ArrayList<QuestionChoice>();
-		for (QuestionChoice questionChoice : choices) {
-			if (!keys.contains(questionChoice.label)) {
-				deduplicated.add(questionChoice);
-				keys.add(questionChoice.label);
+		if (choices != null) {
+			for (QuestionChoice questionChoice : choices) {
+				if (!keys.contains(questionChoice.label)) {
+					deduplicated.add(questionChoice);
+					keys.add(questionChoice.label);
+				}
 			}
 		}
 		return deduplicated;

@@ -15,6 +15,7 @@ import models.User;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
+import services.exception.poll.NoChoiceException;
 import util.UserTestUtil;
 import util.security.SessionUtil;
 
@@ -72,6 +73,24 @@ public class EventServiceTest extends ProtoPollTest {
 		// Assert.
 		final Event loadedEvent = PollService.getEvent(event.uuid());
 		assertEquals(dates.size(), loadedEvent.dates.size());
+	}
+
+	@Test(expected = NoChoiceException.class)
+	public void testNoDateSelectedNull() {
+		// Prepare.
+		final Event event = createEvent();
+
+		// Act.
+		EventService.saveDates(event.uuid(), null);
+	}
+
+	@Test(expected = NoChoiceException.class)
+	public void testNoDateSelectedEmpty() {
+		// Prepare.
+		final Event event = createEvent();
+
+		// Act.
+		EventService.saveDates(event.uuid(), new ArrayList<EventChoice>());
 	}
 
 	private Event createEvent() {

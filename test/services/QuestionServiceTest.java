@@ -17,6 +17,7 @@ import models.User;
 
 import org.junit.Test;
 
+import services.exception.poll.NoChoiceException;
 import util.UserTestUtil;
 import util.security.SessionUtil;
 
@@ -83,6 +84,25 @@ public class QuestionServiceTest extends ProtoPollTest {
 		assertEquals(choices.size(), loadedQuestion.choices.size());
 		assertEquals(choices.get(0).label, loadedQuestion.choices.get(1).label);
 		assertEquals(choices.get(1).label, loadedQuestion.choices.get(0).label);
+	}
+
+	@Test(expected = NoChoiceException.class)
+	public void testNoChoiceDefinedNull() {
+		// Prepare.
+		final Question question = createQuestion();
+
+		// Act.
+		QuestionService.saveChoices(question.uuid(), null);
+	}
+
+	@Test(expected = NoChoiceException.class)
+	public void testNoChoiceDefinedEmpty() {
+		// Prepare.
+		final Question question = createQuestion();
+
+		// Act.
+		QuestionService.saveChoices(question.uuid(),
+				new ArrayList<QuestionChoice>());
 	}
 
 	@Test

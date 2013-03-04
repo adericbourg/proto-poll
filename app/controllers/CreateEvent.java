@@ -1,6 +1,7 @@
 package controllers;
 
 import static play.data.Form.form;
+import static util.user.message.Messages.error;
 import static util.user.message.Messages.info;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import models.Poll;
 
 import org.joda.time.LocalDate;
 
+import play.api.templates.Html;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.db.ebean.Transactional;
@@ -21,6 +23,7 @@ import play.mvc.Result;
 import scala.Option;
 import services.EventService;
 import services.PollService;
+import services.exception.poll.NoChoiceException;
 import util.binders.UuidBinder;
 import util.security.SessionUtil;
 import views.html.event.eventAddDates;
@@ -35,14 +38,7 @@ public class CreateEvent extends Controller {
 
 	@Transactional
 	public static Result setDates(UuidBinder uuid) {
-		Poll poll = PollService.getPoll(uuid.uuid());
-		Option<String> locale;
-		if (SessionUtil.preferredLang().isDefined()) {
-			locale = Option.apply(SessionUtil.preferredLang().get().language());
-		} else {
-			locale = Option.empty();
-		}
-		return ok(eventAddDates.render(poll, FORM_EVENT, locale));
+		return ok(prepareDatesData(uuid));
 	}
 
 	@Transactional
@@ -59,8 +55,24 @@ public class CreateEvent extends Controller {
 				dates.add(date);
 			}
 		}
-		EventService.saveDates(uuid.uuid(), dates);
-		info(ControllerMessage.EVENT_SUCCESSFULLY_CREATED);
-		return redirect(routes.CreatePoll.confirmCreation(uuid));
+		try {
+			EventService.saveDates(uuid.uuid(), dates);
+			info(ControllerMessage.EVENT_SUCCESSFULLY_CREATED);
+			return redirect(routes.CreatePoll.confirmCreation(uuid));
+		} catch (NoChoiceException e) {
+			error(ControllerMessage.NO_CHOICE_ON_POLL);
+			return badRequest(prepareDatesData(uuid));
+		}
+	}
+
+	private static Html prepareDatesData(UuidBinder uuid) {
+		Poll poll = PollService.getPoll(uuid.uuid());
+		Option<String> locale;
+		if (SessionUtil.preferredLang().isDefined()) {
+			locale = Option.apply(SessionUtil.preferredLang().get().language());
+		} else {
+			locale = Option.empty();
+		}
+		return eventAddDates.render(poll, FORM_EVENT, locale);
 	}
 }

@@ -1,6 +1,7 @@
 package controllers;
 
 import static play.data.Form.form;
+import static util.user.message.Messages.error;
 import static util.user.message.Messages.info;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 import models.Poll;
 import models.Question;
 import models.QuestionChoice;
+import play.api.templates.Html;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.db.ebean.Transactional;
@@ -19,6 +21,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
 import services.QuestionService;
+import services.exception.poll.NoChoiceException;
 import util.binders.UuidBinder;
 import views.html.question.questionAddChoices;
 
@@ -40,8 +43,7 @@ public class CreateQuestion extends Controller {
 
 	@Transactional
 	public static Result setChoices(UuidBinder uuid) {
-		Poll poll = PollService.getPoll(uuid.uuid());
-		return ok(questionAddChoices.render(poll, QUESTION_FORM));
+		return ok(prepareChoiceData(uuid));
 	}
 
 	@Transactional
@@ -59,9 +61,19 @@ public class CreateQuestion extends Controller {
 				choices.add(choice);
 			}
 		}
-		QuestionService.saveChoices(uuid.uuid(), choices);
-		info(ControllerMessage.QUESTION_SUCCESSFULLY_CREATED);
-		return redirect(routes.CreatePoll.confirmCreation(uuid));
+		try {
+			QuestionService.saveChoices(uuid.uuid(), choices);
+			info(ControllerMessage.QUESTION_SUCCESSFULLY_CREATED);
+			return redirect(routes.CreatePoll.confirmCreation(uuid));
+		} catch (NoChoiceException e) {
+			error(ControllerMessage.NO_CHOICE_ON_POLL);
+			return badRequest(prepareChoiceData(uuid));
+		}
+	}
+
+	private static Html prepareChoiceData(UuidBinder uuid) {
+		Poll poll = PollService.getPoll(uuid.uuid());
+		return questionAddChoices.render(poll, QUESTION_FORM);
 	}
 
 	private static int extractSortOrder(String key) {

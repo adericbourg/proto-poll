@@ -28,7 +28,9 @@ public enum ControllerMessage implements MessageKey {
 	/***/
 	PASSWORD_CHANGE_SAME_AS_OLD("password.change.same_as_old"),
 	/***/
-	ACCESS_FORBIDDEN_NOT_AUTHENTIFIED("access.forbidden.not_authentified");
+	ACCESS_FORBIDDEN_NOT_AUTHENTIFIED("access.forbidden.not_authentified"),
+	/***/
+	NO_CHOICE_ON_POLL("poll.creation.no_choice_defined");
 
 	private String messageKey;
 

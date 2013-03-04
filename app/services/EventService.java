@@ -14,6 +14,7 @@ import models.EventChoice;
 import models.User;
 import play.db.ebean.Transactional;
 import scala.Option;
+import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
 
@@ -24,6 +25,11 @@ public class EventService {
 
 	@Transactional
 	public static void saveDates(UUID uuid, Collection<EventChoice> dates) {
+
+		if (dates == null || dates.isEmpty()) {
+			throw new NoChoiceException();
+		}
+
 		Event event = PollService.getEvent(uuid);
 		event.dates = new ArrayList<EventChoice>(dates);
 		event.save();
