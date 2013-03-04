@@ -3,6 +3,7 @@
 @import helper._
 @import helper.twitterBootstrap._
 
+@import ui.util.MDHelper
 @import ui.util.UIUtil
 @import util.user.message.Messages
 
@@ -14,7 +15,7 @@
 					<span class="user">@comment.user.getDisplay</span>
 					<span class="date pull-right">@UIUtil.formatDateTime(comment.submitDate) @if(comment.lastEditDate != null) { (@Messages.resolve("poll.comments.last_edited", UIUtil.formatDateTime(comment.lastEditDate))) }</span>
 				</div>
-				<span class="comment-content">@comment.content</span>
+				<span class="comment-content">@MDHelper.process(comment.content)</span>
 			</div>
 		}
 	</div>
