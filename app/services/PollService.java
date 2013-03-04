@@ -1,5 +1,6 @@
 package services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,8 +16,10 @@ import org.joda.time.DateTime;
 
 import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
+import services.exception.poll.InconsistentPollException;
 import services.exception.poll.NoAnswerFoundException;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.PollNotFoundException;
 import util.security.SessionUtil;
 
 import com.avaje.ebean.Ebean;
@@ -90,6 +93,40 @@ public class PollService {
 			}
 		}
 		return poll;
+	}
+
+	@Transactional
+	public static void answerPollAnonymous(String username, UUID uuid,
+			Collection<Long> choiceIds) {
+		Poll poll = getPoll(uuid);
+		if (poll == null) {
+			throw new PollNotFoundException();
+		}
+
+		if (poll.isEvent()) {
+			EventService.answerEventAnonymous(username, uuid, choiceIds);
+		} else if (poll.isQuestion()) {
+			QuestionService.answerQuestionAnonymous(username, uuid, choiceIds);
+		} else {
+			throw new InconsistentPollException();
+		}
+	}
+
+	@Transactional
+	public static void answerPollRegistered(UUID uuid,
+			Collection<Long> choiceIds) {
+		Poll poll = getPoll(uuid);
+		if (poll == null) {
+			throw new PollNotFoundException();
+		}
+
+		if (poll.isEvent()) {
+			EventService.answerEventRegistered(uuid, choiceIds);
+		} else if (poll.isQuestion()) {
+			QuestionService.answerQuestionRegistered(uuid, choiceIds);
+		} else {
+			throw new InconsistentPollException();
+		}
 	}
 
 	@Transactional

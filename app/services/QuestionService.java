@@ -67,14 +67,11 @@ public class QuestionService {
 		return deduplicated;
 	}
 
-	@Transactional
-	public static void answerQuestionAuthenticated(UUID uuid,
-			Collection<Long> choiceIds) {
+	static void answerQuestionRegistered(UUID uuid, Collection<Long> choiceIds) {
 		answerQuestion(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 
-	@Transactional
-	public static void answerQuestionAnonymous(String username, UUID uuid,
+	static void answerQuestionAnonymous(String username, UUID uuid,
 			Collection<Long> choiceIds) {
 		// FIXME It makes poll being loaded twice.
 		Question question = PollService.getQuestion(uuid);

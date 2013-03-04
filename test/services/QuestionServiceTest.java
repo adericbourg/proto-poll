@@ -115,8 +115,8 @@ public class QuestionServiceTest extends ProtoPollTest {
 		choiceIds.add(question.choices.get(0).id);
 
 		// Act.
-		QuestionService.answerQuestionAnonymous("test user", question.uuid(),
-				choiceIds);
+		PollService
+				.answerPollAnonymous("test user", question.uuid(), choiceIds);
 
 		// Assert.
 		Question reloadedQuestion = PollService.getQuestion(question.uuid());

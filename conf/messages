@@ -85,11 +85,6 @@ event.add_dates.legend=Dates
 event.created.name=Event created
 event.created.dates=Dates: 
 
-event.answer.name=Answer event: {0}
-evant.answer.participants=Participants
-evant.answer.totals=Totals
-evant.answer.placeholder.username=Your name
-
 question.new.name=New question
 question.new.legend=Question details
 question.new.field.title=Title
@@ -103,14 +98,12 @@ question.add_choices.placeholder.choice=Choice
 question.created.name=Question created
 question.created.choices=Choices:
 
-question.answer.name=Answer question: {0}
-question.answer.already_answered_info=You already answered this poll. You may update your answers if you wish.
-question.answer.participants=Participants
-question.answer.totals=Totals
-question.answer.placeholder.username=Your name
-
 poll.creation.no_choice_defined=Poll should have at least one choice.
 
+poll.answer.name=Answer: {0}
+poll.answer.participants=Participants
+poll.answer.totals=Totals
+poll.answer.placeholder.username=Your name
 poll.answer.delete.title=Delete answer
 poll.answer.delete.question=Are you sure?
 poll.answer.delete.explanation=Once removed, you won''t be able to recover your answer. However, you will be able to submit a new answer if you wish.

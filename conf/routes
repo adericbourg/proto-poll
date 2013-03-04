@@ -25,8 +25,6 @@ POST    /question/new               	controllers.CreatePoll.createQuestion()
 GET		/question/addChoices/:uuid		controllers.CreateQuestion.setChoices(uuid: util.binders.UuidBinder)
 POST	/question/addChoices/:uuid		controllers.CreateQuestion.saveChoices(uuid: util.binders.UuidBinder)
 
-# Answer question
-POST	/question/:uuid					controllers.AnswerQuestion.answer(uuid: util.binders.UuidBinder)
 
 #Create events
 GET		/event/new						controllers.CreatePoll.newEvent()
@@ -34,17 +32,16 @@ POST	/event/new						controllers.CreatePoll.createEvent()
 GET		/event/dates/:uuid				controllers.CreateEvent.setDates(uuid: util.binders.UuidBinder)
 POST	/event/dates/:uuid				controllers.CreateEvent.saveDates(uuid: util.binders.UuidBinder)
 
-# Answer event
-POST	/event/:uuid					controllers.AnswerEvent.answer(uuid: util.binders.UuidBinder)
-
 # Create polls
 GET		/confirm/:uuid					controllers.CreatePoll.confirmCreation(uuid: util.binders.UuidBinder)
 
 # View polls
 GET		/polls							controllers.ViewPolls.polls()
 GET		/poll/:uuid						controllers.AnswerPoll.viewPoll(uuid: util.binders.UuidBinder)
+POST	/poll/:uuid						controllers.AnswerPoll.answer(uuid: util.binders.UuidBinder)
 GET		/poll/:uuid/remove				controllers.AnswerPoll.removeUserAnswer(uuid: util.binders.UuidBinder)
 GET		/user/polls						controllers.UserViewPolls.userPolls()
+
 
 # Comment poll
 POST	/comment/:uuid					controllers.AnswerPoll.comment(uuid: util.binders.UuidBinder)

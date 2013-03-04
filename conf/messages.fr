@@ -84,11 +84,6 @@ event.add_dates.legend=Dates
 event.created.name=Événement créé
 event.created.dates=Dates : 
 
-event.answer.name=Réponse à l''événement : {0}
-evant.answer.participants=Participants
-evant.answer.totals=Totals
-evant.answer.placeholder.username=Votre nom
-
 question.new.name=Nouvelle question
 question.new.legend=Détails de la question
 question.new.field.title=Titre
@@ -102,14 +97,12 @@ question.add_choices.placeholder.choice=Choix
 question.created.name=Question créée
 question.created.choices=Choix :
 
-question.answer.name=Réponse à la question : {0}
-question.answer.already_answered_info=Vous avez déjà répondu à ce sondage. Vous pouvez mettre à jour votre réponse si vous le souhaitez.
-question.answer.participants=Participants
-question.answer.totals=Totaux
-question.answer.placeholder.username=Votre nom
-
 poll.creation.no_choice_defined=Le sondage devrait avoir au moins un choix.
 
+poll.answer.name=Réponse au sondage : {0}
+poll.answer.participants=Participants
+poll.answer.totals=Totals
+poll.answer.placeholder.username=Votre nom
 poll.answer.delete.title=Suppression
 poll.answer.delete.question=Êtes-vous certain de vouloir supprimer votre réponse ?
 poll.answer.delete.explanation=Une fois supprimée, votre réponse ne pourra pas être restaurée. Cependant, vous pourrez répondre à nouveau au sondage si vous le souhaitez.

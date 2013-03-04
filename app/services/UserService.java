@@ -66,6 +66,15 @@ public final class UserService {
 	}
 
 	@Transactional
+	public static Option<User> getUser(Long userId) {
+		ExpressionList<User> el = Ebean.find(User.class).where().idEq(userId);
+		if (el.findRowCount() == 0) {
+			return Option.empty();
+		}
+		return Option.apply(el.findUnique());
+	}
+
+	@Transactional
 	public static Option<User> authenticate(String login, String password) {
 		String trimmedLogin = login.trim();
 		ExpressionList<User> el = Ebean

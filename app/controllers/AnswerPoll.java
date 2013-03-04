@@ -2,37 +2,38 @@ package controllers;
 
 import static play.data.Form.form;
 import static util.user.message.Messages.error;
+import static util.user.message.Messages.info;
 
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
-import models.Event;
-import models.EventAnswer;
-import models.EventAnswerDetail;
 import models.Poll;
-import models.PollResults;
-import models.Question;
-import models.QuestionAnswer;
-import models.QuestionAnswerDetail;
 import play.api.templates.Html;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.db.ebean.Transactional;
-import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
 import services.exception.poll.NoAnswerFoundException;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.binders.UuidBinder;
 import util.security.SessionUtil;
 import util.user.message.Messages;
-import views.html.event.eventAnswer;
-import views.html.question.questionAnswer;
+import views.html.poll.pollResults;
 
 import com.google.common.base.Strings;
 
 import controllers.message.ControllerMessage;
+import controllers.model.poll.PollResults;
+import controllers.model.poll.PollResultsFactory;
 
 public class AnswerPoll extends Controller {
+
+	private static final String USERNAME_KEY = "username";
 
 	public static class PollComment {
 		public Long userId;
@@ -44,31 +45,27 @@ public class AnswerPoll extends Controller {
 
 	@Transactional
 	public static Result viewPoll(UuidBinder uuidBinder) {
-		UUID uuid = uuidBinder.uuid();
-		Poll poll = PollService.getPoll(uuid);
-		if (poll.isEvent()) {
-			return ok(getEventViewContent(uuid));
-		} else if (poll.isQuestion()) {
-			return ok(getQuestionViewContent(uuid));
-		} else {
+		Poll poll = PollService.getPoll(uuidBinder.uuid());
+
+		if (poll == null) {
 			error(ControllerMessage.POLL_DOES_NOT_EXIST);
 			return Application.index();
 		}
+
+		return ok(getPollViewContent(poll, FORM_COMMENT));
 	}
 
 	@Transactional
 	public static Result viewPoll(UuidBinder uuidBinder,
 			Form<PollComment> formComment) {
-		UUID uuid = uuidBinder.uuid();
-		Poll poll = PollService.getPoll(uuid);
-		if (poll.isEvent()) {
-			return badRequest(getEventViewContent(uuid, formComment));
-		} else if (poll.isQuestion()) {
-			return badRequest(getQuestionViewContent(uuid, formComment));
-		} else {
+		Poll poll = PollService.getPoll(uuidBinder.uuid());
+
+		if (poll == null) {
 			error(ControllerMessage.POLL_DOES_NOT_EXIST);
 			return Application.index();
 		}
+
+		return ok(getPollViewContent(poll, formComment));
 	}
 
 	@Transactional
@@ -109,46 +106,48 @@ public class AnswerPoll extends Controller {
 		return redirect(routes.AnswerPoll.viewPoll(uuidBinder));
 	}
 
-	static Html getEventViewContent(UUID uuid) {
-		return getEventViewContent(uuid, FORM_COMMENT);
-	}
+	@Transactional
+	public static Result answer(UuidBinder uuid) {
 
-	static Html getEventViewContent(UUID uuid, Form<PollComment> formComment) {
-		Poll poll = PollService.getPoll(uuid);
-		return eventAnswer.render(SessionUtil.currentUser(), poll,
-				getPollResults(poll.event), formComment);
-	}
+		Poll poll = PollService.getPoll(uuid.uuid());
+		if (poll == null) {
+			error(ControllerMessage.POLL_DOES_NOT_EXIST);
+			return Application.index();
+		}
 
-	static Content getQuestionViewContent(UUID uuid) {
-		return getQuestionViewContent(uuid, AnswerPoll.FORM_COMMENT);
-	}
-
-	static Content getQuestionViewContent(UUID uuid,
-			Form<AnswerPoll.PollComment> formComment) {
-		Poll poll = PollService.getPoll(uuid);
-		return questionAnswer.render(SessionUtil.currentUser(), poll,
-				getPollResults(poll.question), formComment);
-	}
-
-	private static PollResults getPollResults(Event event) {
-		PollResults results = new PollResults();
-		for (EventAnswer ans : event.answers) {
-			results.registerUser(ans.user);
-			for (EventAnswerDetail detail : ans.details) {
-				results.addAnswer(ans.user.username, detail.choice.id);
+		DynamicForm form = form().bindFromRequest();
+		Set<Long> choices = new HashSet<Long>();
+		for (Entry<String, String> entry : form.data().entrySet()) {
+			if (!isUsername(entry.getKey())) {
+				choices.add(Long.valueOf(entry.getValue()));
 			}
 		}
-		return results;
-	}
-
-	private static PollResults getPollResults(Question question) {
-		PollResults results = new PollResults();
-		for (QuestionAnswer ans : question.answers) {
-			results.registerUser(ans.user);
-			for (QuestionAnswerDetail detail : ans.details) {
-				results.addAnswer(ans.user.username, detail.choice.id);
+		if (SessionUtil.isAuthenticated()) {
+			PollService.answerPollRegistered(uuid.uuid(), choices);
+		} else {
+			String username = form.data().get(USERNAME_KEY);
+			if (Strings.isNullOrEmpty(username)) {
+				error(ControllerMessage.POLL_CHOOSE_USER_NAME);
+				return badRequest(getPollViewContent(poll, FORM_COMMENT));
+			}
+			try {
+				PollService.answerPollAnonymous(username, uuid.uuid(), choices);
+			} catch (AnonymousUserAlreadyAnsweredPoll e) {
+				error(ControllerMessage.POLL_USERNAME_ALREADY_TAKEN);
+				return badRequest(getPollViewContent(poll, FORM_COMMENT));
 			}
 		}
-		return results;
+		info(ControllerMessage.POLL_ANSWER_SUCCESS);
+		return redirect(routes.AnswerPoll.viewPoll(uuid));
+	}
+
+	private static boolean isUsername(String key) {
+		return USERNAME_KEY.equals(key);
+	}
+
+	private static Html getPollViewContent(Poll poll,
+			Form<PollComment> formComment) {
+		PollResults results = PollResultsFactory.build(poll);
+		return pollResults.render(results, poll.comments, formComment);
 	}
 }

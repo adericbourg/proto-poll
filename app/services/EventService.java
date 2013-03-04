@@ -35,14 +35,11 @@ public class EventService {
 		event.save();
 	}
 
-	@Transactional
-	public static void answerEventRegistered(UUID uuid,
-			Collection<Long> choiceIds) {
+	static void answerEventRegistered(UUID uuid, Collection<Long> choiceIds) {
 		answerEvent(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 
-	@Transactional
-	public static void answerEventAnonymous(String username, UUID uuid,
+	static void answerEventAnonymous(String username, UUID uuid,
 			Collection<Long> choiceIds) {
 		Event event = PollService.getEvent(uuid); // With answers
 

@@ -15,6 +15,7 @@ import play.Play;
 import play.mvc.Http.Context;
 import play.mvc.Http.Request;
 import scala.Option;
+import services.UserService;
 import util.binders.OptionStringBinder;
 import util.security.SessionUtil;
 import util.user.message.Messages;
@@ -102,6 +103,34 @@ public final class UIUtil {
 		return OptionStringBinder.create(Option.apply(url));
 	}
 
+	public static boolean isRegisteredUser() {
+		return SessionUtil.isAuthenticated();
+	}
+
+	public static String registeredUserDisplayName() {
+		if (!SessionUtil.isAuthenticated()) {
+			throw new IllegalStateException("No current user");
+		}
+		return SessionUtil.currentUser().get().getDisplay();
+	}
+
+	public static Long registeredUserId() {
+		if (!SessionUtil.isAuthenticated()) {
+			throw new IllegalStateException("No current user");
+		}
+		return SessionUtil.currentUser().get().id;
+	}
+
+	public static boolean isCurrentUser(User user) {
+		if (user == null) {
+			return false;
+		}
+		if (!SessionUtil.isAuthenticated()) {
+			return false;
+		}
+		return SessionUtil.currentUser().get().id.equals(user.id);
+	}
+
 	public static boolean displayGravatar() {
 		if (!SessionUtil.isAuthenticated()) {
 			return false;
@@ -112,6 +141,18 @@ public final class UIUtil {
 		return !Strings.isNullOrEmpty(SessionUtil.currentUser().get().email);
 	}
 
+	public static String getGravatarUrl(Long userId, int size) {
+		if (userId == null) {
+			return null;
+		}
+		Option<User> optUser = UserService.getUser(userId);
+		return getGravatarUrl(optUser, size);
+	}
+
+	public static String getGravatarUrl() {
+		return getGravatarUrl(SessionUtil.currentUser(), GRAVATAR_DEFAULT_SIZE);
+	}
+
 	public static String getGravatarUrl(Option<User> optUser, int size) {
 		if (optUser.isEmpty()) {
 			return null;
@@ -120,13 +161,8 @@ public final class UIUtil {
 		User user = optUser.get();
 		String email = Strings.isNullOrEmpty(user.avatarEmail) ? user.email
 				: user.avatarEmail;
-		return String.format(
-				Play.application().configuration()
-						.getString(GRAVATAR_PICTURE_URL),
+		return Strings.isNullOrEmpty(email) ? null : String.format(Play
+				.application().configuration().getString(GRAVATAR_PICTURE_URL),
 				MD5HexUtil.md5Hex(email), size);
-	}
-
-	public static String getGravatarUrl() {
-		return getGravatarUrl(SessionUtil.currentUser(), GRAVATAR_DEFAULT_SIZE);
 	}
 }

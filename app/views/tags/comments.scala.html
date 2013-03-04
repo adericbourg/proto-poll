@@ -1,4 +1,4 @@
-@(uuid: util.binders.UuidBinder, comments: List[Comment], user: Option[User], formComment: Form[AnswerPoll.PollComment])
+@(uuid: util.binders.UuidBinder, comments: List[Comment], formComment: Form[AnswerPoll.PollComment])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -24,7 +24,7 @@
 @helper.form(action = routes.AnswerPoll.comment(uuid)) {
 	<fieldset>
 		<legend>@Messages.resolve("poll.comments.legend")</legend>
-		@if(user.isEmpty) {
+		@if(!UIUtil.isRegisteredUser) {
 			@inputText(
 		       	formComment("username"), 
 		       	'_label -> Messages.resolve("poll.comments.field.username"),
