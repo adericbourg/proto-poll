@@ -28,3 +28,14 @@ table.poll-results td.result-ok {
 .comments h2 { font-size: 1.3em; }
 .comments h3 { font-size: 1.2em; }
 .comments h4 { font-size: 1.1em; }
+
+.comment .comment-header {
+	background-color: #E5E5E5;
+	border-bottom: 2px solid #E3E3E3;
+	margin: -19px -19px 10px -19px;
+	padding: 10px 19px;
+}
+
+.comment .comment-header .user {
+	font-weight: bold;
+}
