@@ -23,3 +23,8 @@ table.poll-results td.result-ok {
 	background-color: #ddfcda; 
 	color: #00b050;
 }
+
+.comments h1 { font-size: 1.4em; }
+.comments h2 { font-size: 1.3em; }
+.comments h3 { font-size: 1.2em; }
+.comments h4 { font-size: 1.1em; }
