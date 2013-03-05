@@ -101,7 +101,7 @@ poll.creation.no_choice_defined=Le sondage devrait avoir au moins un choix.
 
 poll.answer.name=Réponse au sondage : {0}
 poll.answer.participants=Participants
-poll.answer.totals=Totals
+poll.answer.totals=Totaux
 poll.answer.placeholder.username=Votre nom
 poll.answer.delete.title=Suppression
 poll.answer.delete.question=Êtes-vous certain de vouloir supprimer votre réponse ?
