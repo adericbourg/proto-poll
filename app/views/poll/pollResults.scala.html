@@ -60,7 +60,7 @@
 						<tr>
 							<td class="username">
 								<a href="#answer-delete-confirmation" title="@Messages.resolve("poll.answer.delete.tooltip")" data-toggle="modal"><i class="icon-remove"></i></a>
-									@tags.gravatar(userId, 24) @user.username
+									@tags.gravatar(userId, 24) @user.getDisplay
 								</td>
 								@for((choiceId, choiceLabel) <- results.choices) {
 									@answerInput(choiceId, UIUtil.registeredUserId, results)
