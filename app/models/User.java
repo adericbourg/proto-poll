@@ -49,6 +49,13 @@ public class User extends Model {
 	@Column(name = "is_registered", nullable = false)
 	public Boolean registered = false;
 
+	@Required
+	@Column(name = "from_openid", nullable = false)
+	public Boolean isFromOpenId = false;
+
+	@Column(name = "openid_identifier")
+	public String openIdIdentifier;
+
 	@Column(name = "locale")
 	public Locale preferredLocale;
 

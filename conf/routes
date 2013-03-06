@@ -14,6 +14,11 @@ GET		/login/redirect/:url			controllers.Authentication.onWorkLogin(url: String)
 POST	/authenticate/redirect/:url		controllers.Authentication.authenticate(url: util.binders.OptionStringBinder)
 GET		/logout							controllers.Authentication.logout()
 
+# Third party authentication
+GET		/auth/google/redirect/:url		controllers.security.ThirdPartyAuthentication.google(url: String)
+GET		/openid/verify					controllers.security.OpenIdAuthentication.verify()
+GET		/openid/verify/redirect/:url	controllers.security.OpenIdAuthentication.verifyAndRedirect(url: String)
+
 # User
 GET		/user/profile					controllers.UserSettings.profile()
 POST	/user/update/profile			controllers.UserSettings.updateProfile()

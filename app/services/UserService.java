@@ -1,11 +1,17 @@
 package services;
 
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+
 import models.User;
 import play.db.ebean.Transactional;
+import play.libs.OpenID.UserInfo;
 import scala.Option;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
 import services.messages.ServiceMessage;
+import services.openid.OpenIdAttributes;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
 import util.user.message.Messages;
@@ -96,6 +102,74 @@ public final class UserService {
 		ExpressionList<User> el = Ebean.find(User.class).where()
 				.ieq("username", trimmedUsername)
 				.eq("registered", Boolean.TRUE);
+		if (el.findRowCount() == 0) {
+			return Option.empty();
+		}
+		return Option.apply(el.findUnique());
+	}
+
+	@Transactional
+	public static User authenticateOpenId(UserInfo userInfo) {
+		Option<User> optUser = findByOpenId(userInfo.id);
+		User user;
+		if (optUser.isEmpty()) {
+			// Create new user.
+			user = new User();
+			user.registered = true;
+			user.isFromOpenId = true;
+			user.openIdIdentifier = userInfo.id;
+			user.username = userInfo.id;
+			if (userInfo.attributes.containsKey(OpenIdAttributes.LANGUAGE
+					.getKey())) {
+				user.preferredLocale = new Locale(
+						userInfo.attributes.get(OpenIdAttributes.LANGUAGE
+								.getKey()));
+			}
+		} else {
+			// Get user.
+			user = optUser.get();
+		}
+
+		// Update user data.
+		user.displayName = buildDisplayName(userInfo.attributes);
+		if (userInfo.attributes.containsKey(OpenIdAttributes.EMAIL.getKey())) {
+			user.email = userInfo.attributes.get(OpenIdAttributes.EMAIL
+					.getKey());
+		}
+
+		user.save();
+
+		return user;
+	}
+
+	private static String buildDisplayName(Map<String, String> attributes) {
+		// If OpenId service returned a friendly name: use it.
+		if (attributes.containsKey(OpenIdAttributes.DISPLAY_NAME.getKey())) {
+			return attributes.get(OpenIdAttributes.DISPLAY_NAME.getKey());
+		}
+		// Else build it from real name.
+		StringBuilder sb = new StringBuilder();
+		if (attributes.containsKey(OpenIdAttributes.FIRST_NAME.getKey())) {
+			sb.append(attributes.get(OpenIdAttributes.FIRST_NAME.getKey()));
+		}
+		if (attributes.containsKey(OpenIdAttributes.FIRST_NAME.getKey())
+				&& attributes.containsKey(OpenIdAttributes.LAST_NAME.getKey())) {
+			sb.append(" ");
+		}
+		if (attributes.containsKey(OpenIdAttributes.LAST_NAME.getKey())) {
+			sb.append(attributes.get(OpenIdAttributes.LAST_NAME.getKey()));
+		}
+		// If nothing was supplied, generate a random name.
+		if (sb.length() == 0) {
+			sb.append(UUID.randomUUID().toString());
+		}
+		return sb.toString();
+	}
+
+	private static Option<User> findByOpenId(String openIdIdentifier) {
+		ExpressionList<User> el = Ebean.find(User.class).where()
+				.ieq("openIdIdentifier", openIdIdentifier)
+				.eq("isFromOpenId", Boolean.TRUE);
 		if (el.findRowCount() == 0) {
 			return Option.empty();
 		}
