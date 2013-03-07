@@ -5,7 +5,7 @@ import play.mvc.Result;
 import services.openid.OpenIdProvider;
 
 public class GoogleAuthenticationController extends
-		OpenIdAuthenticationController {
+		OpenIdAuthenticationSupport {
 
 	public static Result auth() {
 		return auth(OpenIdProvider.GOOGLE,

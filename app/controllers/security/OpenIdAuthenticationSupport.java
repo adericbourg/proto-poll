@@ -20,7 +20,7 @@ import ui.util.UIUtil;
 import util.security.SessionUtil;
 import controllers.message.ControllerMessage;
 
-public class OpenIdAuthenticationController extends Controller {
+public class OpenIdAuthenticationSupport extends Controller {
 
 	protected static Result auth(OpenIdProvider provider, Call verifyCall) {
 		if (provider == null) {
