@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import models.User;
+import models.reference.ThirdPartySource;
 import play.db.ebean.Transactional;
 import play.libs.OpenID.UserInfo;
 import scala.Option;
@@ -109,15 +110,16 @@ public final class UserService {
 	}
 
 	@Transactional
-	public static User authenticateOpenId(UserInfo userInfo) {
-		Option<User> optUser = findByOpenId(userInfo.id);
+	public static User authenticateOpenId(UserInfo userInfo,
+			ThirdPartySource source) {
+		Option<User> optUser = findByOpenId(userInfo.id, source);
 		User user;
 		if (optUser.isEmpty()) {
 			// Create new user.
 			user = new User();
 			user.registered = true;
-			user.isFromOpenId = true;
-			user.openIdIdentifier = userInfo.id;
+			user.thirdPartySource = source;
+			user.thirdPartyIdentifier = userInfo.id;
 			user.username = userInfo.id;
 			if (userInfo.attributes.containsKey(OpenIdAttributes.LANGUAGE
 					.getKey())) {
@@ -166,10 +168,11 @@ public final class UserService {
 		return sb.toString();
 	}
 
-	private static Option<User> findByOpenId(String openIdIdentifier) {
+	private static Option<User> findByOpenId(String openIdIdentifier,
+			ThirdPartySource source) {
 		ExpressionList<User> el = Ebean.find(User.class).where()
-				.ieq("openIdIdentifier", openIdIdentifier)
-				.eq("isFromOpenId", Boolean.TRUE);
+				.ieq("thirdPartyIdentifier", openIdIdentifier)
+				.eq("thirdPartySource", source);
 		if (el.findRowCount() == 0) {
 			return Option.empty();
 		}

@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import models.User;
+import models.reference.ThirdPartySource;
 import play.libs.F.Promise;
 import play.libs.OpenID;
 import play.libs.OpenID.UserInfo;
+import play.mvc.Call;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.UserService;
@@ -16,20 +18,16 @@ import services.openid.OpenIdAttributes;
 import services.openid.OpenIdProvider;
 import ui.util.UIUtil;
 import util.security.SessionUtil;
-
-import com.google.common.base.Strings;
-
 import controllers.message.ControllerMessage;
 
-public class OpenIdAuthentication extends Controller {
+public class OpenIdAuthenticationController extends Controller {
 
-	static Result auth(OpenIdProvider provider, String url) {
+	protected static Result auth(OpenIdProvider provider, Call verifyCall) {
 		if (provider == null) {
 			return badRequest("No provider supplied");
 		}
 		String providerUrl = provider.url();
-		String returnToUrl = UIUtil.getFullUrl(routes.OpenIdAuthentication
-				.verify().url());
+		String returnToUrl = UIUtil.getFullUrl(verifyCall.url());
 		Map<String, String> attributes = new HashMap<String, String>();
 		for (OpenIdAttributes attribute : OpenIdAttributes.values()) {
 			attributes.put(attribute.getKey(), attribute.getAttribute());
@@ -40,23 +38,16 @@ public class OpenIdAuthentication extends Controller {
 		return redirect(redirectUrl.get());
 	}
 
-	public static Result verify() {
-		return verifyAndRedirect(null);
-	}
-
-	public static Result verifyAndRedirect(String url) {
+	protected static Result verify(ThirdPartySource source) {
 		Promise<UserInfo> userInfoPromise = OpenID.verifiedId();
 
 		UserInfo userInfo = userInfoPromise.get();
-		User user = UserService.authenticateOpenId(userInfo);
+		User user = UserService.authenticateOpenId(userInfo, source);
 
 		SessionUtil.setUser(user);
 
 		// Redirect to page.
 		info(ControllerMessage.APPLICATION_WELCOME, user.getDisplay());
-		if (!Strings.isNullOrEmpty(url)) {
-			return redirect(UIUtil.fullUrlDecode(url));
-		}
 		return redirect(controllers.routes.Application.index());
 	}
 }

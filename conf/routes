@@ -15,9 +15,8 @@ POST	/authenticate/redirect/:url		controllers.Authentication.authenticate(url: u
 GET		/logout							controllers.Authentication.logout()
 
 # Third party authentication
-GET		/auth/google/redirect/:url		controllers.security.ThirdPartyAuthentication.google(url: String)
-GET		/openid/verify					controllers.security.OpenIdAuthentication.verify()
-GET		/openid/verify/redirect/:url	controllers.security.OpenIdAuthentication.verifyAndRedirect(url: String)
+GET		/auth/google					controllers.security.GoogleAuthenticationController.auth()
+GET		/auth/google/verify				controllers.security.GoogleAuthenticationController.verify()
 
 # User
 GET		/user/profile					controllers.UserSettings.profile()

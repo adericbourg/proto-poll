@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import models.reference.ThirdPartySource;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
@@ -50,11 +51,11 @@ public class User extends Model {
 	public Boolean registered = false;
 
 	@Required
-	@Column(name = "from_openid", nullable = false)
-	public Boolean isFromOpenId = false;
+	@Column(name = "third_party_source", nullable = false)
+	public ThirdPartySource thirdPartySource = ThirdPartySource.NONE;
 
-	@Column(name = "openid_identifier")
-	public String openIdIdentifier;
+	@Column(name = "third_party_identifier")
+	public String thirdPartyIdentifier;
 
 	@Column(name = "locale")
 	public Locale preferredLocale;
