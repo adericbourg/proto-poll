@@ -1,7 +1,14 @@
 package services;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import models.Event;
@@ -67,6 +74,39 @@ public class PollServiceTest extends ProtoPollTest {
 		Event event = PollService.getEvent(uuid);
 		// Assert.
 		assertNull(event);
+	}
+
+	@Test
+	public void testPollsNoPoll() {
+		// No prepare.
+
+		// Act.
+		List<Poll> polls = PollService.polls();
+
+		// Assert.
+		assertNotNull(polls);
+		assertTrue(polls.isEmpty());
+	}
+
+	@Test
+	public void testPollsWithPolls() {
+		// Prepare.
+		Map<UUID, Poll> index = new HashMap<UUID, Poll>();
+
+		Event event = createEvent();
+		index.put(event.uuid(), event.poll);
+
+		Question question = createQuestion();
+		index.put(question.uuid(), question.poll);
+
+		// Act.
+		List<Poll> polls = PollService.polls();
+		assertFalse(polls.isEmpty());
+		for (Poll poll : polls) {
+			assertTrue(index.containsKey(poll.uuid));
+			assertEquals(index.get(poll.uuid).isEvent(), poll.isEvent());
+			assertEquals(index.get(poll.uuid).isQuestion(), poll.isQuestion());
+		}
 	}
 
 	private Event createEvent() {
