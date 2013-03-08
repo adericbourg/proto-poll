@@ -49,7 +49,8 @@
 					@for(locale <- Language.availableLanguages) {
 						<li>
 							<a href="@routes.Application.changeLanguage(locale.toString, UIUtil.urlEncode(request))">
-								<img src='@routes.Assets.at("images/flags/tiny/" + locale.getLanguage + ".png")' alt="@locale.getLanguage"/> @locale.getLanguage
+								<img src='@routes.Assets.at("images/flags/tiny/" + locale.getLanguage + ".png")' alt="@locale.getLanguage"/> 
+								@Messages.resolve("language.label." + locale.getLanguage)
 								@if(Language.isCurrentLanguage(locale.getLanguage)) { <i class="icon-ok"></i> }
 							</a>
 						</li>

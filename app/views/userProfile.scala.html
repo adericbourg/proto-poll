@@ -28,7 +28,7 @@
 			            @select(
 	   						formUserProfile("localeCode"),
 	 						locales.map{
-	   							l => l.toString -> (l.getLanguage)
+	   							l => l.toString -> (Messages.resolve("language.label." + l.getLanguage))
 	   						},
 	   						'_label -> Messages.resolve("profile.informations.field.lang"), 
 	   						'_default -> ""

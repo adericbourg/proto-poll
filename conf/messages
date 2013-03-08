@@ -169,6 +169,13 @@ user.security.old_password.mandatory=Enter your current password
 user.security.new_password.mandatory=Enter your new password
 user.security.new_password_confirm.mandatory=Enter your new password confirmation
 
+# 
+# Supported languages
+#
+
+language.label.en=English
+language.label.fr=Français
+
 #
 # Technical i18n
 #
