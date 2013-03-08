@@ -18,6 +18,7 @@ server.pid
 /project/target
 /target
 /dist
+/out
 
 nbproject/
 build.xml
