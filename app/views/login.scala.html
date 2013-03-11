@@ -9,30 +9,40 @@
 
 @main(Messages.resolve("login.name")) {
 
-	<div class="well well-small">
-		@Messages.resolve("login.not_registered_inter") <a href="@routes.Authentication.register">@Messages.resolve("login.create_account_suggestion")</a>
-	</div>
 
-	@helper.form(action = routes.Authentication.authenticate(OptionStringBinder.create(UIUtil.urlEncode(path)))) {
-		<fieldset>
-			<legend>Sign in</legend>
-			@inputText(
-		       	loginForm("username"), 
-		       	'_label -> Messages.resolve("login.field.username"),
-		       	'_showContraints -> false,
-		       	'class -> "input-xlarge"
-	        )
-	        @inputPassword(
-		       	loginForm("password"), 
-		       	'_label -> Messages.resolve("login.field.password"),
-		       	'_showContraints -> false,
-		       	'class -> "input-xlarge"
-	        )
-	
-	        <div class="actions">
-	            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.signin")'>
-	            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
-	        </div>
-		</fieldset>
-	}
+	<div class="row">
+		<div class="span6">
+			@helper.form(action = routes.Authentication.authenticate(OptionStringBinder.create(UIUtil.urlEncode(path)))) {
+				<fieldset>
+					<legend>Sign in</legend>
+					<div class="well well-small">
+						@Messages.resolve("login.not_registered_inter") <a href="@routes.Authentication.register">@Messages.resolve("login.create_account_suggestion")</a>
+					</div>
+					@inputText(
+				       	loginForm("username"), 
+				       	'_label -> Messages.resolve("login.field.username"),
+				       	'_showContraints -> false,
+				       	'class -> "input-xlarge"
+			        )
+			        @inputPassword(
+				       	loginForm("password"), 
+				       	'_label -> Messages.resolve("login.field.password"),
+				       	'_showContraints -> false,
+				       	'class -> "input-xlarge"
+			        )
+			
+			        <div class="actions">
+			            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.signin")'>
+			            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
+			        </div>
+				</fieldset>
+			}
+		</div>
+		<div class="span6">
+			<fieldset>
+				<legend>@Messages.resolve("login.external.legend")</legend>
+				@tags.thirdPartyAuth()
+			</fieldset>
+		</div>
+	</div>
 }

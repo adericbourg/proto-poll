@@ -1,0 +1,7 @@
+@import util.user.message.Messages
+
+<div class="auth auth-google">
+	<a href="@controllers.security.routes.GoogleAuthenticationController.auth()" class="btn btn-large btn-primary">
+		<i class="icon-google-plus"></i> @Messages.resolve("login.external.google")
+	</a>
+</div>

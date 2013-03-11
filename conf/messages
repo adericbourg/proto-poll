@@ -39,6 +39,8 @@ login.not_registered_inter=Not registered?
 login.create_account_suggestion=Create account now!
 login.field.username=User name
 login.field.password=Password
+login.external.legend=Sign in using external account
+login.external.google=Sign in using Google
 
 register.name=Register
 register.legend=Registration form
