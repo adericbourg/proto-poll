@@ -2,6 +2,10 @@
 	text-align: center;
 }
 
+.index-icon {
+	font-size: 200px;
+}
+
 .choice:first-child > .danger {
     display: none;
 }
