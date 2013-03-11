@@ -14,7 +14,7 @@
 		<div class="span6">
 			@helper.form(action = routes.Authentication.authenticate(OptionStringBinder.create(UIUtil.urlEncode(path)))) {
 				<fieldset>
-					<legend>Sign in</legend>
+					<legend>@Messages.resolve("login.local.legend")</legend>
 					<div class="well well-small">
 						@Messages.resolve("login.not_registered_inter") <a href="@routes.Authentication.register">@Messages.resolve("login.create_account_suggestion")</a>
 					</div>

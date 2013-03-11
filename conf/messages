@@ -37,6 +37,7 @@ listpolls.table.link.view_poll=View poll
 login.name=Login
 login.not_registered_inter=Not registered?
 login.create_account_suggestion=Create account now!
+login.local.legend=Sign in
 login.field.username=User name
 login.field.password=Password
 login.external.legend=Sign in using external account

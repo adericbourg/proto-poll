@@ -37,6 +37,7 @@ listpolls.table.link.view_poll=Accéder au sondage
 login.name=Connexion
 login.not_registered_inter=Pas encore inscrit ?
 login.create_account_suggestion=Créer un compte maintenant !
+login.local.legend=Connexion
 login.field.username=Nom d'utilisateur
 login.field.password=Mot de passe
 login.external.legend=Connexion depuis un compte extérieur
