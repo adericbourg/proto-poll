@@ -28,11 +28,6 @@ import com.avaje.ebean.ExpressionList;
  */
 public final class UserService {
 
-	private UserService() {
-		// No instance.
-		throw new AssertionError();
-	}
-
 	@Transactional
 	public static void registerUser(User user) {
 		if (user.id != null) {

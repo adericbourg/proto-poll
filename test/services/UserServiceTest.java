@@ -12,6 +12,7 @@ import models.User;
 import org.junit.Test;
 
 import scala.Option;
+import services.exception.poll.NoAuthenfiedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
@@ -47,6 +48,30 @@ public class UserServiceTest extends ProtoPollTest {
 		assertFalse(user1.id.equals(user2.id));
 		assertEquals(DUMMY_USERNAME, user1.username);
 		assertEquals(DUMMY_USERNAME, user2.username);
+	}
+
+	@Test
+	public void testGetUser() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		UserService.registerUser(user);
+
+		// Act.
+		Option<User> loadedUser = UserService.getUser(user.id);
+
+		// Assert.
+		assertTrue(loadedUser.isDefined());
+		assertEquals(user.id, loadedUser.get().id);
+	}
+
+	@Test
+	public void testGetUserNonExisting() {
+		// Act.
+		Option<User> loadedUser = UserService.getUser(-1L);
+
+		// Assert.
+		assertTrue(loadedUser.isEmpty());
 	}
 
 	@Test
@@ -133,6 +158,11 @@ public class UserServiceTest extends ProtoPollTest {
 		assertTrue(user.isEmpty());
 	}
 
+	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	public void testtestUpdateUserProfileNotAuthentified() {
+		UserService.updateUserProfile(new User());
+	}
+
 	@Test
 	public void testUpdateUserProfile() {
 		// Prepare.
@@ -176,6 +206,60 @@ public class UserServiceTest extends ProtoPollTest {
 		assertEquals(modifiedUser.displayName, loadedUser.displayName);
 		assertEquals(modifiedUser.preferredLocale, loadedUser.preferredLocale);
 		assertEquals(modifiedUser.avatarEmail, loadedUser.avatarEmail);
+	}
 
+	@Test
+	public void testUpdateUserPassword() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		user.passwordHash = DUMMY_PASSWORD_HASHED;
+		UserService.registerUser(user);
+
+		SessionUtil.setUser(UserService.authenticate(DUMMY_USERNAME,
+				DUMMY_PASSWORD).get());
+
+		String newPassword = DUMMY_PASSWORD + DUMMY_PASSWORD;
+
+		// Act.
+		boolean result = UserService.updateUserPassword(DUMMY_PASSWORD,
+				newPassword);
+
+		// Assert.
+		User loadedUser = UserService.findByUsername(DUMMY_USERNAME).get();
+		assertTrue(result);
+		assertFalse(DUMMY_PASSWORD_HASHED.equals(loadedUser.passwordHash));
+		assertEquals(PasswordUtil.hashPassword(DUMMY_USERNAME, newPassword),
+				loadedUser.passwordHash);
+	}
+
+	@Test
+	public void testUpdateUserPasswordWrongOldPassword() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		user.passwordHash = DUMMY_PASSWORD_HASHED;
+		UserService.registerUser(user);
+
+		SessionUtil.setUser(UserService.authenticate(DUMMY_USERNAME,
+				DUMMY_PASSWORD).get());
+
+		String newPassword = DUMMY_PASSWORD + DUMMY_PASSWORD;
+
+		// Act.
+		boolean result = UserService.updateUserPassword(newPassword,
+				DUMMY_PASSWORD);
+
+		// Assert.
+		User loadedUser = UserService.findByUsername(DUMMY_USERNAME).get();
+		assertFalse(result);
+		assertEquals(DUMMY_PASSWORD_HASHED, loadedUser.passwordHash);
+		assertFalse(PasswordUtil.hashPassword(DUMMY_USERNAME, newPassword)
+				.equals(loadedUser.passwordHash));
+	}
+
+	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	public void testUpdateUserPasswordNotAuthentified() {
+		UserService.updateUserPassword(null, null);
 	}
 }
