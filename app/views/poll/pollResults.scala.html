@@ -126,19 +126,22 @@
 	@tags.comments(results.uuid, comments, formComment)
 	
 	<!-- Dialogs -->
-	<div id="answer-delete-confirmation" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-header">
-			<h3>@Messages.resolve("poll.answer.delete.title")</h3>
+	@** The modal "remove anwer" is only used when user is registered and has already answered poll. **@
+	@if(UIUtil.isRegisteredUser && results.isAlreadyAnswered) {
+		<div id="answer-delete-confirmation" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<h3>@Messages.resolve("poll.answer.delete.title")</h3>
+			</div>
+			<div class="modal-body">
+				<h4>@Messages.resolve("poll.answer.delete.question")</h4>
+				@Messages.resolve("poll.answer.delete.explanation")
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-link" data-dismiss="modal" aria-hidden="true">@Messages.resolve("common.action.cancel")</button>
+				<a href="@routes.AnswerPoll.removeUserAnswer(results.uuid)" class="btn btn-primary">@Messages.resolve("common.action.delete")</a>
+			</div>
 		</div>
-		<div class="modal-body">
-			<h4>@Messages.resolve("poll.answer.delete.question")</h4>
-			@Messages.resolve("poll.answer.delete.explanation")
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-link" data-dismiss="modal" aria-hidden="true">@Messages.resolve("common.action.cancel")</button>
-			<a href="@routes.AnswerPoll.removeUserAnswer(results.uuid)" class="btn btn-primary">@Messages.resolve("common.action.delete")</a>
-		</div>
-	</div>
+	}
 	
 	<script type="text/javascript">
         $('.answer').live('click', function(e) {
