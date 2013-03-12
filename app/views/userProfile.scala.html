@@ -103,13 +103,14 @@
 	</div>
     
     
-	<script type="text/javascript">  
+	<script type="text/javascript">
+		// Enable tabbing.
     	$('#user-profile-tabs a').click(function (e) {
 	        e.preventDefault();
 	        $(this).tab('show');
         })
 		
-	
+		// Enable modal bot gravatar info.
 		$('#gravatar-tip-link').click(function () {
 			$('#gravatar-tip-message').dialog('open');
 			return false;
@@ -125,6 +126,7 @@
 			}
 		});
 
+		// Put modal info link info form.
 		$(document).ready(function() {
 			registerGravatarTipLink()
 		});
