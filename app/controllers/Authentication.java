@@ -44,7 +44,7 @@ public class Authentication extends Controller {
 
 	@Transactional
 	public static Result register() {
-		return ok(views.html.register.render(FORM_REGISTRATION));
+		return ok(views.html.user.register.render(FORM_REGISTRATION));
 	}
 
 	@Transactional
@@ -52,7 +52,7 @@ public class Authentication extends Controller {
 		Form<Registration> filledForm = FORM_REGISTRATION.bindFromRequest();
 
 		if (filledForm.hasErrors()) {
-			return invalidForm(views.html.register.render(filledForm));
+			return invalidForm(views.html.user.register.render(filledForm));
 		}
 
 		// Register user.
@@ -60,7 +60,7 @@ public class Authentication extends Controller {
 		if (!registration.password.equals(registration.passwordConfirm)) {
 			filledForm.reject("password", "Passwords do not match");
 			filledForm.reject("passwordConfirm", "");
-			return invalidForm(views.html.register.render(filledForm));
+			return invalidForm(views.html.user.register.render(filledForm));
 		}
 		User user = getUserFromRegistration(registration);
 
@@ -68,7 +68,7 @@ public class Authentication extends Controller {
 			UserService.registerUser(user);
 		} catch (AlreadyRegisteredUser e) {
 			Messages.error(e.getMessageKey(), e.getParams());
-			return invalidForm(views.html.register.render(filledForm));
+			return invalidForm(views.html.user.register.render(filledForm));
 		}
 
 		// Automatically log user in.
@@ -96,7 +96,7 @@ public class Authentication extends Controller {
 
 	@Transactional
 	public static Result onWorkLogin(String url) {
-		return ok(views.html.login.render(FORM_LOGIN, Option.apply(url)));
+		return ok(views.html.user.login.render(FORM_LOGIN, Option.apply(url)));
 	}
 
 	@Transactional
@@ -105,7 +105,7 @@ public class Authentication extends Controller {
 
 		Form<Login> formLogin = FORM_LOGIN.bindFromRequest();
 		if (formLogin.hasErrors()) {
-			return invalidForm(views.html.login.render(formLogin, url));
+			return invalidForm(views.html.user.login.render(formLogin, url));
 		}
 
 		Login login = formLogin.get();
@@ -115,7 +115,7 @@ public class Authentication extends Controller {
 		if (optUser.isEmpty()) {
 			formLogin.reject("username", "User name and password do not match");
 			formLogin.reject("password", "");
-			return invalidForm(views.html.login.render(formLogin, url));
+			return invalidForm(views.html.user.login.render(formLogin, url));
 		}
 
 		User user = optUser.get();

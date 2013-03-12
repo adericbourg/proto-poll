@@ -24,7 +24,7 @@ import services.UserService;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
 import ui.util.Language;
 import util.security.SessionUtil;
-import views.html.userProfile;
+import views.html.user.userProfile;
 
 import com.google.common.base.Strings;
 
