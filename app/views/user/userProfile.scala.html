@@ -3,7 +3,6 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@import ui.util.Language
 @import util.user.message.Messages
 
 @main(Messages.resolve("profile.name")) {
@@ -20,119 +19,19 @@
 		<!-- Content -->
 		<div class="tab-content span8 offset1">
 			<div id="user-profile-informations" class="tab-pane active">
-			   	@helper.form(action = routes.UserSettings.updateProfile(), 'id -> "formUserProfile") {
-			        <fieldset>
-			            <legend>@Messages.resolve("profile.informations.legend")</legend>
-						@inputText(
-			            	formUserProfile("displayName"), 
-			            	'_label -> Messages.resolve("profile.informations.field.display_name"),
-			            	'_showContraints -> false
-			            )
-			            @inputText(
-			            	formUserProfile("email"), 
-			            	'_label -> Messages.resolve("profile.informations.field.email"),
-			            	'_showContraints -> false,
-			            	'readonly -> "readonly"
-			            )
-			            @if(Language.displayLanguageSelection) {
-				            @select(
-		   						formUserProfile("localeCode"),
-		 						locales.map{
-		   							l => l.toString -> (Messages.resolve("language.label." + l.getLanguage))
-		   						},
-		   						'_label -> Messages.resolve("profile.informations.field.lang"), 
-		   						'_default -> ""
-							)
-						}
-						 @inputText(
-			            	formUserProfile("avatarEmail"), 
-			            	'_label -> Messages.resolve("profile.informations.field.avatar_email"),
-			            	'_showContraints -> false
-			            )
-			        </fieldset>
-			
-			        <div class="actions">
-			            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.update")'>
-			            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
-			        </div>
-			    }
+			   	@profile.userProfileInformations(locales, formUserProfile)
 			</div>
 			<div id="user-profile-password" class="tab-pane">
-				@helper.form(action = routes.UserSettings.updatePassword(), 'id -> "formUserSecurity") {
-			        <fieldset>
-			            <legend>@Messages.resolve("profile.password.legend")</legend>
-			
-			           @inputPassword(
-					       	formUserSecurity("oldPassword"), 
-					       	'_label -> Messages.resolve("profile.password.current"),
-					       	'_showContraints -> true
-				        )
-				        @inputPassword(
-					       	formUserSecurity("password1"), 
-					       	'_label -> Messages.resolve("profile.password.new"),
-					       	'_showContraints -> true
-				        )
-				        @inputPassword(
-					       	formUserSecurity("password2"), 
-					       	'_label -> Messages.resolve("profile.password.confirm_new"),
-					       	'_showContraints -> true
-				        )
-			        </fieldset>
-			
-			        <div class="actions">
-			            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.update")'>
-			            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
-			        </div>
-			    }
+				@profile.userProfilePassword(formUserSecurity)
 			</div>
 		</div>
 	</div>
 	
-	<!-- Dialogs -->
-	<a id="gravatar-tip-link" href="#">
-		<i class="icon-info-sign icon-large"></i>
-	</a>
-	
-	<div id="gravatar-tip-message" title='@Messages.resolve("profile.informations.tip.gravatar_info.title")'>
-		<p>
-			<i class="icon-info-sign"></i> @Messages.resolve("profile.informations.tip.gravatar_info.line_1")
-		</p>
-		<p>
-			@Messages.resolve("profile.informations.tip.gravatar_info.line_2") <a href="https://www.gravatar.com" target="_blank">https://www.gravatar.com</a>.
-		</p>
-	</div>
-    
-    
 	<script type="text/javascript">
 		// Enable tabbing.
-    	$('#user-profile-tabs a').click(function (e) {
-	        e.preventDefault();
-	        $(this).tab('show');
-        })
-		
-		// Enable modal bot gravatar info.
-		$('#gravatar-tip-link').click(function () {
-			$('#gravatar-tip-message').dialog('open');
-			return false;
-		});
-
-		$("#gravatar-tip-message").dialog({
-			autoOpen: false,
-			modal: true,
-			buttons: {
-				'@Messages.resolve("common.action.close_tip")': function () {
-					$(this).dialog("close");
-				}
-			}
-		});
-
-		// Put modal info link info form.
-		$(document).ready(function() {
-			registerGravatarTipLink()
-		});
-
-		function registerGravatarTipLink() {
-			$('#avatarEmail_field .help-inline').append($('#gravatar-tip-link'))
-		}
+		$('#user-profile-tabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		})
 	</script>
 }
