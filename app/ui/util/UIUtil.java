@@ -161,8 +161,10 @@ public final class UIUtil {
 		User user = optUser.get();
 		String email = Strings.isNullOrEmpty(user.avatarEmail) ? user.email
 				: user.avatarEmail;
-		return Strings.isNullOrEmpty(email) ? null : String.format(Play
-				.application().configuration().getString(GRAVATAR_PICTURE_URL),
-				MD5HexUtil.md5Hex(email), size);
+		return Strings.isNullOrEmpty(email) ? null : String
+				.format(Play.application().configuration()
+						.getString(GRAVATAR_PICTURE_URL),
+						MD5HexUtil.md5Hex(email), size).trim()
+				.replace("\n", "").replace("\r", "");
 	}
 }
