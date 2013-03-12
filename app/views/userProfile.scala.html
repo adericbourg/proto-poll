@@ -8,72 +8,83 @@
 
 @main(Messages.resolve("profile.name")) {
 
-    <div class="row-fluid">
-    	<div class="span6 well">
-		   	@helper.form(action = routes.UserSettings.updateProfile(), 'id -> "formUserProfile") {
-		        <fieldset>
-		            <legend>@Messages.resolve("profile.informations.legend")</legend>
-					@inputText(
-		            	formUserProfile("displayName"), 
-		            	'_label -> Messages.resolve("profile.informations.field.display_name"),
-		            	'_showContraints -> false
-		            )
-		            @inputText(
-		            	formUserProfile("email"), 
-		            	'_label -> Messages.resolve("profile.informations.field.email"),
-		            	'_showContraints -> false,
-		            	'readonly -> "readonly"
-		            )
-		            @if(Language.displayLanguageSelection) {
-			            @select(
-	   						formUserProfile("localeCode"),
-	 						locales.map{
-	   							l => l.toString -> (Messages.resolve("language.label." + l.getLanguage))
-	   						},
-	   						'_label -> Messages.resolve("profile.informations.field.lang"), 
-	   						'_default -> ""
-						)
-					}
-					 @inputText(
-		            	formUserProfile("avatarEmail"), 
-		            	'_label -> Messages.resolve("profile.informations.field.avatar_email"),
-		            	'_showContraints -> false
-		            )
-		        </fieldset>
-		
-		        <div class="actions">
-		            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.update")'>
-		            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
-		        </div>
-		    }
+	<div class="row">
+		<!-- Navigation -->
+		<div class="span3">
+			<ul id="user-profile-tabs" class="nav nav-stacked nav-pills">
+				<li class="active"><a href="#user-profile-informations">@Messages.resolve("profile.informations.legend")</a></li>
+				<li><a href="#user-profile-password">@Messages.resolve("profile.password.legend")</a></li>
+			</ul>
 		</div>
-		<div class="span6 well">
-			@helper.form(action = routes.UserSettings.updatePassword(), 'id -> "formUserSecurity") {
-		        <fieldset>
-		            <legend>@Messages.resolve("profile.password.legend")</legend>
-		
-		           @inputPassword(
-				       	formUserSecurity("oldPassword"), 
-				       	'_label -> Messages.resolve("profile.password.current"),
-				       	'_showContraints -> true
-			        )
-			        @inputPassword(
-				       	formUserSecurity("password1"), 
-				       	'_label -> Messages.resolve("profile.password.new"),
-				       	'_showContraints -> true
-			        )
-			        @inputPassword(
-				       	formUserSecurity("password2"), 
-				       	'_label -> Messages.resolve("profile.password.confirm_new"),
-				       	'_showContraints -> true
-			        )
-		        </fieldset>
-		
-		        <div class="actions">
-		            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.update")'>
-		            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
-		        </div>
-		    }
+	
+		<!-- Content -->
+		<div class="tab-content span8 offset1">
+			<div id="user-profile-informations" class="tab-pane active">
+			   	@helper.form(action = routes.UserSettings.updateProfile(), 'id -> "formUserProfile") {
+			        <fieldset>
+			            <legend>@Messages.resolve("profile.informations.legend")</legend>
+						@inputText(
+			            	formUserProfile("displayName"), 
+			            	'_label -> Messages.resolve("profile.informations.field.display_name"),
+			            	'_showContraints -> false
+			            )
+			            @inputText(
+			            	formUserProfile("email"), 
+			            	'_label -> Messages.resolve("profile.informations.field.email"),
+			            	'_showContraints -> false,
+			            	'readonly -> "readonly"
+			            )
+			            @if(Language.displayLanguageSelection) {
+				            @select(
+		   						formUserProfile("localeCode"),
+		 						locales.map{
+		   							l => l.toString -> (Messages.resolve("language.label." + l.getLanguage))
+		   						},
+		   						'_label -> Messages.resolve("profile.informations.field.lang"), 
+		   						'_default -> ""
+							)
+						}
+						 @inputText(
+			            	formUserProfile("avatarEmail"), 
+			            	'_label -> Messages.resolve("profile.informations.field.avatar_email"),
+			            	'_showContraints -> false
+			            )
+			        </fieldset>
+			
+			        <div class="actions">
+			            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.update")'>
+			            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
+			        </div>
+			    }
+			</div>
+			<div id="user-profile-password" class="tab-pane">
+				@helper.form(action = routes.UserSettings.updatePassword(), 'id -> "formUserSecurity") {
+			        <fieldset>
+			            <legend>@Messages.resolve("profile.password.legend")</legend>
+			
+			           @inputPassword(
+					       	formUserSecurity("oldPassword"), 
+					       	'_label -> Messages.resolve("profile.password.current"),
+					       	'_showContraints -> true
+				        )
+				        @inputPassword(
+					       	formUserSecurity("password1"), 
+					       	'_label -> Messages.resolve("profile.password.new"),
+					       	'_showContraints -> true
+				        )
+				        @inputPassword(
+					       	formUserSecurity("password2"), 
+					       	'_label -> Messages.resolve("profile.password.confirm_new"),
+					       	'_showContraints -> true
+				        )
+			        </fieldset>
+			
+			        <div class="actions">
+			            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.update")'>
+			            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
+			        </div>
+			    }
+			</div>
 		</div>
 	</div>
 	
@@ -93,6 +104,12 @@
     
     
 	<script type="text/javascript">  
+    	$('#user-profile-tabs a').click(function (e) {
+	        e.preventDefault();
+	        $(this).tab('show');
+        })
+		
+	
 		$('#gravatar-tip-link').click(function () {
 			$('#gravatar-tip-message').dialog('open');
 			return false;
