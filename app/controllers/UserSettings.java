@@ -29,6 +29,7 @@ import views.html.user.userProfile;
 import com.google.common.base.Strings;
 
 import controllers.message.ControllerMessage;
+import controllers.model.user.UserProfileLayout;
 import controllers.security.Secured;
 
 @Security.Authenticated(Secured.class)
@@ -55,8 +56,9 @@ public class UserSettings extends Controller {
 
 	@Transactional
 	public static Result profile() {
+
 		return ok(userProfile.render(ReferentialService.getLanguages(),
-				getFormProfile(), FORM_USER_SECURITY));
+				getFormProfile(), FORM_USER_SECURITY, getLayout()));
 	}
 
 	@Transactional
@@ -65,7 +67,7 @@ public class UserSettings extends Controller {
 		if (formProfile.hasErrors()) {
 			return invalidForm(userProfile.render(
 					ReferentialService.getLanguages(), formProfile,
-					FORM_USER_SECURITY));
+					FORM_USER_SECURITY, getLayout()));
 		}
 		UserService
 				.updateUserProfile(getUserFromUserProfile(formProfile.get()));
@@ -106,7 +108,7 @@ public class UserSettings extends Controller {
 		if (formSecurity.hasErrors()) {
 			return invalidForm(userProfile.render(
 					ReferentialService.getLanguages(), getFormProfile(),
-					formSecurity));
+					formSecurity, getLayout()));
 		}
 
 		UserSecurity security = formSecurity.get();
@@ -131,7 +133,7 @@ public class UserSettings extends Controller {
 		if (hasError) {
 			return invalidForm(userProfile.render(
 					ReferentialService.getLanguages(), getFormProfile(),
-					formSecurity));
+					formSecurity, getLayout()));
 		}
 
 		if (!Strings.isNullOrEmpty(security.oldPassword)
@@ -156,5 +158,9 @@ public class UserSettings extends Controller {
 				: currentUser.preferredLocale.toString();
 		userProfileData.avatarEmail = currentUser.avatarEmail;
 		return FORM_USER_PROFILE.fill(userProfileData);
+	}
+
+	private static UserProfileLayout getLayout() {
+		return new UserProfileLayout(SessionUtil.currentUser().get());
 	}
 }

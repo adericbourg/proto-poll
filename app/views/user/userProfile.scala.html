@@ -1,4 +1,4 @@
-@(locales: List[java.util.Locale], formUserProfile: Form[UserSettings.UserProfile], formUserSecurity: Form[UserSettings.UserSecurity]) 
+@(locales: List[java.util.Locale], formUserProfile: Form[UserSettings.UserProfile], formUserSecurity: Form[UserSettings.UserSecurity], templateLayout: controllers.model.user.UserProfileLayout) 
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -12,18 +12,22 @@
 		<div class="span3">
 			<ul id="user-profile-tabs" class="nav nav-stacked nav-pills">
 				<li class="active"><a href="#user-profile-informations">@Messages.resolve("profile.informations.legend")</a></li>
-				<li><a href="#user-profile-password">@Messages.resolve("profile.password.legend")</a></li>
+				@if(templateLayout.displayTabPasswordChange) {
+					<li><a href="#user-profile-password">@Messages.resolve("profile.password.legend")</a></li>
+				}
 			</ul>
 		</div>
 	
 		<!-- Content -->
 		<div class="tab-content span8 offset1">
 			<div id="user-profile-informations" class="tab-pane active">
-			   	@profile.userProfileInformations(locales, formUserProfile)
+			   	@profile.userProfileInformations(locales, formUserProfile, templateLayout)
 			</div>
-			<div id="user-profile-password" class="tab-pane">
-				@profile.userProfilePassword(formUserSecurity)
-			</div>
+			@if(templateLayout.displayTabPasswordChange) {
+				<div id="user-profile-password" class="tab-pane">
+					@profile.userProfilePassword(formUserSecurity)
+				</div>
+			}
 		</div>
 	</div>
 	
