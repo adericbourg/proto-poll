@@ -13,6 +13,7 @@ import models.User;
 import org.apache.commons.lang3.LocaleUtils;
 
 import play.data.Form;
+import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Transactional;
 import play.mvc.Controller;
@@ -38,7 +39,9 @@ public class UserSettings extends Controller {
 	public static class UserProfile {
 		public String displayName;
 		public String localeCode;
+		@Email(message = "user.constraint.email.format")
 		public String email;
+		@Email(message = "user.constraint.email.format")
 		public String avatarEmail;
 	}
 
