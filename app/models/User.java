@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import models.reference.ThirdPartySource;
+import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
@@ -40,9 +41,11 @@ public class User extends Model {
 	@Column(name = "password_hash")
 	public String passwordHash;
 
+	@Email(message = "user.constraint.email.format")
 	@Column(name = "email")
 	public String email;
 
+	@Email(message = "user.constraint.email.format")
 	@Column(name = "avatar_email")
 	public String avatarEmail;
 
