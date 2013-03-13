@@ -75,6 +75,8 @@ user.field.username=Utilisateur
 user.field.password=Mot de passe
 user.language_select=Langue
 
+user.constraint.email.format=Le format d''adresse e-mail est incorrect.
+
 event.new.name=Nouvel événement
 event.new.legend=Détails de l''événement
 event.new.field.title=Titre

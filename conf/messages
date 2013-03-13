@@ -76,6 +76,8 @@ user.field.username=User name
 user.field.password=Password
 user.language_select=Language
 
+user.constraint.email.format=Incorrect e-mail format.
+
 event.new.name=New event
 event.new.legend=Event details
 event.new.field.title=Title

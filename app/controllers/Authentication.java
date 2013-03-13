@@ -5,6 +5,7 @@ import static ui.tags.MessagesHelper.invalidForm;
 import static util.user.message.Messages.info;
 import models.User;
 import play.data.Form;
+import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Transactional;
 import play.mvc.Controller;
@@ -28,6 +29,7 @@ public class Authentication extends Controller {
 		public String password;
 		@Required(message = "authentication.registration.password_confirm.mandatory")
 		public String passwordConfirm;
+		@Email(message = "user.constraint.email.format")
 		@Required(message = "authentication.registration.email.mandatory")
 		public String email;
 	}
