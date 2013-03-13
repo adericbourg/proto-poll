@@ -87,12 +87,19 @@ public class UserSettings extends Controller {
 		if (Language.displayLanguageSelection()) {
 			updatableFields.add("localeCode");
 		}
+		if (SessionUtil.currentUser().isDefined()
+				&& SessionUtil.currentUser().get().isLocalUser()) {
+			updatableFields.add("email");
+		}
 		updatableFields.add("avatarEmail");
 		return updatableFields.toArray(new String[updatableFields.size()]);
 	}
 
 	private static User getUserFromUserProfile(UserProfile profile) {
 		User user = new User();
+		if (!Strings.isNullOrEmpty(profile.email)) {
+			user.email = profile.email;
+		}
 		user.avatarEmail = profile.avatarEmail;
 		user.displayName = profile.displayName;
 		user.preferredLocale = Strings.isNullOrEmpty(profile.localeCode) ? null

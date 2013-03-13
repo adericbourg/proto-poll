@@ -9,16 +9,24 @@
 @helper.form(action = routes.UserSettings.updateProfile(), 'id -> "formUserProfile") {
 	<fieldset>
 		<legend>@Messages.resolve("profile.informations.legend")</legend>
+		@if(templateLayout.canChangeFieldEmailAddress) {
+			@inputText(
+				formUserProfile("email"), 
+				'_label -> Messages.resolve("profile.informations.field.email"),
+				'_showContraints -> false
+			)
+		} else {
+			@inputText(
+				formUserProfile("email"), 
+				'_label -> Messages.resolve("profile.informations.field.email"),
+				'_showContraints -> false,
+				'readonly -> "readonly"
+			)
+		}
 		@inputText(
 			formUserProfile("displayName"), 
 			'_label -> Messages.resolve("profile.informations.field.display_name"),
 			'_showContraints -> false
-		)
-		@inputText(
-			formUserProfile("email"), 
-			'_label -> Messages.resolve("profile.informations.field.email"),
-			'_showContraints -> false,
-			'readonly -> "readonly"
 		)
 		@if(Language.displayLanguageSelection) {
 			@select(

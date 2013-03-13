@@ -19,6 +19,7 @@ import util.user.message.Messages;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
+import com.google.common.base.Strings;
 
 /**
  * User management service.
@@ -46,6 +47,9 @@ public final class UserService {
 		currentUser.avatarEmail = user.avatarEmail;
 		currentUser.displayName = user.displayName;
 		currentUser.preferredLocale = user.preferredLocale;
+		if (!Strings.isNullOrEmpty(user.email)) {
+			currentUser.email = user.email;
+		}
 		currentUser.update();
 		SessionUtil.setUser(currentUser);
 	}

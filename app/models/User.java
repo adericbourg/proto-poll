@@ -60,8 +60,16 @@ public class User extends Model {
 	@Column(name = "locale")
 	public Locale preferredLocale;
 
+	// ---
+
 	@Transient
 	public String getDisplay() {
 		return Strings.isNullOrEmpty(displayName) ? username : displayName;
+	}
+
+	@Transient
+	public boolean isLocalUser() {
+		return thirdPartySource == null
+				|| ThirdPartySource.NONE.equals(thirdPartySource);
 	}
 }

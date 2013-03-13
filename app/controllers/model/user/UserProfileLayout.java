@@ -1,21 +1,19 @@
 package controllers.model.user;
 
 import models.User;
-import models.reference.ThirdPartySource;
 
 public class UserProfileLayout {
 
 	public UserProfileLayout(User user) {
 		super();
 
-		boolean isThirdPartyUser = user.thirdPartySource == null
-				|| ThirdPartySource.NONE.equals(user.thirdPartySource);
+		boolean isLocalUser = user.isLocalUser();
 
 		// Tabs.
-		displayTabPasswordChange = isThirdPartyUser;
+		displayTabPasswordChange = isLocalUser;
 
 		// User informations.
-		canChangeFieldEmailAddress = !isThirdPartyUser;
+		canChangeFieldEmailAddress = isLocalUser;
 	}
 
 	// Tabs.
