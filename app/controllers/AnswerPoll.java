@@ -41,7 +41,7 @@ public class AnswerPoll extends Controller {
 		public String comment;
 	}
 
-	static final Form<PollComment> FORM_COMMENT = form(PollComment.class);
+	private static final Form<PollComment> FORM_COMMENT = form(PollComment.class);
 
 	@Transactional
 	public static Result viewPoll(UuidBinder uuidBinder) {
