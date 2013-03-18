@@ -145,6 +145,34 @@ public class PollServiceTest extends ProtoPollTest {
 		assertTrue(polls.isEmpty());
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateAlreadySavedPoll() {
+		// Prepare.
+		Poll poll = createQuestion().poll;
+
+		// Act.
+		PollService.createPoll(poll);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreatePollNotEventNotQuestion() throws Exception {
+		// Prepare.
+		Poll poll = Poll.class.newInstance();
+
+		// Act.
+		PollService.createPoll(poll);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreatePollBothEventAndQuestion() throws Exception {
+		// Prepare.
+		Poll poll = Poll.class.getDeclaredConstructor(Question.class,
+				Event.class).newInstance(new Question(), new Event());
+
+		// Act.
+		PollService.createPoll(poll);
+	}
+
 	private Event createEvent() {
 		Poll poll = Poll.initEvent();
 		poll.title = "event title";
