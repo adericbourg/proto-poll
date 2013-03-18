@@ -1,5 +1,7 @@
 package services;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -65,11 +67,19 @@ public class PollService {
 
 	@Transactional
 	public static List<Poll> listUserPolls() {
+		return listUserPolls(PollStatus.COMPLETE);
+	}
+
+	private static List<Poll> listUserPolls(PollStatus... statuses) {
 		if (!SessionUtil.isAuthenticated()) {
 			throw new NoAuthenfiedUserInSessionException();
 		}
+		if (statuses == null) {
+			return new ArrayList<Poll>();
+		}
 		return POLL_FINDER.where()
 				.eq("userCreator.id", SessionUtil.currentUser().get().id)
+				.in("status", Arrays.asList(statuses))
 				.orderBy("creationDate DESC").findList();
 	}
 

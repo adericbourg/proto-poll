@@ -6,16 +6,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import models.Event;
+import models.EventChoice;
 import models.Poll;
 import models.Question;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
+
+import util.UserTestUtil;
 
 public class PollServiceTest extends ProtoPollTest {
 
@@ -107,6 +112,37 @@ public class PollServiceTest extends ProtoPollTest {
 			assertEquals(index.get(poll.uuid).isEvent(), poll.isEvent());
 			assertEquals(index.get(poll.uuid).isQuestion(), poll.isQuestion());
 		}
+	}
+
+	@Test
+	public void testListUserPollWithChoice() {
+		// Prepare.
+		UserTestUtil.getAuthenticatedUser();
+
+		Event event = createEvent();
+		EventChoice choice = new EventChoice();
+		choice.date = LocalDate.now();
+		EventService.saveDates(event.uuid(), Arrays.asList(choice));
+
+		// Act.
+		List<Poll> polls = PollService.listUserPolls();
+
+		// Assert.
+		assertEquals(1, polls.size());
+		assertEquals(event.uuid(), polls.get(0).uuid);
+	}
+
+	@Test
+	public void testListUserPollNoChoice() {
+		// Prepare.
+		UserTestUtil.getAuthenticatedUser();
+		createEvent();
+
+		// Act.
+		List<Poll> polls = PollService.listUserPolls();
+
+		// Assert.
+		assertTrue(polls.isEmpty());
 	}
 
 	private Event createEvent() {
