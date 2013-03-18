@@ -14,6 +14,7 @@ import models.Poll;
 import models.Question;
 import models.QuestionChoice;
 import models.User;
+import models.reference.PollStatus;
 
 import org.junit.Test;
 
@@ -126,6 +127,27 @@ public class QuestionServiceTest extends ProtoPollTest {
 		assertTrue(choiceIds.contains(reloadedQuestion.answers.get(0).details
 				.get(0).choice.id));
 		// FIXME Missing user checks!
+	}
+
+	@Test
+	public void testStatusCreated() {
+		// Prepare / Act.
+		Question question = createQuestion();
+
+		// Assert.
+		assertEquals(PollStatus.DRAFT, question.poll.status);
+	}
+
+	@Test
+	public void testStatusCreatedWithChoices() {
+		// Prepare.
+		Question question = createQuestion();
+
+		// Act.
+		question = addChoices(question);
+
+		// Assert.
+		assertEquals(PollStatus.COMPLETE, question.poll.status);
 	}
 
 	private static Question createQuestion() {

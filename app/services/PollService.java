@@ -11,6 +11,7 @@ import models.Poll;
 import models.Question;
 import models.QuestionAnswer;
 import models.User;
+import models.reference.PollStatus;
 
 import org.joda.time.DateTime;
 
@@ -52,6 +53,7 @@ public class PollService {
 			poll.userCreator = SessionUtil.currentUser().get();
 		}
 		poll.creationDate = DateTime.now();
+		poll.status = PollStatus.DRAFT;
 		poll.save();
 		return poll;
 	}
@@ -220,5 +222,12 @@ public class PollService {
 			throw new NoAnswerFoundException();
 		}
 		toBeDeleted.delete();
+	}
+
+	static Poll updateStatus(UUID uuid, PollStatus status) {
+		Poll poll = getPoll(uuid);
+		poll.status = status;
+		poll.save();
+		return poll;
 	}
 }

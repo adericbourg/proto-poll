@@ -12,6 +12,7 @@ import models.EventAnswer;
 import models.EventAnswerDetail;
 import models.EventChoice;
 import models.User;
+import models.reference.PollStatus;
 import play.db.ebean.Transactional;
 import scala.Option;
 import services.exception.poll.NoChoiceException;
@@ -33,6 +34,8 @@ public class EventService {
 		Event event = PollService.getEvent(uuid);
 		event.dates = new ArrayList<EventChoice>(dates);
 		event.save();
+
+		PollService.updateStatus(uuid, PollStatus.COMPLETE);
 	}
 
 	static void answerEventRegistered(UUID uuid, Collection<Long> choiceIds) {

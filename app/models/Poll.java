@@ -13,6 +13,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import models.reference.PollStatus;
+
 import org.joda.time.DateTime;
 
 import play.data.validation.Constraints.Required;
@@ -51,6 +53,9 @@ public class Poll extends Model {
 
 	@Column(name = "description")
 	public String description;
+
+	@Column(name = "status", nullable = false)
+	public PollStatus status;
 
 	@Column(name = "single_answer", nullable = false)
 	public boolean singleAnswer = false;

@@ -14,6 +14,7 @@ import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
 import models.QuestionChoice;
 import models.User;
+import models.reference.PollStatus;
 import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
 import scala.Option;
@@ -50,6 +51,7 @@ public class QuestionService {
 		Question question = PollService.getQuestion(uuid);
 		question.choices = deduplicatedChoices;
 		question.save();
+		PollService.updateStatus(uuid, PollStatus.COMPLETE);
 	}
 
 	private static List<QuestionChoice> deduplicateChoices(

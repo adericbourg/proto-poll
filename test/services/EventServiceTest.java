@@ -11,6 +11,7 @@ import models.Event;
 import models.EventChoice;
 import models.Poll;
 import models.User;
+import models.reference.PollStatus;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -20,6 +21,8 @@ import util.UserTestUtil;
 import util.security.SessionUtil;
 
 public class EventServiceTest extends ProtoPollTest {
+
+	private static final int CHOICE_NUMBER = 3;
 
 	@Test
 	public void testCreateEventAnonymousUser() {
@@ -93,10 +96,44 @@ public class EventServiceTest extends ProtoPollTest {
 		EventService.saveDates(event.uuid(), new ArrayList<EventChoice>());
 	}
 
+	@Test
+	public void testStatusCreated() {
+		// Prepare / Act.
+		Event event = createEvent();
+
+		// Assert.
+		assertEquals(PollStatus.DRAFT, event.poll.status);
+	}
+
+	@Test
+	public void testStatusCreatedWithChoices() {
+		// Prepare.
+		Event event = createEvent();
+
+		// Act.
+		event = addDates(event);
+
+		// Assert.
+		assertEquals(PollStatus.COMPLETE, event.poll.status);
+	}
+
 	private Event createEvent() {
 		Poll poll = Poll.initEvent();
 		poll.title = "event title";
 		PollService.createPoll(poll);
 		return PollService.getPoll(poll.uuid).event;
+	}
+
+	private static Event addDates(Event event) {
+		List<EventChoice> choices = new ArrayList<EventChoice>();
+		EventChoice choice;
+		for (int i = 0; i < CHOICE_NUMBER; i++) {
+			choice = new EventChoice();
+			choice.date = LocalDate.now().plusDays(i);
+			choice.event = event;
+			choices.add(choice);
+		}
+		EventService.saveDates(event.uuid(), choices);
+		return PollService.getEvent(event.uuid());
 	}
 }
