@@ -20,6 +20,7 @@ import models.Question;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
+import services.exception.poll.NoAuthenfiedUserInSessionException;
 import util.UserTestUtil;
 
 public class PollServiceTest extends ProtoPollTest {
@@ -143,6 +144,11 @@ public class PollServiceTest extends ProtoPollTest {
 
 		// Assert.
 		assertTrue(polls.isEmpty());
+	}
+
+	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	public void testListUserPollsNotAuthenticated() {
+		PollService.listUserPolls();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
