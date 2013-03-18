@@ -1,4 +1,4 @@
-@(loginForm: Form[Authentication.Login], path: Option[String])
+@(loginForm: Form[Authentication.Login], path: String)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -12,11 +12,11 @@
 
 	<div class="row">
 		<div class="span6">
-			@helper.form(action = routes.Authentication.authenticate(OptionStringBinder.create(UIUtil.urlEncode(path)))) {
+			@helper.form(action = routes.Authentication.authenticate(path)) {
 				<fieldset>
 					<legend>@Messages.resolve("login.local.legend")</legend>
 					<div class="well well-small">
-						@Messages.resolve("login.not_registered_inter") <a href="@routes.Authentication.register">@Messages.resolve("login.create_account_suggestion")</a>
+						@Messages.resolve("login.not_registered_inter") <a href="@routes.Authentication.register(path)">@Messages.resolve("login.create_account_suggestion")</a>
 					</div>
 					@inputText(
 				       	loginForm("username"), 
@@ -40,7 +40,7 @@
 		<div class="span6">
 			<fieldset>
 				<legend>@Messages.resolve("login.external.legend")</legend>
-				@tags.thirdPartyAuth()
+				@tags.thirdPartyAuth(UIUtil.urlEncode(path))
 			</fieldset>
 		</div>
 	</div>

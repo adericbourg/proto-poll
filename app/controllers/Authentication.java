@@ -14,10 +14,12 @@ import scala.Option;
 import services.UserService;
 import services.exception.user.AlreadyRegisteredUser;
 import ui.util.UIUtil;
-import util.binders.OptionStringBinder;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
 import util.user.message.Messages;
+
+import com.google.common.base.Strings;
+
 import controllers.message.ControllerMessage;
 
 public class Authentication extends Controller {
@@ -45,16 +47,19 @@ public class Authentication extends Controller {
 	private static Form<Login> FORM_LOGIN = form(Login.class);
 
 	@Transactional
-	public static Result register() {
-		return ok(views.html.user.register.render(FORM_REGISTRATION));
+	public static Result register(String returnUrl) {
+		return ok(views.html.user.register.render(FORM_REGISTRATION,
+				UIUtil.urlEncode(returnUrl)));
 	}
 
 	@Transactional
 	public static Result saveRegistration() {
+		String returnUrl = "/";
 		Form<Registration> filledForm = FORM_REGISTRATION.bindFromRequest();
 
 		if (filledForm.hasErrors()) {
-			return invalidForm(views.html.user.register.render(filledForm));
+			return invalidForm(views.html.user.register.render(filledForm,
+					returnUrl));
 		}
 
 		// Register user.
@@ -62,7 +67,8 @@ public class Authentication extends Controller {
 		if (!registration.password.equals(registration.passwordConfirm)) {
 			filledForm.reject("password", "Passwords do not match");
 			filledForm.reject("passwordConfirm", "");
-			return invalidForm(views.html.user.register.render(filledForm));
+			return invalidForm(views.html.user.register.render(filledForm,
+					returnUrl));
 		}
 		User user = getUserFromRegistration(registration);
 
@@ -70,7 +76,8 @@ public class Authentication extends Controller {
 			UserService.registerUser(user);
 		} catch (AlreadyRegisteredUser e) {
 			Messages.error(e.getMessageKey(), e.getParams());
-			return invalidForm(views.html.user.register.render(filledForm));
+			return invalidForm(views.html.user.register.render(filledForm,
+					returnUrl));
 		}
 
 		// Automatically log user in.
@@ -78,7 +85,10 @@ public class Authentication extends Controller {
 
 		// Redirect to home page.
 		info(ControllerMessage.REGISTRATION_THANKS, user.getDisplay());
-		return redirect(routes.Application.index());
+		if (Strings.isNullOrEmpty(returnUrl)) {
+			return redirect(routes.Application.index());
+		}
+		return redirect(UIUtil.fullUrlDecode(returnUrl));
 	}
 
 	private static User getUserFromRegistration(Registration registration) {
@@ -92,18 +102,12 @@ public class Authentication extends Controller {
 	}
 
 	@Transactional
-	public static Result login() {
-		return onWorkLogin(null);
+	public static Result login(String returnUrl) {
+		return ok(views.html.user.login.render(FORM_LOGIN, returnUrl));
 	}
 
 	@Transactional
-	public static Result onWorkLogin(String url) {
-		return ok(views.html.user.login.render(FORM_LOGIN, Option.apply(url)));
-	}
-
-	@Transactional
-	public static Result authenticate(OptionStringBinder urlBinder) {
-		Option<String> url = urlBinder.option();
+	public static Result authenticate(String url) {
 
 		Form<Login> formLogin = FORM_LOGIN.bindFromRequest();
 		if (formLogin.hasErrors()) {
@@ -125,10 +129,10 @@ public class Authentication extends Controller {
 
 		// Redirect to page.
 		info(ControllerMessage.APPLICATION_WELCOME, user.getDisplay());
-		if (url.isDefined()) {
-			return redirect(UIUtil.fullUrlDecode(url.get()));
+		if (Strings.isNullOrEmpty(url)) {
+			return redirect(routes.Application.index());
 		}
-		return redirect(routes.Application.index());
+		return redirect(UIUtil.fullUrlDecode(url));
 	}
 
 	@Transactional

@@ -1,4 +1,4 @@
-@(registrationForm: Form[Authentication.Registration])
+@(registrationForm: Form[Authentication.Registration], returnUrl: String)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -41,7 +41,7 @@
 		<div class="span6">
 			<fieldset>
 				<legend>@Messages.resolve("login.external.legend")</legend>
-				@tags.thirdPartyAuth()
+				@tags.thirdPartyAuth(returnUrl)
 			</fieldset>
 		</div>
 	</div>

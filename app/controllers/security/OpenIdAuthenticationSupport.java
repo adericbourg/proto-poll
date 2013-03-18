@@ -18,6 +18,9 @@ import services.openid.OpenIdAttributes;
 import services.openid.OpenIdProvider;
 import ui.util.UIUtil;
 import util.security.SessionUtil;
+
+import com.google.common.base.Strings;
+
 import controllers.message.ControllerMessage;
 
 public class OpenIdAuthenticationSupport extends Controller {
@@ -27,18 +30,19 @@ public class OpenIdAuthenticationSupport extends Controller {
 			return badRequest("No provider supplied");
 		}
 		String providerUrl = provider.url();
-		String returnToUrl = UIUtil.getFullUrl(verifyCall.url());
+		String returnToFullUrl = UIUtil.getFullUrl(verifyCall.url());
+
 		Map<String, String> attributes = new HashMap<String, String>();
 		for (OpenIdAttributes attribute : OpenIdAttributes.values()) {
 			attributes.put(attribute.getKey(), attribute.getAttribute());
 		}
 
 		Promise<String> redirectUrl = OpenID.redirectURL(providerUrl,
-				returnToUrl, attributes);
+				returnToFullUrl, attributes);
 		return redirect(redirectUrl.get());
 	}
 
-	protected static Result verify(ThirdPartySource source) {
+	protected static Result verify(ThirdPartySource source, String returnToUrl) {
 		Promise<UserInfo> userInfoPromise = OpenID.verifiedId();
 
 		UserInfo userInfo = userInfoPromise.get();
@@ -48,6 +52,9 @@ public class OpenIdAuthenticationSupport extends Controller {
 
 		// Redirect to page.
 		info(ControllerMessage.APPLICATION_WELCOME, user.getDisplay());
-		return redirect(controllers.routes.Application.index());
+		if (Strings.isNullOrEmpty(returnToUrl)) {
+			return redirect(controllers.routes.Application.index());
+		}
+		return redirect(UIUtil.getFullUrl(returnToUrl));
 	}
 }

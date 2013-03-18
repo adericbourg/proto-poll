@@ -68,7 +68,7 @@
     </form>
 	 **@
 	<div class="navbar-form pull-right">
-		<a href="@routes.Authentication.login" class="btn"><i class="icon-signin"></i> @Messages.resolve("common.action.signin")</a>
-		<a class="btn btn-inverse" href="@routes.Authentication.register">@Messages.resolve("login.not_registered_inter")</a>
+		<a href="@routes.Authentication.login(UIUtil.currentPath)" class="btn"><i class="icon-signin"></i> @Messages.resolve("common.action.signin")</a>
+		<a class="btn btn-inverse" href="@routes.Authentication.register(UIUtil.currentPath)">@Messages.resolve("login.not_registered_inter")</a>
 	</div>
 }

@@ -16,7 +16,6 @@ import play.mvc.Http.Context;
 import play.mvc.Http.Request;
 import scala.Option;
 import services.UserService;
-import util.binders.OptionStringBinder;
 import util.security.SessionUtil;
 import util.user.message.Messages;
 
@@ -101,9 +100,8 @@ public final class UIUtil {
 		return rootUrl + relativeUrl;
 	}
 
-	public static OptionStringBinder currentPath() {
-		String url = urlEncode(Context.current().request());
-		return OptionStringBinder.create(Option.apply(url));
+	public static String currentPath() {
+		return urlEncode(Context.current().request());
 	}
 
 	public static boolean isRegisteredUser() {
