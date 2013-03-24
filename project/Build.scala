@@ -10,7 +10,7 @@ import JacocoPlugin._
 object ApplicationBuild extends Build {
 
   val appName = "ProtoPoll"
-  val appVersion = "0.1.0"
+  val appVersion = "0.2.0-SNAPSHOT"
 
   val appDependencies = Seq(
     javaCore, 
