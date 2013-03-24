@@ -95,6 +95,9 @@ public final class UIUtil {
 		if (rootUrl.endsWith("/") && relativeUrl.startsWith("/")) {
 			return rootUrl + relativeUrl.substring(1);
 		}
+		if (!rootUrl.endsWith("/") && !relativeUrl.startsWith("/")) {
+			return rootUrl + "/" + relativeUrl;
+		}
 		return rootUrl + relativeUrl;
 	}
 
