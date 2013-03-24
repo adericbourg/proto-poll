@@ -1,0 +1,159 @@
+@(results: controllers.model.poll.PollResults, comments: List[Comment], formComment: Form[AnswerPoll.PollComment])
+
+@import ui.util.UIUtil
+@import util.user.message.Messages
+
+@checkValue(choiceId: Long, userId: Long, results: controllers.model.poll.PollResults) = {
+	@if(results.checked(userId, choiceId)) { 
+		checked="checked" 
+	}
+}
+
+@tdClass(choiceId: Long, userId: Long, results: controllers.model.poll.PollResults) = {
+	@if(UIUtil.isRegisteredUser) {
+		@if(results.checked(userId, choiceId)) {
+			result answer result-ok
+		} else {
+			result answer result-ko
+		}
+	} else {
+		result answer
+	}
+}
+
+@answerInput(choiceId: Long, userId: Long, results: controllers.model.poll.PollResults) = {
+	<td class="@tdClass(choiceId, userId, results)">
+		@if(results.singleAnswer && !results.singleChoice) {
+			<input type="radio" name="choice" id="choice_@choiceId" value="@choiceId" @checkValue(choiceId, userId, results) />
+		} else {
+			<input type="checkbox" name="choice_@choiceId" value="@choiceId" @checkValue(choiceId, userId, results) />
+		}
+	</td>
+}
+
+@main(Messages.resolve("poll.answer.name", results.title)) {
+
+	<h1>@results.title</h1>
+	@if(results.hasDescription || results.hasRegisteredCreator) {
+		<blockquote>
+			@results.description
+			@if(results.hasRegisteredCreator) {
+				@if(results.hasDescription) {<br />}
+				<small>@Messages.resolve("pollheader.created_by") @results.userCreator.getDisplay</small>
+			}
+		</blockquote>
+	}
+
+	@helper.form(action = routes.AnswerPoll.answer(results.uuid)) {
+		<table class="table table-bordered table-hover table-condensed poll-results">
+			<thead>
+				<tr>
+					<th>@Messages.resolve("poll.answer.participants")</th>
+					@for((choiceId, choiceLabel) <- results.choices) {
+						<th class="result">@choiceLabel</th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+				@for((userId, user) <- results.users) {
+					@if(UIUtil.isCurrentUser(user)) {
+						<tr>
+							<td class="username">
+								<a href="#answer-delete-confirmation" title="@Messages.resolve("poll.answer.delete.tooltip")" data-toggle="modal"><i class="icon-remove"></i></a>
+									@tags.gravatar(userId, 24) @user.getDisplay
+								</td>
+								@for((choiceId, choiceLabel) <- results.choices) {
+									@answerInput(choiceId, UIUtil.registeredUserId, results)
+								}
+						</tr>
+					} else {
+						<tr>
+							<td>
+								@tags.gravatar(userId, 24) @user.getDisplay
+							</td>
+							@for((choiceId, choiceLabel) <- results.choices) {
+								@if(results.answers.get(userId).contains(choiceId)) {
+									<td class="result result-ok">&#10004;</td>
+								} else {
+									<td class="result result-ko"></td>
+								}
+							}
+						</tr>
+					}
+				}
+				<tr>
+					<th>@Messages.resolve("poll.answer.totals")</th>
+						@for((choiceId, choiceLabel) <- results.choices) {
+							<td class="result">
+								@if(results.isBetterChoice(choiceId)) {
+									<span class="badge badge-info">@results.total(choiceId)</span>
+								} else {
+									@results.total(choiceId)
+								}
+							</td>
+						}
+				</tr>
+				@if(UIUtil.isRegisteredUser && !results.isAlreadyAnswered) {
+					<tr class="info">
+						<td class="username">
+							@tags.gravatar(UIUtil.registeredUserId, 24) @UIUtil.registeredUserDisplayName
+						</td>
+						@for((choiceId, choiceLabel) <- results.choices) {
+							@answerInput(choiceId, UIUtil.registeredUserId, results)
+						}
+					</tr>
+				} 
+				@if(!UIUtil.isRegisteredUser) {
+					<tr class="info">
+						<td class="username">
+							<input name="username" placeholder='@Messages.resolve("poll.answer.placeholder.username")'/>
+						</td>
+						@for((choiceId, choiceLabel) <- results.choices) {
+							@answerInput(choiceId, null, results)
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+		
+		@if(results.isAlreadyAnswered) {
+			<input class="btn btn-primary btn-large" value='@Messages.resolve("common.action.update")' type="submit" />
+		} else {
+			<input class="btn btn-primary btn-large" value='@Messages.resolve("common.action.submit")' type="submit" />
+		}
+	}
+	
+	@tags.comments(results.uuid, comments, formComment)
+	
+	<!-- Dialogs -->
+	@** The modal "remove anwer" is only used when user is registered and has already answered poll. **@
+	@if(UIUtil.isRegisteredUser && results.isAlreadyAnswered) {
+		<div id="answer-delete-confirmation" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<h3>@Messages.resolve("poll.answer.delete.title")</h3>
+			</div>
+			<div class="modal-body">
+				<h4>@Messages.resolve("poll.answer.delete.question")</h4>
+				@Messages.resolve("poll.answer.delete.explanation")
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-link" data-dismiss="modal" aria-hidden="true">@Messages.resolve("common.action.cancel")</button>
+				<a href="@routes.AnswerPoll.removeUserAnswer(results.uuid)" class="btn btn-primary">@Messages.resolve("common.action.delete")</a>
+			</div>
+		</div>
+	}
+	
+	<script type="text/javascript">
+        $('.answer').live('click', function(e) {
+        	$(this).find("input").each(function(){ this.checked = !this.checked; });
+        	return false;
+        })
+        $(".answer input").click(function(e) {
+   			e.stopPropagation();
+   			var val = $(this).val();
+  		});
+        $('td.username').live('click', function(e) {
+        	$(this).children("input").first().focus();
+        })
+    </script>
+}

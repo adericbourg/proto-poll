@@ -1,0 +1,47 @@
+@(loginForm: Form[Authentication.Login], path: String)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@import ui.util.UIUtil
+@import util.binders.OptionStringBinder
+@import util.user.message.Messages
+
+@main(Messages.resolve("login.name")) {
+
+
+	<div class="row">
+		<div class="span6">
+			@helper.form(action = routes.Authentication.authenticate(path)) {
+				<fieldset>
+					<legend>@Messages.resolve("login.local.legend")</legend>
+					<div class="well well-small">
+						@Messages.resolve("login.not_registered_inter") <a href="@routes.Authentication.register(path)">@Messages.resolve("login.create_account_suggestion")</a>
+					</div>
+					@inputText(
+				       	loginForm("username"), 
+				       	'_label -> Messages.resolve("login.field.username"),
+				       	'_showContraints -> false,
+				       	'class -> "input-xlarge"
+			        )
+			        @inputPassword(
+				       	loginForm("password"), 
+				       	'_label -> Messages.resolve("login.field.password"),
+				       	'_showContraints -> false,
+				       	'class -> "input-xlarge"
+			        )
+			
+			        <div class="actions">
+			            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.signin")'>
+			        </div>
+				</fieldset>
+			}
+		</div>
+		<div class="span6">
+			<fieldset>
+				<legend>@Messages.resolve("login.external.legend")</legend>
+				@tags.thirdPartyAuth(UIUtil.urlEncode(path))
+			</fieldset>
+		</div>
+	</div>
+}

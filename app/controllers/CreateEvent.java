@@ -1,7 +1,8 @@
 package controllers;
 
-import static ui.tags.Messages.info;
-import static ui.tags.MessagesHelper.invalidForm;
+import static play.data.Form.form;
+import static util.user.message.Messages.error;
+import static util.user.message.Messages.info;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,46 +10,39 @@ import java.util.Map.Entry;
 
 import models.Event;
 import models.EventChoice;
+import models.Poll;
 
 import org.joda.time.LocalDate;
 
+import play.api.templates.Html;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.Option;
 import services.EventService;
-import views.html.eventAddDates;
-import views.html.eventCreated;
-import views.html.eventNew;
+import services.PollService;
+import services.exception.poll.NoChoiceException;
+import util.binders.UuidBinder;
+import util.security.SessionUtil;
+import views.html.event.eventAddDates;
 
 import com.google.common.base.Strings;
 
+import controllers.message.ControllerMessage;
+
 public class CreateEvent extends Controller {
-	private static final Form<Event> FORM_EVENT = form(Event.class);
+	private static final Form<Event> FORM_EVENT = form(Event.class).fill(
+			new Event());
 
-	public static Result newEvent() {
-		return ok(eventNew.render(FORM_EVENT));
+	@Transactional
+	public static Result setDates(UuidBinder uuid) {
+		return ok(prepareDatesData(uuid));
 	}
 
-	public static Result createEvent() {
-		Form<Event> filledForm = FORM_EVENT.bindFromRequest();
-
-		if (filledForm.hasErrors()) {
-			// Error handling.
-			return invalidForm(eventNew.render(FORM_EVENT));
-		}
-
-		Event event = filledForm.get();
-		Long eventId = EventService.createEvent(event);
-		return setDates(eventId);
-	}
-
-	public static Result setDates(Long eventId) {
-		Event event = EventService.getEvent(eventId);
-		return ok(eventAddDates.render(event, FORM_EVENT));
-	}
-
-	public static Result saveDates(Long eventId) {
+	@Transactional
+	public static Result saveDates(UuidBinder uuid) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		EventChoice date;
 		List<EventChoice> dates = new ArrayList<EventChoice>();
@@ -61,13 +55,24 @@ public class CreateEvent extends Controller {
 				dates.add(date);
 			}
 		}
-		EventService.saveDates(eventId, dates);
-		info("Event successfully created.");
-		return confirmEventCreation(eventId);
+		try {
+			EventService.saveDates(uuid.uuid(), dates);
+			info(ControllerMessage.EVENT_SUCCESSFULLY_CREATED);
+			return redirect(routes.CreatePoll.confirmCreation(uuid));
+		} catch (NoChoiceException e) {
+			error(ControllerMessage.NO_CHOICE_ON_POLL);
+			return badRequest(prepareDatesData(uuid));
+		}
 	}
 
-	public static Result confirmEventCreation(Long id) {
-		Event event = EventService.getEvent(id);
-		return ok(eventCreated.render(event));
+	private static Html prepareDatesData(UuidBinder uuid) {
+		Poll poll = PollService.getPoll(uuid.uuid());
+		Option<String> locale;
+		if (SessionUtil.preferredLang().isDefined()) {
+			locale = Option.apply(SessionUtil.preferredLang().get().language());
+		} else {
+			locale = Option.empty();
+		}
+		return eventAddDates.render(poll, FORM_EVENT, locale);
 	}
 }

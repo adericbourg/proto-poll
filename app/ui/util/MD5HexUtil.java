@@ -7,13 +7,16 @@ import java.security.NoSuchAlgorithmException;
 class MD5HexUtil {
 
 	static String md5Hex(String message) {
+		String returnValue;
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
-			return hex(md.digest(message.getBytes("CP1252")));
+			returnValue = hex(md.digest(message.getBytes("CP1252")));
 		} catch (NoSuchAlgorithmException e) {
+			returnValue = null;
 		} catch (UnsupportedEncodingException e) {
+			returnValue = null;
 		}
-		return null;
+		return returnValue;
 	}
 
 	private static String hex(byte[] array) {

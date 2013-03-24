@@ -1,47 +1,65 @@
 package controllers;
 
-import static ui.tags.Messages.info;
+import static play.data.Form.form;
 import static ui.tags.MessagesHelper.invalidForm;
+import static util.user.message.Messages.info;
 import models.User;
 import play.data.Form;
+import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.Option;
 import services.UserService;
+import services.exception.user.AlreadyRegisteredUser;
+import ui.util.UIUtil;
 import util.security.PasswordUtil;
 import util.security.SessionUtil;
+import util.user.message.Messages;
+
+import com.google.common.base.Strings;
+
+import controllers.message.ControllerMessage;
 
 public class Authentication extends Controller {
 
 	public static class Registration {
-		@Required(message = "User name is mandatory.")
+		@Required(message = "authentication.registration.username.mandatory")
 		public String username;
-		@Required(message = "Password is mandatory. Think about your security.")
+		@Required(message = "authentication.registration.password.mandatory")
 		public String password;
-		@Required(message = "Password confirmation is mandatory")
+		@Required(message = "authentication.registration.password_confirm.mandatory")
 		public String passwordConfirm;
+		@Email(message = "user.constraint.email.format")
+		@Required(message = "authentication.registration.email.mandatory")
 		public String email;
 	}
 
 	public static class Login {
-		@Required(message = "Please enter your user name")
+		@Required(message = "authentication.login.username.mandatory")
 		public String username;
-		@Required(message = "Please enter your password")
+		@Required(message = "authentication.login.password.mandatory")
 		public String password;
 	}
 
 	private static Form<Registration> FORM_REGISTRATION = form(Registration.class);
 	private static Form<Login> FORM_LOGIN = form(Login.class);
 
-	public static Result register() {
-		return ok(views.html.register.render(FORM_REGISTRATION));
+	@Transactional
+	public static Result register(String returnUrl) {
+		return ok(views.html.user.register.render(FORM_REGISTRATION,
+				UIUtil.urlEncode(returnUrl)));
 	}
 
+	@Transactional
 	public static Result saveRegistration() {
+		String returnUrl = "/";
 		Form<Registration> filledForm = FORM_REGISTRATION.bindFromRequest();
 
 		if (filledForm.hasErrors()) {
-			return invalidForm(views.html.register.render(filledForm));
+			return invalidForm(views.html.user.register.render(filledForm,
+					returnUrl));
 		}
 
 		// Register user.
@@ -49,17 +67,28 @@ public class Authentication extends Controller {
 		if (!registration.password.equals(registration.passwordConfirm)) {
 			filledForm.reject("password", "Passwords do not match");
 			filledForm.reject("passwordConfirm", "");
-			return invalidForm(views.html.register.render(filledForm));
+			return invalidForm(views.html.user.register.render(filledForm,
+					returnUrl));
 		}
 		User user = getUserFromRegistration(registration);
-		UserService.registerUser(user);
+
+		try {
+			UserService.registerUser(user);
+		} catch (AlreadyRegisteredUser e) {
+			Messages.error(e.getMessageKey(), e.getParams());
+			return invalidForm(views.html.user.register.render(filledForm,
+					returnUrl));
+		}
 
 		// Automatically log user in.
 		SessionUtil.setUser(user);
 
 		// Redirect to home page.
-		info("Welcome " + user.username + "! Thank you for your registration.");
-		return Application.index();
+		info(ControllerMessage.REGISTRATION_THANKS, user.getDisplay());
+		if (Strings.isNullOrEmpty(returnUrl)) {
+			return redirect(routes.Application.index());
+		}
+		return redirect(UIUtil.fullUrlDecode(returnUrl));
 	}
 
 	private static User getUserFromRegistration(Registration registration) {
@@ -72,33 +101,43 @@ public class Authentication extends Controller {
 		return user;
 	}
 
-	public static Result login() {
-		return ok(views.html.login.render(FORM_LOGIN));
+	@Transactional
+	public static Result login(String returnUrl) {
+		return ok(views.html.user.login.render(FORM_LOGIN, returnUrl));
 	}
 
-	public static Result authenticate() {
+	@Transactional
+	public static Result authenticate(String url) {
+
 		Form<Login> formLogin = FORM_LOGIN.bindFromRequest();
 		if (formLogin.hasErrors()) {
-			return invalidForm(views.html.login.render(formLogin));
+			return invalidForm(views.html.user.login.render(formLogin, url));
 		}
 
 		Login login = formLogin.get();
-		User user = UserService.authenticate(login.username, login.password);
-		if (user == null) {
+		Option<User> optUser = UserService.authenticate(login.username,
+				login.password);
+
+		if (optUser.isEmpty()) {
 			formLogin.reject("username", "User name and password do not match");
 			formLogin.reject("password", "");
-			return invalidForm(views.html.login.render(formLogin));
+			return invalidForm(views.html.user.login.render(formLogin, url));
 		}
 
+		User user = optUser.get();
 		SessionUtil.setUser(user);
 
-		// Redirect to main page.
-		info("Welcome " + user.username + "!");
-		return Application.index();
+		// Redirect to page.
+		info(ControllerMessage.APPLICATION_WELCOME, user.getDisplay());
+		if (Strings.isNullOrEmpty(url)) {
+			return redirect(routes.Application.index());
+		}
+		return redirect(UIUtil.fullUrlDecode(url));
 	}
 
+	@Transactional
 	public static Result logout() {
 		SessionUtil.clear();
-		return Application.index();
+		return redirect(routes.Application.index());
 	}
 }

@@ -3,19 +3,25 @@ package services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import models.Question;
 import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
 import models.QuestionChoice;
 import models.User;
+import models.reference.PollStatus;
 import play.db.ebean.Model.Finder;
-import services.exception.AnonymousUserAlreadyAnsweredPoll;
+import play.db.ebean.Transactional;
+import scala.Option;
+import services.exception.poll.NoChoiceException;
+import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 
 /**
@@ -26,55 +32,51 @@ import com.avaje.ebean.ExpressionList;
  */
 public class QuestionService {
 
-	private static final Finder<Long, Question> QUESTION_FINDER = new Finder<Long, Question>(
-			Long.class, Question.class);
-	private static final Finder<Long, QuestionChoice> CHOICE_FINDER = new Finder<Long, QuestionChoice>(
-			Long.class, QuestionChoice.class);
+	private static final Finder<Long, QuestionAnswer> ANSWER_FINDER = new Finder<Long, QuestionAnswer>(
+			Long.class, QuestionAnswer.class);
 
 	private QuestionService() {
 		// No instance.
 		throw new AssertionError();
 	}
 
-	public static Long createQuestion(Question question) {
-		question.userCreator = SessionUtil.currentUser();
+	@Transactional
+	public static void saveChoices(UUID uuid, List<QuestionChoice> choices) {
+		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(choices);
+
+		if (deduplicatedChoices.isEmpty()) {
+			throw new NoChoiceException();
+		}
+
+		Question question = PollService.getQuestion(uuid);
+		question.choices = deduplicatedChoices;
 		question.save();
-		return question.id;
+		PollService.updateStatus(uuid, PollStatus.COMPLETE);
 	}
 
-	public static void saveChoices(Long questionId, List<QuestionChoice> choices) {
-		Question question = getQuestion(questionId);
-		question.choices = choices;
-		question.save();
+	private static List<QuestionChoice> deduplicateChoices(
+			List<QuestionChoice> choices) {
+		Set<String> keys = new HashSet<String>();
+		List<QuestionChoice> deduplicated = new ArrayList<QuestionChoice>();
+		if (choices != null) {
+			for (QuestionChoice questionChoice : choices) {
+				if (!keys.contains(questionChoice.label)) {
+					deduplicated.add(questionChoice);
+					keys.add(questionChoice.label);
+				}
+			}
+		}
+		return deduplicated;
 	}
 
-	public static Question getQuestion(Long id) {
-		return QUESTION_FINDER.byId(id);
+	static void answerQuestionRegistered(UUID uuid, Collection<Long> choiceIds) {
+		answerQuestion(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 
-	public static QuestionChoice getChoice(Long id) {
-		return CHOICE_FINDER.byId(id);
-	}
-
-	public static List<Question> questions() {
-		return Ebean.find(Question.class).findList();
-	}
-
-	public static List<QuestionChoice> getChoicesByQuestion(Long questionId) {
-		List<QuestionChoice> choices = Ebean.find(QuestionChoice.class).where()
-				.eq("question.id", questionId).findList();
-		Ebean.sort(choices, "sortOrder");
-		return choices;
-	}
-
-	public static void answerQuestion(Long questionId,
+	static void answerQuestionAnonymous(String username, UUID uuid,
 			Collection<Long> choiceIds) {
-		answerQuestion(SessionUtil.currentUser(), questionId, choiceIds);
-	}
-
-	public static void answerQuestion(String username, Long questionId,
-			Collection<Long> choiceIds) {
-		Question question = getQuestionWithAnswers(questionId);
+		// FIXME It makes poll being loaded twice.
+		Question question = PollService.getQuestion(uuid);
 
 		// Check if a user with same name has already answered.
 		for (QuestionAnswer answer : question.answers) {
@@ -86,17 +88,17 @@ public class QuestionService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerQuestion(user, questionId, choiceIds);
+		answerQuestion(Option.apply(user), uuid, choiceIds);
 	}
 
-	private static void answerQuestion(User user, Long questionId,
+	private static void answerQuestion(Option<User> user, UUID uuid,
 			Collection<Long> choiceIds) {
-		if (user == null) {
-			throw new RuntimeException("User cannot be null");
+		if (user.isEmpty()) {
+			throw new RuntimeException("User must be defined");
 		}
 
-		Question question = getQuestionWithAnswers(questionId);
-		QuestionAnswer answer = getOrCreateAnswer(user, question);
+		Question question = PollService.getQuestion(uuid);
+		QuestionAnswer answer = getOrCreateAnswer(user.get(), question);
 
 		// Clear all previous answers.
 		for (QuestionAnswerDetail detail : answer.details) {
@@ -124,22 +126,15 @@ public class QuestionService {
 	}
 
 	private static QuestionAnswer getOrCreateAnswer(User user, Question question) {
-		ExpressionList<QuestionAnswer> el = Ebean.find(QuestionAnswer.class)
-				.fetch("details").where().eq("user.id", user.id)
-				.eq("question.id", question.id);
+		ExpressionList<QuestionAnswer> el = ANSWER_FINDER.fetch("details")
+				.where().eq("user.id", user.id).eq("question.id", question.id);
 		if (el.findRowCount() == 0) {
 			QuestionAnswer answer = new QuestionAnswer();
 			answer.user = user;
 			answer.question = question;
+			answer.details = new ArrayList<QuestionAnswerDetail>();
 			return answer;
 		}
 		return el.findUnique();
-	}
-
-	public static Question getQuestionWithAnswers(Long questionId) {
-		return Ebean.find(Question.class).fetch("answers")
-				.fetch("answers.user").fetch("answers.details")
-				.fetch("answers.details.choice").where().eq("id", questionId)
-				.findUnique();
 	}
 }

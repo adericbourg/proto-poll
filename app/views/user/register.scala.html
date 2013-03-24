@@ -1,0 +1,49 @@
+@(registrationForm: Form[Authentication.Registration], returnUrl: String)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@import util.user.message.Messages
+
+@main(Messages.resolve("register.name")) {
+
+	<div class="row">
+		<div class="span6">
+			@helper.form(action = routes.Authentication.saveRegistration()) {
+				<fieldset>
+					<legend>@Messages.resolve("register.legend")</legend>
+					@inputText(
+				       	registrationForm("username"), 
+				       	'_label -> Messages.resolve("register.field.username"),
+				       	'_showContraints -> true
+			        )
+			        @inputPassword(
+				       	registrationForm("password"), 
+				       	'_label -> Messages.resolve("register.field.password"),
+				       	'_showContraints -> true
+			        )
+			        @inputPassword(
+				       	registrationForm("passwordConfirm"), 
+				       	'_label -> Messages.resolve("register.field.password_confirmation"),
+				       	'_showContraints -> true
+			        )
+			        @inputText(
+				       	registrationForm("email"), 
+				       	'_label -> Messages.resolve("register.field.email"),
+				       	'_showContraints -> true
+			        )
+			        <div class="actions">
+			            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.signup")'>
+			        </div>
+		        </fieldset>
+			}
+		</div>
+		<div class="span6">
+			<fieldset>
+				<legend>@Messages.resolve("login.external.legend")</legend>
+				@tags.thirdPartyAuth(returnUrl)
+			</fieldset>
+		</div>
+	</div>
+
+}

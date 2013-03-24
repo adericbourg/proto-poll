@@ -5,14 +5,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import models.Event;
 import models.EventAnswer;
 import models.EventAnswerDetail;
 import models.EventChoice;
 import models.User;
-import play.db.ebean.Model.Finder;
-import services.exception.AnonymousUserAlreadyAnsweredPoll;
+import models.reference.PollStatus;
+import play.db.ebean.Transactional;
+import scala.Option;
+import services.exception.poll.NoChoiceException;
+import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.SessionUtil;
 
 import com.avaje.ebean.Ebean;
@@ -20,32 +24,27 @@ import com.avaje.ebean.ExpressionList;
 
 public class EventService {
 
-	private static final Finder<Long, Event> EVENT_FINDER = new Finder<Long, Event>(
-			Long.class, Event.class);
+	@Transactional
+	public static void saveDates(UUID uuid, Collection<EventChoice> dates) {
 
-	public static Long createEvent(Event event) {
-		event.userCreator = SessionUtil.currentUser();
-		event.save();
-		return event.id;
-	}
+		if (dates == null || dates.isEmpty()) {
+			throw new NoChoiceException();
+		}
 
-	public static Event getEvent(Long id) {
-		return EVENT_FINDER.byId(id);
-	}
-
-	public static void saveDates(Long eventId, Collection<EventChoice> dates) {
-		Event event = getEvent(eventId);
+		Event event = PollService.getEvent(uuid);
 		event.dates = new ArrayList<EventChoice>(dates);
 		event.save();
+
+		PollService.updateStatus(uuid, PollStatus.COMPLETE);
 	}
 
-	public static void answerEvent(Long questionId, Collection<Long> choiceIds) {
-		answerEvent(SessionUtil.currentUser(), questionId, choiceIds);
+	static void answerEventRegistered(UUID uuid, Collection<Long> choiceIds) {
+		answerEvent(SessionUtil.currentUser(), uuid, choiceIds);
 	}
 
-	public static void answerEvent(String username, Long eventId,
+	static void answerEventAnonymous(String username, UUID uuid,
 			Collection<Long> choiceIds) {
-		Event event = getEvent(eventId); // With answers
+		Event event = PollService.getEvent(uuid); // With answers
 
 		// Check if a user with same name has already answered.
 		for (EventAnswer answer : event.answers) {
@@ -57,17 +56,17 @@ public class EventService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerEvent(user, eventId, choiceIds);
+		answerEvent(Option.apply(user), uuid, choiceIds);
 	}
 
-	private static void answerEvent(User user, Long eventId,
+	private static void answerEvent(Option<User> user, UUID uuid,
 			Collection<Long> choiceIds) {
-		if (user == null) {
+		if (user.isEmpty()) {
 			throw new RuntimeException("User cannot be null");
 		}
 
-		Event event = getEvent(eventId); // With answers
-		EventAnswer answer = getOrCreateAnswer(user, event);
+		Event event = PollService.getEvent(uuid);
+		EventAnswer answer = getOrCreateAnswer(user.get(), event);
 
 		// Clear all previous answers.
 		for (EventAnswerDetail detail : answer.details) {
@@ -105,9 +104,5 @@ public class EventService {
 			return answer;
 		}
 		return el.findUnique();
-	}
-
-	public static List<Event> events() {
-		return Ebean.find(Event.class).findList();
 	}
 }

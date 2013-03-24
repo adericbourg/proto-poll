@@ -1,22 +1,21 @@
 package models;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 
-import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
-
-import com.google.common.base.Strings;
+import util.binders.UuidBinder;
 
 /**
  * Poll.
@@ -29,16 +28,10 @@ import com.google.common.base.Strings;
 public class Question extends Model {
 
 	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name = "id")
 	public Long id;
-
-	@Required(message = "Title is mandatory")
-	@Column(name = "title", nullable = false)
-	public String title;
-
-	@Column(name = "description")
-	public String description;
 
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL)
@@ -48,18 +41,25 @@ public class Question extends Model {
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<QuestionAnswer> answers;
 
-	@ManyToOne(optional = true)
-	public User userCreator;
+	@OneToOne(mappedBy = "question")
+	public Poll poll;
 
 	// ---
 
 	@Transient
-	public final boolean hasDescription() {
-		return !Strings.isNullOrEmpty(description);
+	public UUID uuid() {
+		return poll == null ? null : poll.uuid;
 	}
 
 	@Transient
-	public final boolean hasRegisteredCreator() {
-		return userCreator != null;
+	public UuidBinder bindId() {
+		return poll == null ? null : poll.bindId();
+	}
+
+	// ---
+
+	@Transient
+	public boolean hasSingleChoice() {
+		return choices.size() <= 1;
 	}
 }

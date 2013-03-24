@@ -1,21 +1,21 @@
 package models;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 
 import play.db.ebean.Model;
-
-import com.google.common.base.Strings;
+import util.binders.UuidBinder;
 
 @Entity
 @Table(name = "event")
@@ -27,12 +27,6 @@ public class Event extends Model {
 	@Column(name = "id")
 	public Long id;
 
-	@Column(name = "title", nullable = false)
-	public String title;
-
-	@Column(name = "description")
-	public String description;
-
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL)
 	@OrderBy("date ASC")
@@ -41,19 +35,25 @@ public class Event extends Model {
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<EventAnswer> answers;
 
-	@ManyToOne(optional = true)
-	public User userCreator;
+	@OneToOne(mappedBy = "event")
+	public Poll poll;
 
 	// ---
 
 	@Transient
-	public final boolean hasDescription() {
-		return !Strings.isNullOrEmpty(description);
+	public UUID uuid() {
+		return poll == null ? null : poll.uuid;
 	}
 
 	@Transient
-	public final boolean hasRegisteredCreator() {
-		return userCreator != null;
+	public UuidBinder bindId() {
+		return poll == null ? null : poll.bindId();
 	}
 
+	// --
+
+	@Transient
+	public boolean hasSingleChoice() {
+		return dates.size() <= 1;
+	}
 }

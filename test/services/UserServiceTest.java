@@ -3,13 +3,19 @@ package services;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+
+import java.util.Locale;
+
 import models.User;
 
 import org.junit.Test;
 
-import services.exception.AlreadyRegisteredUser;
+import scala.Option;
+import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.user.AlreadyRegisteredUser;
 import util.security.PasswordUtil;
+import util.security.SessionUtil;
 
 public class UserServiceTest extends ProtoPollTest {
 
@@ -17,6 +23,7 @@ public class UserServiceTest extends ProtoPollTest {
 	private static final String DUMMY_PASSWORD = "tst-dmy-name";
 	private static final String DUMMY_PASSWORD_HASHED = PasswordUtil
 			.hashPassword(DUMMY_USERNAME, DUMMY_PASSWORD);
+	private static final String DUMMY_EMAIL = "test@localhost.net";
 
 	@Test
 	public void testRegisterAnonymousUser() {
@@ -44,6 +51,30 @@ public class UserServiceTest extends ProtoPollTest {
 	}
 
 	@Test
+	public void testGetUser() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		UserService.registerUser(user);
+
+		// Act.
+		Option<User> loadedUser = UserService.getUser(user.id);
+
+		// Assert.
+		assertTrue(loadedUser.isDefined());
+		assertEquals(user.id, loadedUser.get().id);
+	}
+
+	@Test
+	public void testGetUserNonExisting() {
+		// Act.
+		Option<User> loadedUser = UserService.getUser(-1L);
+
+		// Assert.
+		assertTrue(loadedUser.isEmpty());
+	}
+
+	@Test
 	public void testFindByUsernameRegisteredUser() {
 		// Prepare.
 		User user = new User();
@@ -51,12 +82,13 @@ public class UserServiceTest extends ProtoPollTest {
 		UserService.registerUser(user);
 
 		// Act.
-		User foundUser = UserService.findByUsername(user.username);
+		Option<User> foundUser = UserService.findByUsername(user.username);
 
 		// Assert.
 		assertNotNull(foundUser);
-		assertEquals(DUMMY_USERNAME, foundUser.username);
-		assertEquals(user.id, foundUser.id);
+		assertTrue(foundUser.isDefined());
+		assertEquals(DUMMY_USERNAME, foundUser.get().username);
+		assertEquals(user.id, foundUser.get().id);
 	}
 
 	@Test
@@ -65,10 +97,11 @@ public class UserServiceTest extends ProtoPollTest {
 		User user = UserService.registerAnonymousUser(DUMMY_USERNAME);
 
 		// Act.
-		User foundUser = UserService.findByUsername(user.username);
+		Option<User> foundUser = UserService.findByUsername(user.username);
 
 		// Assert.
-		assertNull(foundUser);
+		assertNotNull(foundUser);
+		assertTrue(foundUser.isEmpty());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -105,21 +138,128 @@ public class UserServiceTest extends ProtoPollTest {
 		UserService.registerUser(user);
 
 		// Act.
-		User authentifiedUser = UserService.authenticate(DUMMY_USERNAME,
-				DUMMY_PASSWORD);
+		Option<User> authentifiedUser = UserService.authenticate(
+				DUMMY_USERNAME, DUMMY_PASSWORD);
 
 		// Assert.
 		assertNotNull(authentifiedUser);
-		assertEquals(user.id, authentifiedUser.id);
+		assertTrue(authentifiedUser.isDefined());
+		assertEquals(user.id, authentifiedUser.get().id);
 	}
 
 	@Test
 	public void testAuthenticateNonExistentUser() {
 		// Act.
-		User user = UserService.authenticate(DUMMY_USERNAME, DUMMY_PASSWORD);
+		Option<User> user = UserService.authenticate(DUMMY_USERNAME,
+				DUMMY_PASSWORD);
 
 		// Assert.
-		assertNull(user);
+		assertNotNull(user);
+		assertTrue(user.isEmpty());
 	}
 
+	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	public void testtestUpdateUserProfileNotAuthentified() {
+		UserService.updateUserProfile(new User());
+	}
+
+	@Test
+	public void testUpdateUserProfile() {
+		// Prepare.
+		User initUser = new User();
+		initUser.username = DUMMY_USERNAME;
+		initUser.passwordHash = DUMMY_PASSWORD_HASHED;
+		initUser.email = DUMMY_EMAIL;
+		initUser.avatarEmail = "avatar" + DUMMY_EMAIL;
+		initUser.preferredLocale = Locale.CANADA;
+		UserService.registerUser(initUser);
+
+		SessionUtil.setUser(initUser);
+
+		User modifiedUser = UserService.findByUsername(initUser.username).get();
+		modifiedUser.preferredLocale = Locale.FRANCE;
+		modifiedUser.email = DUMMY_EMAIL + "mod";
+		modifiedUser.avatarEmail = "avatar" + DUMMY_EMAIL + "mod";
+		modifiedUser.displayName = initUser.displayName + "mod";
+		modifiedUser.id = -1L;
+
+		// Act.
+		UserService.updateUserProfile(modifiedUser);
+
+		// Assert.
+		User sessionUser = SessionUtil.currentUser().get();
+		assertEquals(initUser.id, sessionUser.id);
+		assertEquals(initUser.registered, sessionUser.registered);
+		assertEquals(initUser.username, sessionUser.username);
+		assertEquals(initUser.passwordHash, sessionUser.passwordHash);
+		assertEquals(initUser.email, initUser.email);
+		assertEquals(modifiedUser.displayName, sessionUser.displayName);
+		assertEquals(modifiedUser.preferredLocale, sessionUser.preferredLocale);
+		assertEquals(modifiedUser.avatarEmail, sessionUser.avatarEmail);
+
+		User loadedUser = UserService.findByUsername(initUser.username).get();
+		assertEquals(initUser.id, loadedUser.id);
+		assertEquals(initUser.registered, loadedUser.registered);
+		assertEquals(initUser.username, loadedUser.username);
+		assertEquals(initUser.passwordHash, loadedUser.passwordHash);
+		assertEquals(initUser.email, loadedUser.email);
+		assertEquals(modifiedUser.displayName, loadedUser.displayName);
+		assertEquals(modifiedUser.preferredLocale, loadedUser.preferredLocale);
+		assertEquals(modifiedUser.avatarEmail, loadedUser.avatarEmail);
+	}
+
+	@Test
+	public void testUpdateUserPassword() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		user.passwordHash = DUMMY_PASSWORD_HASHED;
+		UserService.registerUser(user);
+
+		SessionUtil.setUser(UserService.authenticate(DUMMY_USERNAME,
+				DUMMY_PASSWORD).get());
+
+		String newPassword = DUMMY_PASSWORD + DUMMY_PASSWORD;
+
+		// Act.
+		boolean result = UserService.updateUserPassword(DUMMY_PASSWORD,
+				newPassword);
+
+		// Assert.
+		User loadedUser = UserService.findByUsername(DUMMY_USERNAME).get();
+		assertTrue(result);
+		assertFalse(DUMMY_PASSWORD_HASHED.equals(loadedUser.passwordHash));
+		assertEquals(PasswordUtil.hashPassword(DUMMY_USERNAME, newPassword),
+				loadedUser.passwordHash);
+	}
+
+	@Test
+	public void testUpdateUserPasswordWrongOldPassword() {
+		// Prepare.
+		User user = new User();
+		user.username = DUMMY_USERNAME;
+		user.passwordHash = DUMMY_PASSWORD_HASHED;
+		UserService.registerUser(user);
+
+		SessionUtil.setUser(UserService.authenticate(DUMMY_USERNAME,
+				DUMMY_PASSWORD).get());
+
+		String newPassword = DUMMY_PASSWORD + DUMMY_PASSWORD;
+
+		// Act.
+		boolean result = UserService.updateUserPassword(newPassword,
+				DUMMY_PASSWORD);
+
+		// Assert.
+		User loadedUser = UserService.findByUsername(DUMMY_USERNAME).get();
+		assertFalse(result);
+		assertEquals(DUMMY_PASSWORD_HASHED, loadedUser.passwordHash);
+		assertFalse(PasswordUtil.hashPassword(DUMMY_USERNAME, newPassword)
+				.equals(loadedUser.passwordHash));
+	}
+
+	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	public void testUpdateUserPasswordNotAuthentified() {
+		UserService.updateUserPassword(null, null);
+	}
 }

@@ -19,7 +19,7 @@ public class UserTestUtil {
 		return user;
 	}
 
-	public static User getauthenticatedUser() {
+	public static User getAuthenticatedUser() {
 		User user = createUser();
 		UserService.authenticate(USER_LOGIN, USER_PASSWORD);
 		SessionUtil.setUser(user);

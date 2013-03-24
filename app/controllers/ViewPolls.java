@@ -2,12 +2,12 @@ package controllers;
 
 import java.util.List;
 
-import models.Event;
-import models.Question;
+import models.Poll;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.EventService;
-import services.QuestionService;
+import services.PollService;
+import util.user.message.Messages;
 import views.html.listPolls;
 import views.html.message;
 
@@ -21,12 +21,18 @@ import views.html.message;
  * 
  */
 public class ViewPolls extends Controller {
+
+	@Transactional
 	public static Result polls() {
-		List<Question> polls = QuestionService.questions();
-		List<Event> events = EventService.events();
-		if (polls.isEmpty() && events.isEmpty()) {
-			return ok(message.render("Polls", "No poll available yet."));
+		List<Poll> polls = PollService.polls();
+		if (polls.isEmpty()) {
+			return noPoll();
 		}
-		return ok(listPolls.render(polls, events));
+		return ok(listPolls.render(polls));
+	}
+
+	protected static Result noPoll() {
+		return ok(message.render(Messages.resolve("listpolls.name"),
+				Messages.resolve("listpolls.no_poll_available")));
 	}
 }

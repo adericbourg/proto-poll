@@ -2,29 +2,30 @@ package ui.tags;
 
 import models.User;
 import play.api.templates.Html;
+import scala.Option;
 import util.security.SessionUtil;
 
 public class UserManagement {
 
 	public static boolean isLoggedIn() {
-		return SessionUtil.currentUser() != null;
+		return SessionUtil.currentUser().isDefined();
 	}
 
 	public static Html getUserDisplay() {
-		User user = SessionUtil.currentUser();
-		return user == null ? new Html("") : new Html(user.getDisplay());
+		Option<User> user = SessionUtil.currentUser();
+		return user.isDefined() ? Html.apply(user.get().getDisplay()) : Html
+				.apply("");
 	}
 
 	public static Html currentUser() {
-		User user = SessionUtil.currentUser();
+		Option<User> user = SessionUtil.currentUser();
 
-		if (user == null) {
-			return new Html(
-					"<a class=\"btn btn-inverse btn-mini\" href=\"/login\">Login</a>");
+		if (user.isEmpty()) {
+			return Html
+					.apply("<a class=\"btn btn-inverse btn-mini\" href=\"/login\">Login</a>");
 		}
-
-		return new Html(
-				user.getDisplay()
+		return Html
+				.apply(user.get().getDisplay()
 						+ "<a class=\"btn btn-inverse btn-mini\" href=\"/logout\">Logout</a>");
 	}
 }

@@ -1,0 +1,213 @@
+application.name=ProtoPoll
+
+#
+# UI
+#
+
+common.action.create=Créer
+common.action.update=Mettre à jour
+common.action.submit=Envoyer
+common.action.post=Poster
+common.action.cancel=Annuler
+common.action.delete=Supprimer
+common.action.signin=Connexion
+common.action.signup=S''enregistrer
+common.action.logout=Déconnexion
+common.action.close_tip=Noté !
+
+common.label.yes=Oui
+common.label.no=Non
+
+error.fix_errors_below=Veuillez corriger les erreurs ci-dessous
+
+home.name=Accueil
+home.h1=Bienvenue sur ProtoPoll!
+home.create_classic_poll=Créer un sondage
+home.plan_event=Planifier un événement
+home.development=Développement
+home.list_all_polls=Lister tous les sondages
+
+listpolls.name=Sondages
+listpolls.no_poll_available=Aucun sondage.
+listpolls.table.header.type=Type
+listpolls.table.header.creation_date=Date de création
+listpolls.table.header.title=Titre
+listpolls.table.link.view_poll=Accéder au sondage
+
+login.name=Connexion
+login.not_registered_inter=Pas encore inscrit ?
+login.create_account_suggestion=Créer un compte maintenant !
+login.local.legend=Connexion
+login.field.username=Nom d'utilisateur
+login.field.password=Mot de passe
+login.external.legend=Connexion depuis un compte extérieur
+login.external.google=Connexion depuis Google
+
+register.name=Enregistrement
+register.legend=Informations
+register.field.username=Utilisateur
+register.field.password=Mot de passe
+register.field.password_confirmation=Confirmation du mot de passe
+register.field.email=E-mail
+
+profile.name=Profil
+profile.informations.legend=Vos informations
+profile.informations.field.display_name=Nom
+profile.informations.field.email=E-mail
+profile.informations.field.lang=Langue
+profile.informations.field.avatar_email=Identifiant Gravatar
+profile.informations.tip.gravatar_info.title=Identifiant Gravatar
+profile.informations.tip.gravatar_info.line_1=Cette adresse sera utilisée pour déterminer votre image de profil en utilisant Gravatar. Si vous n''en saisissez pas, l''adresse que vous avez saisi lors de votre inscription sera utilisée.
+profile.informations.tip.gravatar_info.line_2=Pour définir votre avatar, connectez-vous sur
+profile.password.legend=Changer votre mot de passe
+profile.password.current=Mot de passe actuel
+profile.password.new=Nouveau mot de passe
+profile.password.confirm_new=Confirmation du nouveau mot de passe
+
+pollheader.created_by=Créé par
+
+sharepoll.info=Partagez cette adresse pour inviter votre entourage à répondre
+sharepoll.action.go=Go
+
+user.polls=Mes sondages
+user.profile=Profil
+user.field.username=Utilisateur
+user.field.password=Mot de passe
+user.language_select=Langue
+
+user.constraint.email.format=Le format d''adresse e-mail est incorrect.
+
+event.new.name=Nouvel événement
+event.new.legend=Détails de l''événement
+event.new.field.title=Titre
+event.new.field.description=Description
+event.new.field.single_answer=Les utilisateurs peuvent sélectionner plusieurs choix
+
+event.add_dates.name=Ajouter des dates
+event.add_dates.legend=Dates
+
+event.created.name=Événement créé
+event.created.dates=Dates : 
+
+question.new.name=Nouvelle question
+question.new.legend=Détails de la question
+question.new.field.title=Titre
+question.new.field.description=Description
+question.new.field.single_answer=Les utilisateurs peuvent sélectionner plusieurs choix
+
+question.add_choices.name=Ajouter des choix
+question.add_choices.legend=Choix
+question.add_choices.placeholder.choice=Choix
+
+question.created.name=Question créée
+question.created.choices=Choix :
+
+poll.creation.no_choice_defined=Le sondage devrait avoir au moins un choix.
+
+poll.answer.name=Réponse au sondage : {0}
+poll.answer.participants=Participants
+poll.answer.totals=Totaux
+poll.answer.placeholder.username=Votre nom
+poll.answer.delete.title=Suppression
+poll.answer.delete.question=Êtes-vous certain de vouloir supprimer votre réponse ?
+poll.answer.delete.explanation=Une fois supprimée, votre réponse ne pourra pas être restaurée. Cependant, vous pourrez répondre à nouveau au sondage si vous le souhaitez.
+
+poll.comments.last_edited=Dernière modification le {0}
+poll.comments.legend=Poster un commentaire
+poll.comments.field.username=Votre nom
+poll.comments.field.comment=Commentaire
+
+#
+# Controller
+#
+
+access.forbidden.not_authentified=Vous ne pouvez pas accéder à cette page car vous n''êtes pas authentifié.
+
+authentication.welcome=Bienvenue {0} !
+
+registration.thanks=Bienvenue {0} ! Merci de votre enregistrement.
+
+password.change.successful=Mot de passe modifié avec succès
+password.change.same_as_old=Le nouveau mot de passe est identique à l''ancien. Ce n''est probablement pas ce que vous souhaitiez faire.
+password.change.new_do_not_match=Les mots de passe ne correspondent pas.
+password.change.new_do_not_match_confirmation=""
+
+poll.does_not_exist=Le sondage n''existe pas
+poll.answer.choose_user_name=Saisissez votre nom s''il vous plaît
+poll.answer.username_already_taken=Votre nom d''utilisateur est déjà utilisé. Si vous souhaitez modifier vos réponses, vous devez être enregistré.
+poll.answer.thanks=Merci d''avoir répondu !
+poll.answer_deleted=Votre réponse a bien été effacée.
+poll.answer_does_not_exist=Aucune réponse supprimée : vous n''aviez pas répondu à ce sondage. 
+
+event.creation.successful=Événement créé avec succès.
+question.creation.successful=Question créée avec succès.
+
+#
+# Service
+#
+
+login.wrong_old_password=Ancien mot de passe incorrect
+register.username_already_exists=Ce nom d''utilisateur est déjà utilisé : {0}
+
+#
+# Model validation
+#
+
+poll.title.mandatory=Le titre est obligatoire
+
+event_choice.date.mandatory=Saisissez une date
+
+question_choice.label.mandatory=Saisissez une valeur pour ce choix
+
+authentication.registration.username.mandatory=Le nom d''utilisateur est obligatoire.
+authentication.registration.password.mandatory=Le mot de passe est obligatoire. Pensez à votre sécurité.
+authentication.registration.password_confirm.mandatory=La confirmation du mot de passe est obligatoire.
+authentication.registration.email.mandatory=L''adresse e-mail est obligatoire.
+
+authentication.login.username.mandatory=Veuillez saisir votre nom d''utilisateur
+authentication.login.password.mandatory=Veuillez saisir votre mot de passe
+
+user.profile.email.mandatory=Vous ne pouvez pas supprimer votre adresse e-mail
+
+user.security.old_password.mandatory=Saisissez votre mot de passe actuel
+user.security.new_password.mandatory=Saisissez votre nouveau mot de passe
+user.security.new_password_confirm.mandatory=Saisissez la confirmation de votre nouveau mot de passe
+
+#
+# Technical i18n
+#
+
+date.format=dd/MM/yyyy
+datetime.format=dd/MM/yyyy à k:mm
+
+#
+# Override Play! validation messages
+#
+
+# --- Constraints
+constraint.required=Obligatoire
+constraint.min=Valeur minimale : {0}
+constraint.max=Valeur maximale : {0}
+constraint.minLength=Longueur minimale : {0}
+constraint.maxLength=Longueur maximale : {0}
+constraint.email=E-mail
+
+# --- Formats
+format.date=Date (''{0}'')
+format.numeric=Numérique
+format.real=Nombre réel
+
+# --- Errors
+error.invalid=Valeur incorrecte
+error.required=Ce champ est obligatoire
+error.number=Valeur numérique attendue
+error.real=Nombre réel attendu
+error.real.precision=Le nombre ne doit pas avoir plus de {0} chiffre(s) avec {1} décimale(s)
+error.min=Supérieur ou égal à {0}
+error.min.strict=Strictement supérieur à {0}
+error.max=Inférieur ou égal à {0}
+error.max.strict=Strictement inférieur à {0}
+error.minLength=La longueur minimale est de {0}
+error.maxLength=La longueur maximale est de {0}
+error.email=L'e-mail n'est pas valide
+error.pattern=Doit correspondre à {0}

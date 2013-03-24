@@ -3,44 +3,51 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
+GET     /                           	controllers.Application.index()
+GET		/lang/:lang/*url				controllers.Application.changeLanguage(lang: String, url: String)
 
 # Authentication
-GET		/register					controllers.Authentication.register()
-POST	/register					controllers.Authentication.saveRegistration()
-GET		/login						controllers.Authentication.login()
-POST	/authenticate				controllers.Authentication.authenticate()
-GET		/logout						controllers.Authentication.logout()
+GET		/register/*url					controllers.Authentication.register(url: String)
+POST	/register/						controllers.Authentication.saveRegistration()
+GET		/login/*url						controllers.Authentication.login(url: String)
+POST	/authenticate/*url				controllers.Authentication.authenticate(url: String)
+GET		/logout							controllers.Authentication.logout()
+
+# Third party authentication
+GET		/google/auth/*url				controllers.security.GoogleAuthenticationController.auth(url: String)
+GET		/google/verify/*url				controllers.security.GoogleAuthenticationController.verify(url: String)
 
 # User
-GET		/user/profile				controllers.UserSettings.profile()
-POST	/user/update/profile		controllers.UserSettings.updateProfile()
-POST	/user/update/security		controllers.UserSettings.updatePassword()
+GET		/user/profile					controllers.UserSettings.profile()
+POST	/user/update/profile			controllers.UserSettings.updateProfile()
+POST	/user/update/security			controllers.UserSettings.updatePassword()
 
 # Create questions
-GET     /question/new               controllers.CreateQuestion.newQuestion()
-POST    /question/new               controllers.CreateQuestion.createQuestion()
-GET		/question/addChoices/:id	controllers.CreateQuestion.setChoices(id: Long)
-POST	/question/addChoices/:id	controllers.CreateQuestion.saveChoices(id: Long)
-GET		/question/confirm/:id		controllers.CreateQuestion.confirmQuestionCreation(id: Long)
+GET     /question/new               	controllers.CreatePoll.newQuestion()
+POST    /question/new               	controllers.CreatePoll.createQuestion()
+GET		/question/addChoices/:uuid		controllers.CreateQuestion.setChoices(uuid: util.binders.UuidBinder)
+POST	/question/addChoices/:uuid		controllers.CreateQuestion.saveChoices(uuid: util.binders.UuidBinder)
 
-# Answer question
-GET		/question/:id				controllers.AnswerQuestion.view(id: Long)
-POST	/question/:id				controllers.AnswerQuestion.answer(id: Long)
 
 #Create events
-GET		/event/new					controllers.CreateEvent.newEvent()
-POST	/event/new					controllers.CreateEvent.createEvent()
-GET		/event/dates/:id			controllers.CreateEvent.setDates(id: Long)
-POST	/event/dates/:id			controllers.CreateEvent.saveDates(id: Long)
-GET		/event/confirm/:id			controllers.CreateEvent.confirmEventCreation(id: Long)
+GET		/event/new						controllers.CreatePoll.newEvent()
+POST	/event/new						controllers.CreatePoll.createEvent()
+GET		/event/dates/:uuid				controllers.CreateEvent.setDates(uuid: util.binders.UuidBinder)
+POST	/event/dates/:uuid				controllers.CreateEvent.saveDates(uuid: util.binders.UuidBinder)
 
-# Answer event
-GET		/event/:id					controllers.AnswerEvent.view(id: Long)
-POST	/event/:id					controllers.AnswerEvent.answer(id: Long)
+# Create polls
+GET		/confirm/:uuid					controllers.CreatePoll.confirmCreation(uuid: util.binders.UuidBinder)
 
 # View polls
-GET		/polls						controllers.ViewPolls.polls()
+GET		/polls							controllers.ViewPolls.polls()
+GET		/poll/:uuid						controllers.AnswerPoll.viewPoll(uuid: util.binders.UuidBinder)
+POST	/poll/:uuid						controllers.AnswerPoll.answer(uuid: util.binders.UuidBinder)
+GET		/poll/:uuid/remove				controllers.AnswerPoll.removeUserAnswer(uuid: util.binders.UuidBinder)
+GET		/user/polls						controllers.UserViewPolls.userPolls()
+
+
+# Comment poll
+POST	/comment/:uuid					controllers.AnswerPoll.comment(uuid: util.binders.UuidBinder)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file               	controllers.Assets.at(path="/public", file)

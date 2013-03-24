@@ -9,14 +9,20 @@ import java.util.List;
 
 import models.Event;
 import models.EventChoice;
+import models.Poll;
 import models.User;
+import models.reference.PollStatus;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
+import services.exception.poll.NoChoiceException;
 import util.UserTestUtil;
+import util.security.SessionUtil;
 
 public class EventServiceTest extends ProtoPollTest {
+
+	private static final int CHOICE_NUMBER = 3;
 
 	@Test
 	public void testCreateEventAnonymousUser() {
@@ -24,26 +30,29 @@ public class EventServiceTest extends ProtoPollTest {
 		final Event event = createEvent();
 
 		// Assert.
-		final Event loadedEvent = EventService.getEvent(event.id);
+		final Event loadedEvent = PollService.getEvent(event.uuid());
 		assertNotNull(loadedEvent);
-		assertNull(loadedEvent.userCreator);
+		assertNotNull(event.poll);
+		assertNull(loadedEvent.poll.userCreator);
 		assertEquals(0, loadedEvent.dates.size());
 	}
 
 	@Test
 	public void testCreateEventRegistered() {
 		// Prepare.
-		final User user = UserTestUtil.getauthenticatedUser();
+		final User user = UserTestUtil.getAuthenticatedUser();
+		assertNotNull(SessionUtil.currentUser());
 
 		// Act.
 		final Event event = createEvent();
 
 		// Assert.
-		final Event loadedEvent = EventService.getEvent(event.id);
-		assertNotNull(loadedEvent.id);
-		assertNotNull(loadedEvent.userCreator);
-		assertEquals(user.id, loadedEvent.userCreator.id);
-		assertEquals(0, loadedEvent.dates.size());
+		final Event loadedEvent = PollService.getEvent(event.uuid());
+		assertNotNull("id", loadedEvent.id);
+		assertNotNull("poll", loadedEvent.poll);
+		assertNotNull("user", loadedEvent.poll.userCreator);
+		assertEquals("user id", user.id, loadedEvent.poll.userCreator.id);
+		assertEquals("size", 0, loadedEvent.dates.size());
 	}
 
 	@Test
@@ -62,17 +71,69 @@ public class EventServiceTest extends ProtoPollTest {
 		dates.add(date2);
 
 		// Act.
-		EventService.saveDates(event.id, dates);
+		EventService.saveDates(event.uuid(), dates);
 
 		// Assert.
-		final Event loadedEvent = EventService.getEvent(event.id);
+		final Event loadedEvent = PollService.getEvent(event.uuid());
 		assertEquals(dates.size(), loadedEvent.dates.size());
 	}
 
+	@Test(expected = NoChoiceException.class)
+	public void testNoDateSelectedNull() {
+		// Prepare.
+		final Event event = createEvent();
+
+		// Act.
+		EventService.saveDates(event.uuid(), null);
+	}
+
+	@Test(expected = NoChoiceException.class)
+	public void testNoDateSelectedEmpty() {
+		// Prepare.
+		final Event event = createEvent();
+
+		// Act.
+		EventService.saveDates(event.uuid(), new ArrayList<EventChoice>());
+	}
+
+	@Test
+	public void testStatusCreated() {
+		// Prepare / Act.
+		Event event = createEvent();
+
+		// Assert.
+		assertEquals(PollStatus.DRAFT, event.poll.status);
+	}
+
+	@Test
+	public void testStatusCreatedWithChoices() {
+		// Prepare.
+		Event event = createEvent();
+
+		// Act.
+		event = addDates(event);
+
+		// Assert.
+		assertEquals(PollStatus.COMPLETE, event.poll.status);
+	}
+
 	private Event createEvent() {
-		final Event event = new Event();
-		event.title = "event title";
-		EventService.createEvent(event);
-		return event;
+		Poll poll = Poll.initEvent();
+		poll.title = "event title";
+		PollService.createPoll(poll);
+		return PollService.getPoll(poll.uuid).event;
+	}
+
+	private static Event addDates(Event event) {
+		List<EventChoice> choices = new ArrayList<EventChoice>();
+		EventChoice choice;
+		for (int i = 0; i < CHOICE_NUMBER; i++) {
+			choice = new EventChoice();
+			choice.date = LocalDate.now().plusDays(i);
+			choice.event = event;
+			choices.add(choice);
+		}
+		EventService.saveDates(event.uuid(), choices);
+		return PollService.getEvent(event.uuid());
 	}
 }

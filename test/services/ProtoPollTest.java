@@ -11,6 +11,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import play.api.mvc.RequestHeader;
 import play.mvc.Http;
 import play.mvc.Http.Context;
 import play.mvc.Http.Request;
@@ -67,11 +68,12 @@ public abstract class ProtoPollTest {
 
 	private void initSessionRequestAndResponse() {
 		Request requestMock = mock(Request.class);
+		RequestHeader requestHeaderMock = mock(RequestHeader.class);
 		Http.Cookies cookiesMock = mock(Http.Cookies.class);
 		when(requestMock.cookies()).thenReturn(cookiesMock);
-		Context.current.set(new Context(requestMock,
-				new HashMap<String, String>(), new HashMap<String, String>()));
-
+		Context.current.set(new Context(-1L, requestHeaderMock, requestMock,
+				new HashMap<String, String>(), new HashMap<String, String>(),
+				new HashMap<String, Object>()));
 	}
 
 	private void createCleanDb() {
@@ -84,7 +86,7 @@ public abstract class ProtoPollTest {
 		Helpers.stop(app);
 	}
 
-	protected static final FakeApplication getApplication() {
+	protected static FakeApplication getApplication() {
 		return app;
 	}
 }

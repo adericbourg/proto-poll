@@ -1,0 +1,100 @@
+@(poll: Poll, questionForm: Form[Question])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@import util.user.message.Messages
+
+@choiceGroup(choice: Field, className: String = "choice") = {
+    <div class="@className">
+       <a class="remove-choice btn btn-danger btn-mini"><i class="icon-white icon-remove-sign"></i></a>
+        <input name="choice[x].label" placeholder="Choice x" autocomplete="off" />
+    </div>
+}
+
+@main(Messages.resolve("question.add_choices.name")) {
+    @helper.form(action = routes.CreateQuestion.saveChoices(poll.bindId)) {
+		<div class="header">
+			<h1>@poll.title</h1>
+			<blockquote>
+    			<p>@poll.description</p>
+    		</blockquote>
+		</div>
+
+        <fieldset>
+            <legend>@Messages.resolve("question.add_choices.legend")</legend>
+            <div id="choices">
+            	<div class="manage">
+                    <a class="add-choice btn btn-mini btn-inverse"><i class="icon-white icon-plus-sign"></i></a>
+                </div>
+                @repeat(questionForm("choices")) { choice =>
+                    @choiceGroup(choice)
+                }
+
+                @** Keep an hidden block that will be used as template for Javascript copy code **@
+                @choiceGroup(
+                    questionForm("choices[x]"),
+                    className = "choice_template"
+                )
+    			<div id="manage-bottom" class="manage">
+                    <a class="add-choice btn btn-mini btn-inverse"><i class="icon-white icon-plus-sign"></i></a>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="actions">
+            <a href="@routes.Application.index" class="btn btn-link">@Messages.resolve("common.action.cancel")</a>
+            <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.create")' />
+        </div>
+    }
+
+    <script type="text/javascript">
+        $('.remove-choice').live('click', function(e) {
+            $(this).parents('.choice').remove()
+            renumber()
+        })
+
+        $('.add-choice').live('click', function(e) {
+        	addChoice();
+        })
+        
+        $('.last-input').live('keypress', function(e) {
+        	// While input is not empty, "Tab" key press will add new input.
+        	if (e.keyCode === 9 && $(this).val() != "") {
+        		addChoice()
+        	}
+        })
+        
+        $('#form').submit(function() {
+            $('.choice_template').remove()
+        })
+
+        function addChoice() {
+        	var template = $('.choice_template')
+            template.before('<div class="choice">' + template.html() + '</div>')
+            renumber()
+        }
+        
+        var renumber = function(choice) {
+        	var count = 0;
+            $('#choices .choice').each(function(i) {
+                $('input', this).each(function() {
+                	count++
+                    $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'))
+                    $(this).attr('placeholder', '@Messages.resolve("question.add_choices.placeholder.choice") ' + count)
+                    $(this).removeClass("last-input")
+                })
+            })
+            
+            $('#choices .choice input:last').addClass("last-input")
+            
+            if (count > 10) {
+            	$('#manage-bottom').show()
+            } else {
+            	$('#manage-bottom').hide()
+            }
+        }
+        
+        renumber()
+    </script>
+}

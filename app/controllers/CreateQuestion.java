@@ -1,7 +1,8 @@
 package controllers;
 
-import static ui.tags.Messages.info;
-import static ui.tags.MessagesHelper.invalidForm;
+import static play.data.Form.form;
+import static util.user.message.Messages.error;
+import static util.user.message.Messages.info;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +10,24 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import models.Poll;
 import models.Question;
 import models.QuestionChoice;
+import play.api.templates.Html;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+import services.PollService;
 import services.QuestionService;
-import views.html.addChoices;
-import views.html.newQuestion;
-import views.html.questionCreated;
+import services.exception.poll.NoChoiceException;
+import util.binders.UuidBinder;
+import views.html.question.questionAddChoices;
 
 import com.google.common.base.Strings;
+
+import controllers.message.ControllerMessage;
 
 /**
  * Managing poll controller. Create, edit, add choices.
@@ -29,33 +36,18 @@ import com.google.common.base.Strings;
  * 
  */
 public class CreateQuestion extends Controller {
-	private static final Form<Question> QUESTION_FORM = form(Question.class);
+	private static final Form<Question> QUESTION_FORM = form(Question.class)
+			.fill(new Question());
 	private static final Pattern CHOICE_ORDER = Pattern
 			.compile("choice\\[(.*?)\\]");
 
-	public static Result newQuestion() {
-		return ok(newQuestion.render(QUESTION_FORM));
+	@Transactional
+	public static Result setChoices(UuidBinder uuid) {
+		return ok(prepareChoiceData(uuid));
 	}
 
-	public static Result createQuestion() {
-		Form<Question> filledForm = QUESTION_FORM.bindFromRequest();
-
-		if (filledForm.hasErrors()) {
-			// Error handling.
-			return invalidForm(newQuestion.render(QUESTION_FORM));
-		}
-
-		Question question = filledForm.get();
-		Long questionId = QuestionService.createQuestion(question);
-		return setChoices(questionId);
-	}
-
-	public static Result setChoices(Long questionId) {
-		Question poll = QuestionService.getQuestion(questionId);
-		return ok(addChoices.render(poll, QUESTION_FORM));
-	}
-
-	public static Result saveChoices(Long questionId) {
+	@Transactional
+	public static Result saveChoices(UuidBinder uuid) {
 		DynamicForm dynamicForm = form().bindFromRequest();
 		QuestionChoice choice;
 		List<QuestionChoice> choices = new ArrayList<QuestionChoice>();
@@ -69,15 +61,19 @@ public class CreateQuestion extends Controller {
 				choices.add(choice);
 			}
 		}
-		QuestionService.saveChoices(questionId, choices);
-		info("Question successfully created.");
-		return confirmQuestionCreation(questionId);
-
+		try {
+			QuestionService.saveChoices(uuid.uuid(), choices);
+			info(ControllerMessage.QUESTION_SUCCESSFULLY_CREATED);
+			return redirect(routes.CreatePoll.confirmCreation(uuid));
+		} catch (NoChoiceException e) {
+			error(ControllerMessage.NO_CHOICE_ON_POLL);
+			return badRequest(prepareChoiceData(uuid));
+		}
 	}
 
-	public static Result confirmQuestionCreation(Long questionId) {
-		Question question = QuestionService.getQuestion(questionId);
-		return ok(questionCreated.render(question));
+	private static Html prepareChoiceData(UuidBinder uuid) {
+		Poll poll = PollService.getPoll(uuid.uuid());
+		return questionAddChoices.render(poll, QUESTION_FORM);
 	}
 
 	private static int extractSortOrder(String key) {

@@ -1,21 +1,55 @@
-@(questions: List[Question], events: List[Event])
+@(polls: List[Poll])
 
-@main("Polls") {
-	@if(!questions.isEmpty) {
-		<h1>Questions</h1>
-		<ul class="none">
-			
-		    @for(question <- questions) {
-		        <li><a href="@routes.AnswerQuestion.view(question.id)" title="@question.description">@question.title</a></li>
-		    }
-		</ul>
-	}
-	@if(!events.isEmpty) {
-		<h1>Events</h1>
-		<ul class="none">
-		    @for(event <- events) {
-		        <li><a href="@routes.AnswerEvent.view(event.id)" title="@event.description">@event.title</a></li>
-		    }
-		</ul>
-	}
+@import ui.util.UIUtil;
+@import util.binders.UuidBinder;
+@import util.user.message.Messages
+
+@scripts = {
+	<script src='@routes.Assets.at("javascripts/tsort.min.js")' type="text/javascript"></script>
+}
+
+@main(Messages.resolve("listpolls.name"), scripts) {
+
+	<table id="polls" class="table">
+		<thead>
+			<tr>
+				<th class="span1">@Messages.resolve("listpolls.table.header.type")</th>
+				<th class="span2">@Messages.resolve("listpolls.table.header.creation_date")</th>
+				<th class="span9">@Messages.resolve("listpolls.table.header.title")</th>
+			</tr>
+		</thead>
+	    @for(poll <- polls) {
+	    	<tr>
+	    		<td data-sortAs="@if(poll.isEvent) { E } else { Q }">
+    				@if(poll.isEvent) {
+    					<i class="icon-calendar"></i>
+    				}
+    				@if(poll.isQuestion) {
+    					<i class="icon-question-sign"></i>
+    				}
+	    		</td>
+	    		<td data-sortAs="@UIUtil.formatDateTimeSortable(poll.creationDate)">
+	    			@UIUtil.formatDateTime(poll.creationDate)
+    			</td>
+	    		<td>
+	    			<span class="pull-right">
+	    				<a href="@routes.AnswerPoll.viewPoll(poll.bindId)" title='@Messages.resolve("listpolls.table.link.view_poll")'><i class="icon-eye-open icon-large"></i></a>
+	    			</span>
+	    			@poll.title
+    			</td>
+	    	</tr>
+	    }
+	</table>
+	
+	<script type="text/javascript">
+		@** 
+			More parameters: 
+				http://www.matanhershberg.com/plugins/jquery-animated-table-sorter/settings/
+		**@
+		$(document).ready(function() {
+			$('#polls').tableSort( {
+				speed: 250
+			} )
+		});
+	</script>
 }

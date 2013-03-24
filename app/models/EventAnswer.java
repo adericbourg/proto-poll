@@ -24,6 +24,7 @@ public class EventAnswer extends Model {
 	@Id
 	@Column(name = "id")
 	public Long id;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	public User user;

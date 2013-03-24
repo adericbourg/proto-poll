@@ -29,7 +29,7 @@ public class QuestionChoice extends Model {
 	@Column(name = "id")
 	public Long id;
 
-	@Required(message = "Enter label for this choice")
+	@Required(message = "question_choice.label.mandatory")
 	@Column(name = "label", nullable = false)
 	public String label;
 
