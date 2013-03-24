@@ -70,7 +70,11 @@ public class QuestionService {
 	}
 
 	static void answerQuestionRegistered(UUID uuid, Collection<Long> choiceIds) {
-		answerQuestion(SessionUtil.currentUser(), uuid, choiceIds);
+		Option<User> currentUser = SessionUtil.currentUser();
+		if (currentUser.isEmpty()) {
+			throw new RuntimeException("User must be defined");
+		}
+		answerQuestion(currentUser.get(), uuid, choiceIds);
 	}
 
 	static void answerQuestionAnonymous(String username, UUID uuid,
@@ -88,17 +92,13 @@ public class QuestionService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerQuestion(Option.apply(user), uuid, choiceIds);
+		answerQuestion(user, uuid, choiceIds);
 	}
 
-	private static void answerQuestion(Option<User> user, UUID uuid,
+	private static void answerQuestion(User user, UUID uuid,
 			Collection<Long> choiceIds) {
-		if (user.isEmpty()) {
-			throw new RuntimeException("User must be defined");
-		}
-
 		Question question = PollService.getQuestion(uuid);
-		QuestionAnswer answer = getOrCreateAnswer(user.get(), question);
+		QuestionAnswer answer = getOrCreateAnswer(user, question);
 
 		// Clear all previous answers.
 		for (QuestionAnswerDetail detail : answer.details) {
