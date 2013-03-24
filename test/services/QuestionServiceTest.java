@@ -19,6 +19,7 @@ import models.reference.PollStatus;
 import org.junit.Test;
 
 import services.exception.poll.NoChoiceException;
+import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.UserTestUtil;
 import util.security.SessionUtil;
 
@@ -127,6 +128,23 @@ public class QuestionServiceTest extends ProtoPollTest {
 		assertTrue(choiceIds.contains(reloadedQuestion.answers.get(0).details
 				.get(0).choice.id));
 		// FIXME Missing user checks!
+	}
+
+	@Test(expected = AnonymousUserAlreadyAnsweredPoll.class)
+	public void testAnswerPollAnonymousAlreadyUsedLogin() {
+		// Prepare.
+		String userLogin = "test user";
+
+		Question question = createQuestion();
+		question = addChoices(question);
+
+		Set<Long> choiceIds = new HashSet<Long>();
+		choiceIds.add(question.choices.get(0).id);
+
+		PollService.answerPollAnonymous(userLogin, question.uuid(), choiceIds);
+
+		// Act.
+		PollService.answerPollAnonymous(userLogin, question.uuid(), choiceIds);
 	}
 
 	@Test
