@@ -22,7 +22,7 @@ import com.google.common.base.Strings;
  * 
  */
 @Entity
-@Table(name = "user")
+@Table(name = "account")
 public class User extends Model {
 
 	private static final long serialVersionUID = 1L;
