@@ -15,7 +15,7 @@ import services.UserService;
 import services.exception.user.AlreadyRegisteredUser;
 import ui.util.UIUtil;
 import util.security.PasswordUtil;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 import util.user.message.Messages;
 
 import com.google.common.base.Strings;
@@ -81,7 +81,7 @@ public class Authentication extends Controller {
 		}
 
 		// Automatically log user in.
-		SessionUtil.setUser(user);
+		CurrentUser.setUser(user);
 
 		// Redirect to home page.
 		info(ControllerMessage.REGISTRATION_THANKS, user.getDisplay());
@@ -125,7 +125,7 @@ public class Authentication extends Controller {
 		}
 
 		User user = optUser.get();
-		SessionUtil.setUser(user);
+		CurrentUser.setUser(user);
 
 		// Redirect to page.
 		info(ControllerMessage.APPLICATION_WELCOME, user.getDisplay());
@@ -137,7 +137,7 @@ public class Authentication extends Controller {
 
 	@Transactional
 	public static Result logout() {
-		SessionUtil.clear();
+		CurrentUser.clear();
 		return redirect(routes.Application.index());
 	}
 }

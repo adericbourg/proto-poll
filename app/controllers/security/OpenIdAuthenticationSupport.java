@@ -17,7 +17,7 @@ import services.UserService;
 import services.openid.OpenIdAttributes;
 import services.openid.OpenIdProvider;
 import ui.util.UIUtil;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 import com.google.common.base.Strings;
 
@@ -48,7 +48,7 @@ public class OpenIdAuthenticationSupport extends Controller {
 		UserInfo userInfo = userInfoPromise.get();
 		User user = UserService.authenticateOpenId(userInfo, source);
 
-		SessionUtil.setUser(user);
+		CurrentUser.setUser(user);
 
 		// Redirect to page.
 		info(ControllerMessage.APPLICATION_WELCOME, user.getDisplay());

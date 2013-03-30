@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Locale;
 
 import services.ReferentialService;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 public class Language {
 
@@ -17,8 +17,8 @@ public class Language {
 	}
 
 	public static boolean isCurrentLanguage(String language) {
-		return SessionUtil.preferredLocale().isDefined()
-				&& SessionUtil.preferredLocale().get().getLanguage()
+		return CurrentUser.preferredLocale().isDefined()
+				&& CurrentUser.preferredLocale().get().getLanguage()
 						.equals(language);
 	}
 }

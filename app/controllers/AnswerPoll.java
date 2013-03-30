@@ -21,7 +21,7 @@ import services.exception.poll.NoAnswerFoundException;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.binders.UuidBinder;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 import util.user.message.Messages;
 import views.html.poll.pollResults;
 
@@ -79,7 +79,7 @@ public class AnswerPoll extends Controller {
 
 		PollComment pollComment = submittedForm.get();
 
-		if (SessionUtil.isAuthenticated()) {
+		if (CurrentUser.isAuthenticated()) {
 			PollService.postCommentRegistered(uuid, pollComment.comment);
 		} else {
 			if (Strings.isNullOrEmpty(pollComment.username)) {
@@ -122,7 +122,7 @@ public class AnswerPoll extends Controller {
 				choices.add(Long.valueOf(entry.getValue()));
 			}
 		}
-		if (SessionUtil.isAuthenticated()) {
+		if (CurrentUser.isAuthenticated()) {
 			PollService.answerPollRegistered(uuid.uuid(), choices);
 		} else {
 			String username = form.data().get(USERNAME_KEY);

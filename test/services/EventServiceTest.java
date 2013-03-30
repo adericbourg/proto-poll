@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import services.exception.poll.NoChoiceException;
 import util.UserTestUtil;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 public class EventServiceTest extends ProtoPollTest {
 
@@ -41,7 +41,7 @@ public class EventServiceTest extends ProtoPollTest {
 	public void testCreateEventRegistered() {
 		// Prepare.
 		final User user = UserTestUtil.getAuthenticatedUser();
-		assertNotNull(SessionUtil.currentUser());
+		assertNotNull(CurrentUser.currentUser());
 
 		// Act.
 		final Event event = createEvent();

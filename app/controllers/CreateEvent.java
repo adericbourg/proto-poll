@@ -25,7 +25,7 @@ import services.EventService;
 import services.PollService;
 import services.exception.poll.NoChoiceException;
 import util.binders.UuidBinder;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 import views.html.event.eventAddDates;
 
 import com.google.common.base.Strings;
@@ -68,8 +68,8 @@ public class CreateEvent extends Controller {
 	private static Html prepareDatesData(UuidBinder uuid) {
 		Poll poll = PollService.getPoll(uuid.uuid());
 		Option<String> locale;
-		if (SessionUtil.preferredLang().isDefined()) {
-			locale = Option.apply(SessionUtil.preferredLang().get().language());
+		if (CurrentUser.preferredLang().isDefined()) {
+			locale = Option.apply(CurrentUser.preferredLang().get().language());
 		} else {
 			locale = Option.empty();
 		}

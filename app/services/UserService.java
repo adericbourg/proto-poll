@@ -14,7 +14,7 @@ import services.exception.user.AlreadyRegisteredUser;
 import services.messages.ServiceMessage;
 import services.openid.OpenIdAttributes;
 import util.security.PasswordUtil;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 import util.user.message.Messages;
 
 import com.avaje.ebean.Ebean;
@@ -51,7 +51,7 @@ public final class UserService {
 			currentUser.email = user.email;
 		}
 		currentUser.update();
-		SessionUtil.setUser(currentUser);
+		CurrentUser.setUser(currentUser);
 	}
 
 	@Transactional
@@ -188,7 +188,7 @@ public final class UserService {
 	}
 
 	private static User getCheckedCurrentUser() {
-		Option<User> currentUser = SessionUtil.currentUser();
+		Option<User> currentUser = CurrentUser.currentUser();
 		if (currentUser.isEmpty()) {
 			throw new NoAuthenfiedUserInSessionException();
 		}

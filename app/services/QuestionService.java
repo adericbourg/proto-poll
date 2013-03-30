@@ -20,7 +20,7 @@ import play.db.ebean.Transactional;
 import scala.Option;
 import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 import com.avaje.ebean.ExpressionList;
 
@@ -70,7 +70,7 @@ public class QuestionService {
 	}
 
 	static void answerQuestionRegistered(UUID uuid, Collection<Long> choiceIds) {
-		Option<User> currentUser = SessionUtil.currentUser();
+		Option<User> currentUser = CurrentUser.currentUser();
 		if (currentUser.isEmpty()) {
 			throw new RuntimeException("User must be defined");
 		}

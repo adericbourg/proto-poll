@@ -17,11 +17,11 @@ import play.mvc.Http.Session;
 import scala.Option;
 import services.UserService;
 
-public final class SessionUtil {
+public final class CurrentUser {
 
 	private static final String SESSION_KEY = "SESSION_ID";
 
-	private SessionUtil() {
+	private CurrentUser() {
 		throw new AssertionError();
 	}
 

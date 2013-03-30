@@ -15,7 +15,7 @@ import scala.Option;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
 import util.security.PasswordUtil;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 public class UserServiceTest extends ProtoPollTest {
 
@@ -174,7 +174,7 @@ public class UserServiceTest extends ProtoPollTest {
 		initUser.preferredLocale = Locale.CANADA;
 		UserService.registerUser(initUser);
 
-		SessionUtil.setUser(initUser);
+		CurrentUser.setUser(initUser);
 
 		User modifiedUser = UserService.findByUsername(initUser.username).get();
 		modifiedUser.preferredLocale = Locale.FRANCE;
@@ -187,7 +187,7 @@ public class UserServiceTest extends ProtoPollTest {
 		UserService.updateUserProfile(modifiedUser);
 
 		// Assert.
-		User sessionUser = SessionUtil.currentUser().get();
+		User sessionUser = CurrentUser.currentUser().get();
 		assertEquals(initUser.id, sessionUser.id);
 		assertEquals(initUser.registered, sessionUser.registered);
 		assertEquals(initUser.username, sessionUser.username);
@@ -216,7 +216,7 @@ public class UserServiceTest extends ProtoPollTest {
 		user.passwordHash = DUMMY_PASSWORD_HASHED;
 		UserService.registerUser(user);
 
-		SessionUtil.setUser(UserService.authenticate(DUMMY_USERNAME,
+		CurrentUser.setUser(UserService.authenticate(DUMMY_USERNAME,
 				DUMMY_PASSWORD).get());
 
 		String newPassword = DUMMY_PASSWORD + DUMMY_PASSWORD;
@@ -241,7 +241,7 @@ public class UserServiceTest extends ProtoPollTest {
 		user.passwordHash = DUMMY_PASSWORD_HASHED;
 		UserService.registerUser(user);
 
-		SessionUtil.setUser(UserService.authenticate(DUMMY_USERNAME,
+		CurrentUser.setUser(UserService.authenticate(DUMMY_USERNAME,
 				DUMMY_PASSWORD).get());
 
 		String newPassword = DUMMY_PASSWORD + DUMMY_PASSWORD;

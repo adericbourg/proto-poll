@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import play.mvc.Http.Context;
 import play.mvc.Http.Flash;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 public final class Messages {
 
@@ -74,8 +74,8 @@ public final class Messages {
 	}
 
 	public static String resolve(String code, Object... params) {
-		if (SessionUtil.preferredLang().isDefined()) {
-			return play.i18n.Messages.get(SessionUtil.preferredLang().get(),
+		if (CurrentUser.preferredLang().isDefined()) {
+			return play.i18n.Messages.get(CurrentUser.preferredLang().get(),
 					code, params);
 		}
 		return play.i18n.Messages.get(code, params);

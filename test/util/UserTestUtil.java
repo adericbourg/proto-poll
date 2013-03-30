@@ -3,7 +3,7 @@ package util;
 import models.User;
 import services.UserService;
 import util.security.PasswordUtil;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 public class UserTestUtil {
 
@@ -22,7 +22,7 @@ public class UserTestUtil {
 	public static User getAuthenticatedUser() {
 		User user = createUser();
 		UserService.authenticate(USER_LOGIN, USER_PASSWORD);
-		SessionUtil.setUser(user);
+		CurrentUser.setUser(user);
 		return user;
 	}
 }

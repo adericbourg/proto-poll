@@ -21,7 +21,7 @@ import org.junit.Test;
 import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.UserTestUtil;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 public class QuestionServiceTest extends ProtoPollTest {
 
@@ -45,7 +45,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 	public void testCreateQuestionRegistered() {
 		// Prepare.
 		final User user = UserTestUtil.getAuthenticatedUser();
-		assertNotNull(SessionUtil.currentUser());
+		assertNotNull(CurrentUser.currentUser());
 
 		// Act.
 		final Question question = createQuestion();

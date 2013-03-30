@@ -6,7 +6,7 @@ import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import ui.util.UIUtil;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 import views.html.index;
 
 /**
@@ -24,7 +24,7 @@ public class Application extends Controller {
 
 	@Transactional
 	public static Result changeLanguage(String lang, String backUrl) {
-		SessionUtil.setPreferredLocale(LocaleUtils.toLocale(lang));
+		CurrentUser.setPreferredLocale(LocaleUtils.toLocale(lang));
 		return redirect(UIUtil.fullUrlDecode(backUrl));
 	}
 }

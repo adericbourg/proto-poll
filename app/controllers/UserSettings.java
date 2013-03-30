@@ -24,7 +24,7 @@ import services.ReferentialService;
 import services.UserService;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
 import ui.util.Language;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 import views.html.user.userProfile;
 
 import com.google.common.base.Strings;
@@ -90,8 +90,8 @@ public class UserSettings extends Controller {
 		if (Language.displayLanguageSelection()) {
 			updatableFields.add("localeCode");
 		}
-		if (SessionUtil.currentUser().isDefined()
-				&& SessionUtil.currentUser().get().isLocalUser()) {
+		if (CurrentUser.currentUser().isDefined()
+				&& CurrentUser.currentUser().get().isLocalUser()) {
 			updatableFields.add("email");
 		}
 		updatableFields.add("avatarEmail");
@@ -155,7 +155,7 @@ public class UserSettings extends Controller {
 	}
 
 	private static Form<UserProfile> getFormProfile() {
-		Option<User> optUser = SessionUtil.currentUser();
+		Option<User> optUser = CurrentUser.currentUser();
 		if (optUser.isEmpty()) {
 			throw new NoAuthenfiedUserInSessionException();
 		}
@@ -171,6 +171,6 @@ public class UserSettings extends Controller {
 	}
 
 	private static UserProfileLayout getLayout() {
-		return new UserProfileLayout(SessionUtil.currentUser().get());
+		return new UserProfileLayout(CurrentUser.currentUser().get());
 	}
 }

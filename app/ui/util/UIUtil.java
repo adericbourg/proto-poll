@@ -16,7 +16,7 @@ import play.mvc.Http.Context;
 import play.mvc.Http.Request;
 import scala.Option;
 import services.UserService;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 import util.user.message.Messages;
 
 import com.google.common.base.Strings;
@@ -105,41 +105,41 @@ public final class UIUtil {
 	}
 
 	public static boolean isRegisteredUser() {
-		return SessionUtil.isAuthenticated();
+		return CurrentUser.isAuthenticated();
 	}
 
 	public static String registeredUserDisplayName() {
-		if (!SessionUtil.isAuthenticated()) {
+		if (!CurrentUser.isAuthenticated()) {
 			throw new IllegalStateException("No current user");
 		}
-		return SessionUtil.currentUser().get().getDisplay();
+		return CurrentUser.currentUser().get().getDisplay();
 	}
 
 	public static Long registeredUserId() {
-		if (!SessionUtil.isAuthenticated()) {
+		if (!CurrentUser.isAuthenticated()) {
 			throw new IllegalStateException("No current user");
 		}
-		return SessionUtil.currentUser().get().id;
+		return CurrentUser.currentUser().get().id;
 	}
 
 	public static boolean isCurrentUser(User user) {
 		if (user == null) {
 			return false;
 		}
-		if (!SessionUtil.isAuthenticated()) {
+		if (!CurrentUser.isAuthenticated()) {
 			return false;
 		}
-		return SessionUtil.currentUser().get().id.equals(user.id);
+		return CurrentUser.currentUser().get().id.equals(user.id);
 	}
 
 	public static boolean displayGravatar() {
-		if (!SessionUtil.isAuthenticated()) {
+		if (!CurrentUser.isAuthenticated()) {
 			return false;
 		}
-		if (SessionUtil.currentUser().isEmpty()) {
+		if (CurrentUser.currentUser().isEmpty()) {
 			return false;
 		}
-		return !Strings.isNullOrEmpty(SessionUtil.currentUser().get().email);
+		return !Strings.isNullOrEmpty(CurrentUser.currentUser().get().email);
 	}
 
 	public static String getGravatarUrl(Long userId, int size) {
@@ -151,7 +151,7 @@ public final class UIUtil {
 	}
 
 	public static String getGravatarUrl() {
-		return getGravatarUrl(SessionUtil.currentUser(), GRAVATAR_DEFAULT_SIZE);
+		return getGravatarUrl(CurrentUser.currentUser(), GRAVATAR_DEFAULT_SIZE);
 	}
 
 	public static String getGravatarUrl(Option<User> optUser, int size) {

@@ -7,7 +7,7 @@ import play.db.ebean.Transactional;
 import play.mvc.Result;
 import play.mvc.Security;
 import services.PollService;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 import util.user.message.Messages;
 import views.html.index;
 import views.html.listPolls;
@@ -19,7 +19,7 @@ public class UserViewPolls extends ViewPolls {
 
 	@Transactional
 	public static Result userPolls() {
-		if (!SessionUtil.isAuthenticated()) {
+		if (!CurrentUser.isAuthenticated()) {
 			Messages.error(ControllerMessage.ACCESS_FORBIDDEN_NOT_AUTHENTIFIED);
 			return badRequest(index.render());
 		}

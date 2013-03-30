@@ -19,7 +19,7 @@ import models.User;
 import services.exception.poll.InconsistentPollException;
 import ui.util.UIUtil;
 import util.binders.UuidBinder;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 public final class PollResultsFactory {
 
@@ -106,8 +106,8 @@ public final class PollResultsFactory {
 	private static void buildStats(PollResults results) {
 		results.totals = getTotal(results);
 		results.maxValue = findMaxValue(results);
-		if (SessionUtil.isAuthenticated()) {
-			results.isAlreadyAnswered = results.users.containsKey(SessionUtil
+		if (CurrentUser.isAuthenticated()) {
+			results.isAlreadyAnswered = results.users.containsKey(CurrentUser
 					.currentUser().get().id);
 		}
 	}

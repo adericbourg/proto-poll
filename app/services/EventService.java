@@ -17,7 +17,7 @@ import play.db.ebean.Transactional;
 import scala.Option;
 import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
@@ -39,7 +39,7 @@ public class EventService {
 	}
 
 	static void answerEventRegistered(UUID uuid, Collection<Long> choiceIds) {
-		answerEvent(SessionUtil.currentUser(), uuid, choiceIds);
+		answerEvent(CurrentUser.currentUser(), uuid, choiceIds);
 	}
 
 	static void answerEventAnonymous(String username, UUID uuid,

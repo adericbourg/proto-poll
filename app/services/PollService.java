@@ -23,7 +23,7 @@ import services.exception.poll.InconsistentPollException;
 import services.exception.poll.NoAnswerFoundException;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
 import services.exception.poll.PollNotFoundException;
-import util.security.SessionUtil;
+import util.security.CurrentUser;
 
 import com.avaje.ebean.Ebean;
 
@@ -51,8 +51,8 @@ public class PollService {
 		if (poll.isQuestion()) {
 			poll.question.save();
 		}
-		if (SessionUtil.currentUser().isDefined()) {
-			poll.userCreator = SessionUtil.currentUser().get();
+		if (CurrentUser.currentUser().isDefined()) {
+			poll.userCreator = CurrentUser.currentUser().get();
 		}
 		poll.creationDate = DateTime.now();
 		poll.status = PollStatus.DRAFT;
@@ -71,14 +71,14 @@ public class PollService {
 	}
 
 	private static List<Poll> listUserPolls(PollStatus... statuses) {
-		if (!SessionUtil.isAuthenticated()) {
+		if (!CurrentUser.isAuthenticated()) {
 			throw new NoAuthenfiedUserInSessionException();
 		}
 		if (statuses == null) {
 			return new ArrayList<Poll>();
 		}
 		return POLL_FINDER.where()
-				.eq("userCreator.id", SessionUtil.currentUser().get().id)
+				.eq("userCreator.id", CurrentUser.currentUser().get().id)
 				.in("status", Arrays.asList(statuses))
 				.orderBy("creationDate DESC").findList();
 	}
@@ -161,8 +161,8 @@ public class PollService {
 
 	@Transactional
 	public static void postCommentRegistered(UUID uuid, String comment) {
-		if (SessionUtil.currentUser().isDefined()) {
-			postComment(uuid, comment, SessionUtil.currentUser().get());
+		if (CurrentUser.currentUser().isDefined()) {
+			postComment(uuid, comment, CurrentUser.currentUser().get());
 		} else {
 			throw new NoAuthenfiedUserInSessionException();
 		}
@@ -189,12 +189,12 @@ public class PollService {
 
 	@Transactional
 	public static void removeCurrentUserAnswer(UUID uuid) {
-		if (!SessionUtil.isAuthenticated()) {
+		if (!CurrentUser.isAuthenticated()) {
 			throw new NoAuthenfiedUserInSessionException();
 		}
 
 		Poll poll = getPoll(uuid);
-		User user = SessionUtil.currentUser().get();
+		User user = CurrentUser.currentUser().get();
 		if (poll.isEvent()) {
 			removeEventCurrentUserAnswer(poll.event, user);
 		}
