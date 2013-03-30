@@ -49,25 +49,27 @@
     }
 
     <script type="text/javascript">
-        $('.remove-choice').live('click', function(e) {
+    	$(document).on('click', '.remove-choice', function(e) {
             $(this).parents('.choice').remove()
             renumber()
-        })
-
-        $('.add-choice').live('click', function(e) {
-        	addChoice();
-        })
+        });
         
-        $('.last-input').live('keypress', function(e) {
+        $(document).on('click', '.add-choice', function(e) {
+        	addChoice();
+        });
+        
+        $(document).on('keypress', '.last-input', function(e) {
         	// While input is not empty, "Tab" key press will add new input.
         	if (e.keyCode === 9 && $(this).val() != "") {
-        		addChoice()
+        		addChoice();
+        		$('#choices .choice input:last').focus();
+	        	return false;
         	}
-        })
+        });
         
         $('#form').submit(function() {
             $('.choice_template').remove()
-        })
+        });
 
         function addChoice() {
         	var template = $('.choice_template')
