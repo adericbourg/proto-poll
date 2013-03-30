@@ -137,7 +137,7 @@ public class Authentication extends Controller {
 
 	@Transactional
 	public static Result logout() {
-		CurrentUser.clear();
+		CurrentUser.logout();
 		return redirect(routes.Application.index());
 	}
 }

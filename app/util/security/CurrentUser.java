@@ -60,7 +60,7 @@ public final class CurrentUser {
 		// If current user was not found, session cookie might be outdated.
 		// Clear session.
 		if (optUser.isEmpty()) {
-			clear();
+			logout();
 		}
 
 		return optUser;
@@ -103,7 +103,7 @@ public final class CurrentUser {
 
 	// --- UTIL ---
 
-	public static void clear() {
+	public static void logout() {
 		if (getCurrentSession().isDefined()) {
 			Session session = getCurrentSession().get();
 			if (isAuthenticated()) {
@@ -111,6 +111,7 @@ public final class CurrentUser {
 			}
 			session.clear();
 		}
+		Cache.remove(USERNAME.getKey());
 	}
 
 	static String sessionId() {
