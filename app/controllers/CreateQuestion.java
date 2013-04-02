@@ -19,10 +19,12 @@ import play.data.Form;
 import play.db.ebean.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.Option;
 import services.PollService;
 import services.QuestionService;
 import services.exception.poll.NoChoiceException;
 import util.binders.UuidBinder;
+import util.security.CurrentUser;
 import views.html.question.questionAddChoices;
 
 import com.google.common.base.Strings;
@@ -73,7 +75,15 @@ public class CreateQuestion extends Controller {
 
 	private static Html prepareChoiceData(UuidBinder uuid) {
 		Poll poll = PollService.getPoll(uuid.uuid());
-		return questionAddChoices.render(poll, QUESTION_FORM);
+
+		Option<String> locale;
+		if (CurrentUser.preferredLang().isDefined()) {
+			locale = Option.apply(CurrentUser.preferredLang().get().language());
+		} else {
+			locale = Option.empty();
+		}
+
+		return questionAddChoices.render(poll, QUESTION_FORM, locale);
 	}
 
 	private static int extractSortOrder(String key) {

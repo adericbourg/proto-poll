@@ -1,9 +1,14 @@
-@(poll: Poll, questionForm: Form[Question])
+@(poll: Poll, questionForm: Form[Question], locale: Option[String])
 
 @import helper._
 @import helper.twitterBootstrap._
 
 @import util.user.message.Messages
+
+@scripts = {
+	<script src='@routes.I18nController.questionAddChoices()' type="text/javascript"></script>
+	<script src='@routes.Assets.at("javascripts/question/question-add-choices.js")' type="text/javascript"></script>
+}
 
 @choiceGroup(choice: Field, className: String = "choice") = {
     <div class="@className">
@@ -12,7 +17,7 @@
     </div>
 }
 
-@main(Messages.resolve("question.add_choices.name")) {
+@main(Messages.resolve("question.add_choices.name"), scripts) {
     @helper.form(action = routes.CreateQuestion.saveChoices(poll.bindId)) {
 		<div class="header">
 			<h1>@poll.title</h1>
@@ -47,56 +52,4 @@
             <input type="submit" class="btn btn-primary" value='@Messages.resolve("common.action.create")' />
         </div>
     }
-
-    <script type="text/javascript">
-    	$(document).on('click', '.remove-choice', function(e) {
-            $(this).parents('.choice').remove()
-            renumber()
-        });
-        
-        $(document).on('click', '.add-choice', function(e) {
-        	addChoice();
-        });
-        
-        $(document).on('keypress', '.last-input', function(e) {
-        	// While input is not empty, "Tab" key press will add new input.
-        	if (e.keyCode === 9 && $(this).val() != "") {
-        		addChoice();
-        		$('#choices .choice input:last').focus();
-	        	return false;
-        	}
-        });
-        
-        $('#form').submit(function() {
-            $('.choice_template').remove()
-        });
-
-        function addChoice() {
-        	var template = $('.choice_template')
-            template.before('<div class="choice">' + template.html() + '</div>')
-            renumber()
-        }
-        
-        var renumber = function(choice) {
-        	var count = 0;
-            $('#choices .choice').each(function(i) {
-                $('input', this).each(function() {
-                	count++
-                    $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'))
-                    $(this).attr('placeholder', '@Messages.resolve("question.add_choices.placeholder.choice") ' + count)
-                    $(this).removeClass("last-input")
-                })
-            })
-            
-            $('#choices .choice input:last').addClass("last-input")
-            
-            if (count > 10) {
-            	$('#manage-bottom').show()
-            } else {
-            	$('#manage-bottom').hide()
-            }
-        }
-        
-        renumber()
-    </script>
 }
