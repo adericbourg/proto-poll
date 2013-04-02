@@ -3,15 +3,6 @@
 @import ui.util.UIUtil;
 @import util.user.message.Messages
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#created-poll-url")
-			.focus( function() { $(this).select(); } )
-			.click( function() { $(this).select(); } )
-			.mouseup( function(e) { e.preventDefault(); } );
-	});
-</script>
-
 <div class="well">
 	<span class="control-label info"><i class="icon-share"></i>&nbsp;@Messages.resolve("sharepoll.info")</span><br/>
 	<span class="input-append control-group info">
@@ -19,3 +10,14 @@
 		<a href="@UIUtil.getFullUrl(routes.AnswerPoll.viewPoll(poll.bindId).url)" class="btn" rel="Answer poll">@Messages.resolve("sharepoll.action.go")</a>
 	</span>
 </div>
+
+<script type="text/javascript">
+	$(function() {
+		$(document).ready(function() {
+			$("#created-poll-url")
+				.focus( function() { $(this).select(); } )
+				.click( function() { $(this).select(); } )
+				.mouseup( function(e) { e.preventDefault(); } );
+		});
+	})
+</script>
