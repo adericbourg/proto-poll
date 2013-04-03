@@ -37,7 +37,6 @@ public class QuestionService {
 			Long.class, QuestionAnswer.class);
 
 	private QuestionService() {
-		// No instance.
 		throw new AssertionError();
 	}
 

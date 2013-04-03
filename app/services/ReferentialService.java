@@ -19,7 +19,6 @@ public class ReferentialService {
 	private static final String LANG_SEPARATOR = ",";
 
 	private ReferentialService() {
-		// No instance allowed.
 		throw new AssertionError();
 	}
 

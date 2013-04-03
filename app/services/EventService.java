@@ -24,6 +24,10 @@ import com.avaje.ebean.ExpressionList;
 
 public class EventService {
 
+	private EventService() {
+		throw new AssertionError();
+	}
+
 	@Transactional
 	public static void saveDates(UUID uuid, Collection<EventChoice> dates) {
 

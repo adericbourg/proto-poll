@@ -13,8 +13,8 @@ import services.exception.poll.NoAuthenfiedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
 import services.messages.ServiceMessage;
 import services.openid.OpenIdAttributes;
-import util.security.PasswordUtil;
 import util.security.CurrentUser;
+import util.security.PasswordUtil;
 import util.user.message.Messages;
 
 import com.avaje.ebean.Ebean;
@@ -28,6 +28,10 @@ import com.google.common.base.Strings;
  * 
  */
 public final class UserService {
+
+	private UserService() {
+		throw new AssertionError();
+	}
 
 	@Transactional
 	public static void registerUser(User user) {

@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,19 @@ import services.exception.poll.NoAuthenfiedUserInSessionException;
 import util.UserTestUtil;
 
 public class PollServiceTest extends ProtoPollTest {
+
+	@Test
+	public void testInstanciation() throws Exception {
+		for (Constructor<?> constructor : PollService.class
+				.getDeclaredConstructors()) {
+			constructor.setAccessible(true);
+			try {
+				constructor.newInstance();
+			} catch (InvocationTargetException e) {
+				assertTrue(e.getCause() instanceof AssertionError);
+			}
+		}
+	}
 
 	@Test
 	public void testGetPollNonExistent() {

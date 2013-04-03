@@ -5,6 +5,8 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
 import models.User;
@@ -14,8 +16,8 @@ import org.junit.Test;
 import scala.Option;
 import services.exception.poll.NoAuthenfiedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
-import util.security.PasswordUtil;
 import util.security.CurrentUser;
+import util.security.PasswordUtil;
 
 public class UserServiceTest extends ProtoPollTest {
 
@@ -24,6 +26,19 @@ public class UserServiceTest extends ProtoPollTest {
 	private static final String DUMMY_PASSWORD_HASHED = PasswordUtil
 			.hashPassword(DUMMY_USERNAME, DUMMY_PASSWORD);
 	private static final String DUMMY_EMAIL = "test@localhost.net";
+
+	@Test
+	public void testInstanciation() throws Exception {
+		for (Constructor<?> constructor : UserService.class
+				.getDeclaredConstructors()) {
+			constructor.setAccessible(true);
+			try {
+				constructor.newInstance();
+			} catch (InvocationTargetException e) {
+				assertTrue(e.getCause() instanceof AssertionError);
+			}
+		}
+	}
 
 	@Test
 	public void testRegisterAnonymousUser() {

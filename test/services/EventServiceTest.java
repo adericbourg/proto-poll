@@ -3,7 +3,10 @@ package services;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,19 @@ import util.security.CurrentUser;
 public class EventServiceTest extends ProtoPollTest {
 
 	private static final int CHOICE_NUMBER = 3;
+
+	@Test
+	public void testInstanciation() throws Exception {
+		for (Constructor<?> constructor : EventService.class
+				.getDeclaredConstructors()) {
+			constructor.setAccessible(true);
+			try {
+				constructor.newInstance();
+			} catch (InvocationTargetException e) {
+				assertTrue(e.getCause() instanceof AssertionError);
+			}
+		}
+	}
 
 	@Test
 	public void testCreateEventAnonymousUser() {

@@ -6,6 +6,8 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +34,19 @@ import com.google.common.collect.Sets;
 public class QuestionServiceTest extends ProtoPollTest {
 
 	private static final int CHOICE_NUMBER = 3;
+
+	@Test
+	public void testInstanciation() throws Exception {
+		for (Constructor<?> constructor : QuestionService.class
+				.getDeclaredConstructors()) {
+			constructor.setAccessible(true);
+			try {
+				constructor.newInstance();
+			} catch (InvocationTargetException e) {
+				assertTrue(e.getCause() instanceof AssertionError);
+			}
+		}
+	}
 
 	@Test
 	public void testCreateQuestionAnonymousUser() {

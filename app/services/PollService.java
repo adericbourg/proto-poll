@@ -32,6 +32,10 @@ public class PollService {
 	private static final Finder<UUID, Poll> POLL_FINDER = new Finder<UUID, Poll>(
 			UUID.class, Poll.class);
 
+	private PollService() {
+		throw new AssertionError();
+	}
+
 	public static Poll createPoll(Poll poll) {
 		if (poll.uuid != null) {
 			throw new IllegalArgumentException("Poll is already saved");
