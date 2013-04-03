@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,6 +13,8 @@ import java.util.Set;
 
 import models.Poll;
 import models.Question;
+import models.QuestionAnswer;
+import models.QuestionAnswerDetail;
 import models.QuestionChoice;
 import models.User;
 import models.reference.PollStatus;
@@ -22,6 +25,8 @@ import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.UserTestUtil;
 import util.security.CurrentUser;
+
+import com.google.common.collect.Sets;
 
 public class QuestionServiceTest extends ProtoPollTest {
 
@@ -148,6 +153,79 @@ public class QuestionServiceTest extends ProtoPollTest {
 	}
 
 	@Test
+	public void testAnswerPollRegistered() {
+		// Prepare.
+		final User user = UserTestUtil.getAuthenticatedUser();
+		assertNotNull(CurrentUser.currentUser());
+
+		Question question = createQuestion();
+		question = addChoices(question);
+
+		// Act.
+		Set<Long> choiceIds = new HashSet<Long>();
+		choiceIds.add(question.choices.get(0).id);
+		PollService.answerPollRegistered(question.uuid(), choiceIds);
+
+		// Assert.
+		Set<Long> userIds = new HashSet<Long>();
+		for (QuestionAnswer answer : PollService.getPoll(question.uuid()).question.answers) {
+			userIds.add(answer.user.id);
+		}
+		assertTrue(userIds.contains(user.id));
+	}
+
+	@Test
+	public void testAnswerPollRegisteredAlreadyAnswered() {
+		// Prepare.
+		final User user = UserTestUtil.getAuthenticatedUser();
+		assertNotNull(CurrentUser.currentUser());
+
+		Question question = createQuestion();
+		question = addChoices(question);
+
+		Long firstChoice = question.choices.get(0).id;
+		PollService.answerPollRegistered(question.uuid(),
+				Sets.newHashSet(firstChoice));
+
+		// Act.
+		Long secondChoice = question.choices.get(1).id;
+		PollService.answerPollRegistered(question.uuid(),
+				Sets.newHashSet(secondChoice));
+
+		// Assert.
+		assertFalse(firstChoice.equals(secondChoice));
+		Set<Long> savedChoices = null;
+		for (QuestionAnswer answer : PollService.getPoll(question.uuid()).question.answers) {
+			if (user.id.equals(answer.user.id)) {
+				savedChoices = extractSavedChoices(answer);
+			}
+		}
+		assertNotNull(savedChoices);
+		assertFalse(savedChoices.contains(firstChoice));
+		assertTrue(savedChoices.contains(secondChoice));
+	}
+
+	private Set<Long> extractSavedChoices(QuestionAnswer answer) {
+		Set<Long> savedChoices = new HashSet<Long>();
+		for (QuestionAnswerDetail detail : answer.details) {
+			savedChoices.add(detail.choice.id);
+		}
+		return savedChoices;
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testAnswerPollRegisteredNoCurrentUser() {
+		// Prepare.
+		Question question = createQuestion();
+		question = addChoices(question);
+
+		// Act.
+		Set<Long> choiceIds = new HashSet<Long>();
+		choiceIds.add(question.choices.get(0).id);
+		PollService.answerPollRegistered(question.uuid(), choiceIds);
+	}
+
+	@Test
 	public void testStatusCreated() {
 		// Prepare / Act.
 		Question question = createQuestion();
@@ -166,6 +244,32 @@ public class QuestionServiceTest extends ProtoPollTest {
 
 		// Assert.
 		assertEquals(PollStatus.COMPLETE, question.poll.status);
+	}
+
+	@Test
+	public void testDeduplicateChoicesOnCreation() {
+		// Prepare.
+		Question question = addChoices(createQuestion());
+		int expectedSize = question.choices.size();
+
+		QuestionChoice duplicate;
+		int sizeWithDuplicates = expectedSize;
+		List<QuestionChoice> newChoices = new ArrayList<QuestionChoice>(
+				question.choices);
+		for (QuestionChoice choice : question.choices) {
+			sizeWithDuplicates++;
+			duplicate = new QuestionChoice();
+			duplicate.label = choice.label;
+			duplicate.sortOrder = sizeWithDuplicates;
+			newChoices.add(duplicate);
+		}
+
+		// Act.
+		QuestionService.saveChoices(question.uuid(), newChoices);
+
+		// Assert.
+		question = PollService.getQuestion(question.uuid());
+		assertEquals(expectedSize, question.choices.size());
 	}
 
 	private static Question createQuestion() {

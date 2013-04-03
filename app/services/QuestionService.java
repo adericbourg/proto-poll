@@ -42,28 +42,38 @@ public class QuestionService {
 
 	@Transactional
 	public static void saveChoices(UUID uuid, List<QuestionChoice> choices) {
-		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(choices);
+		Question question = PollService.getQuestion(uuid);
+		List<QuestionChoice> mergedChoices = mergeChoices(question.choices,
+				choices);
+		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(mergedChoices);
 
 		if (deduplicatedChoices.isEmpty()) {
 			throw new NoChoiceException();
 		}
 
-		Question question = PollService.getQuestion(uuid);
 		question.choices = deduplicatedChoices;
 		question.save();
 		PollService.updateStatus(uuid, PollStatus.COMPLETE);
+	}
+
+	private static List<QuestionChoice> mergeChoices(
+			List<QuestionChoice> initChoices, List<QuestionChoice> newChoices) {
+		List<QuestionChoice> allChoices = new ArrayList<QuestionChoice>();
+		allChoices.addAll(initChoices);
+		if (newChoices != null) {
+			allChoices.addAll(newChoices);
+		}
+		return allChoices;
 	}
 
 	private static List<QuestionChoice> deduplicateChoices(
 			List<QuestionChoice> choices) {
 		Set<String> keys = new HashSet<String>();
 		List<QuestionChoice> deduplicated = new ArrayList<QuestionChoice>();
-		if (choices != null) {
-			for (QuestionChoice questionChoice : choices) {
-				if (!keys.contains(questionChoice.label)) {
-					deduplicated.add(questionChoice);
-					keys.add(questionChoice.label);
-				}
+		for (QuestionChoice questionChoice : choices) {
+			if (!keys.contains(questionChoice.label)) {
+				deduplicated.add(questionChoice);
+				keys.add(questionChoice.label);
 			}
 		}
 		return deduplicated;
