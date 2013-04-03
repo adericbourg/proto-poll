@@ -3,54 +3,54 @@
 # ~~~~
 
 # Home page
-GET     /                           	controllers.Application.index()
-GET		/lang/:lang/*url				controllers.Application.changeLanguage(lang: String, url: String)
+GET    /                            controllers.Application.index()
+GET    /lang/:lang/*url             controllers.Application.changeLanguage(lang: String, url: String)
 
 # Authentication
-GET		/register/*url					controllers.Authentication.register(url: String)
-POST	/register/						controllers.Authentication.saveRegistration()
-GET		/login/*url						controllers.Authentication.login(url: String)
-POST	/authenticate/*url				controllers.Authentication.authenticate(url: String)
-GET		/logout							controllers.Authentication.logout()
+GET    /register/*url               controllers.Authentication.register(url: String)
+POST   /register/                   controllers.Authentication.saveRegistration()
+GET    /login/*url                  controllers.Authentication.login(url: String)
+POST   /authenticate/*url           controllers.Authentication.authenticate(url: String)
+GET    /logout                      controllers.Authentication.logout()
 
 # Third party authentication
-GET		/google/auth/*url				controllers.security.GoogleAuthenticationController.auth(url: String)
-GET		/google/verify/*url				controllers.security.GoogleAuthenticationController.verify(url: String)
+GET    /google/auth/*url            controllers.security.GoogleAuthenticationController.auth(url: String)
+GET    /google/verify/*url          controllers.security.GoogleAuthenticationController.verify(url: String)
 
 # User
-GET		/user/profile					controllers.UserSettings.profile()
-POST	/user/update/profile			controllers.UserSettings.updateProfile()
-POST	/user/update/security			controllers.UserSettings.updatePassword()
+GET    /user/profile                controllers.UserSettings.profile()
+POST   /user/update/profile         controllers.UserSettings.updateProfile()
+POST   /user/update/security        controllers.UserSettings.updatePassword()
 
 # Create questions
-GET     /question/new               	controllers.CreatePoll.newQuestion()
-POST    /question/new               	controllers.CreatePoll.createQuestion()
-GET		/question/addChoices/:uuid		controllers.CreateQuestion.setChoices(uuid: util.binders.UuidBinder)
-POST	/question/addChoices/:uuid		controllers.CreateQuestion.saveChoices(uuid: util.binders.UuidBinder)
-GET		/i18n/question/addChoices		controllers.I18nController.questionAddChoices()
+GET    /question/new                controllers.CreatePoll.newQuestion()
+POST   /question/new                controllers.CreatePoll.createQuestion()
+GET    /question/addChoices/:uuid   controllers.CreateQuestion.setChoices(uuid: util.binders.UuidBinder)
+POST   /question/addChoices/:uuid   controllers.CreateQuestion.saveChoices(uuid: util.binders.UuidBinder)
+GET    /i18n/question/addChoices    controllers.I18nController.questionAddChoices()
 
 # Create events
-GET		/event/new						controllers.CreatePoll.newEvent()
-POST	/event/new						controllers.CreatePoll.createEvent()
-GET		/event/dates/:uuid				controllers.CreateEvent.setDates(uuid: util.binders.UuidBinder)
-POST	/event/dates/:uuid				controllers.CreateEvent.saveDates(uuid: util.binders.UuidBinder)
-GET		/i18n/event/addDates			controllers.I18nController.eventAddDates()
+GET    /event/new                   controllers.CreatePoll.newEvent()
+POST   /event/new                   controllers.CreatePoll.createEvent()
+GET    /event/dates/:uuid           controllers.CreateEvent.setDates(uuid: util.binders.UuidBinder)
+POST   /event/dates/:uuid           controllers.CreateEvent.saveDates(uuid: util.binders.UuidBinder)
+GET    /i18n/event/addDates         controllers.I18nController.eventAddDates()
 
 # Create polls
-GET		/confirm/:uuid					controllers.CreatePoll.confirmCreation(uuid: util.binders.UuidBinder)
+GET    /confirm/:uuid               controllers.CreatePoll.confirmCreation(uuid: util.binders.UuidBinder)
 
 # View polls
-GET		/polls							controllers.ViewPolls.polls()
-GET		/poll/:uuid						controllers.AnswerPoll.viewPoll(uuid: util.binders.UuidBinder)
-POST	/poll/:uuid						controllers.AnswerPoll.answer(uuid: util.binders.UuidBinder)
-GET		/poll/:uuid/remove				controllers.AnswerPoll.removeUserAnswer(uuid: util.binders.UuidBinder)
-GET		/user/polls						controllers.UserViewPolls.userPolls()
+GET    /polls                       controllers.ViewPolls.polls()
+GET    /poll/:uuid                  controllers.AnswerPoll.viewPoll(uuid: util.binders.UuidBinder)
+POST   /poll/:uuid                  controllers.AnswerPoll.answer(uuid: util.binders.UuidBinder)
+GET    /poll/:uuid/remove           controllers.AnswerPoll.removeUserAnswer(uuid: util.binders.UuidBinder)
+GET    /user/polls                  controllers.UserViewPolls.userPolls()
 
 
 # Comment poll
-POST	/comment/:uuid					controllers.AnswerPoll.comment(uuid: util.binders.UuidBinder)
+POST   /comment/:uuid               controllers.AnswerPoll.comment(uuid: util.binders.UuidBinder)
 
 # Map static resources from the /public folder to the /assets URL path
 # GET		/assets/javascripts/i18n		controllers.I18nController.javascriptRoutes()
-GET     /assets/*file               	controllers.Assets.at(path="/public", file)
-GET     /webjars/*file              	controllers.WebJarAssets.at(file)
+GET    /assets/*file                controllers.Assets.at(path="/public", file)
+GET    /webjars/*file               controllers.WebJarAssets.at(file)
