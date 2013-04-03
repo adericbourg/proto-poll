@@ -18,6 +18,7 @@ import models.reference.PollStatus;
 import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
 import scala.Option;
+import services.exception.poll.NoAuthenfiedUserInSessionException;
 import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.CurrentUser;
@@ -82,7 +83,7 @@ public class QuestionService {
 	static void answerQuestionRegistered(UUID uuid, Collection<Long> choiceIds) {
 		Option<User> currentUser = CurrentUser.currentUser();
 		if (currentUser.isEmpty()) {
-			throw new RuntimeException("User must be defined");
+			throw new NoAuthenfiedUserInSessionException();
 		}
 		answerQuestion(currentUser.get(), uuid, choiceIds);
 	}
