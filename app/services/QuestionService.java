@@ -60,39 +60,55 @@ public class QuestionService {
 	}
 
 	private static List<QuestionChoice> mergeChoices(
-			List<QuestionChoice> currentChoices, List<QuestionChoice> newChoices) {
+			List<QuestionChoice> formerChoices, List<QuestionChoice> newChoices) {
+		Map<String, QuestionChoice> choicesByLabel = mapChoicesByLabel(newChoices);
 
-		Map<String, QuestionChoice> choicesByLabel = Maps.uniqueIndex(
-				newChoices, new Function<QuestionChoice, String>() {
+		// Keep id of existing choices.
+		recoverChoiceIdWhereAvailable(formerChoices, choicesByLabel);
+
+		// Delete removed choices.
+		deleteRemovedFormerChoices(formerChoices, choicesByLabel);
+
+		// Return choices that will be saved.
+		return Lists.newArrayList(choicesByLabel.values());
+	}
+
+	private static Map<String, QuestionChoice> mapChoicesByLabel(
+			List<QuestionChoice> newChoices) {
+		return Maps.uniqueIndex(newChoices,
+				new Function<QuestionChoice, String>() {
 					@Override
 					@Nullable
 					public String apply(@Nullable QuestionChoice choice) {
 						return choice == null ? null : choice.label;
 					}
 				});
+	}
 
-		// Keep id of existing choices.
-		for (QuestionChoice questionChoice : currentChoices) {
-			if (choicesByLabel.containsKey(questionChoice.label)) {
-				choicesByLabel.get(questionChoice.label).id = questionChoice.id;
-			}
-		}
-
-		// Delete removed choices.
+	private static void deleteRemovedFormerChoices(
+			List<QuestionChoice> formerChoices,
+			Map<String, QuestionChoice> choicesByLabel) {
 		Set<Long> remainingIds = new HashSet<Long>();
 		for (QuestionChoice choice : choicesByLabel.values()) {
 			if (choice.id != null) {
 				remainingIds.add(choice.id);
 			}
 		}
-		for (QuestionChoice formerChoice : currentChoices) {
+		for (QuestionChoice formerChoice : formerChoices) {
 			if (!remainingIds.contains(formerChoice.id)) {
 				formerChoice.delete();
 			}
 		}
+	}
 
-		// Return choices that will be saved.
-		return Lists.newArrayList(choicesByLabel.values());
+	private static void recoverChoiceIdWhereAvailable(
+			List<QuestionChoice> formerChoices,
+			Map<String, QuestionChoice> choicesByLabel) {
+		for (QuestionChoice questionChoice : formerChoices) {
+			if (choicesByLabel.containsKey(questionChoice.label)) {
+				choicesByLabel.get(questionChoice.label).id = questionChoice.id;
+			}
+		}
 	}
 
 	private static List<QuestionChoice> deduplicateChoices(
