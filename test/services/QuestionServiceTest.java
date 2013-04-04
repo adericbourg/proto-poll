@@ -33,7 +33,8 @@ import com.google.common.collect.Sets;
 
 public class QuestionServiceTest extends ProtoPollTest {
 
-	private static final int CHOICE_NUMBER = 3;
+	private static final String DEFAULT_CHOICE_PREFIX = "Choice ";
+	private static final int CHOICE_NUMBER = 5;
 
 	@Test
 	public void testInstanciation() throws Exception {
@@ -263,29 +264,56 @@ public class QuestionServiceTest extends ProtoPollTest {
 	}
 
 	@Test
-	public void testDeduplicateChoicesOnCreation() {
+	public void testDeduplicateChoices() {
 		// Prepare.
-		Question question = addChoices(createQuestion());
-		int expectedSize = question.choices.size();
+		int differentValuesNumber = 2;
+		Question question = createQuestion();
 
-		QuestionChoice duplicate;
-		int sizeWithDuplicates = expectedSize;
-		List<QuestionChoice> newChoices = new ArrayList<QuestionChoice>(
+		QuestionChoice choice;
+		List<QuestionChoice> choices = new ArrayList<QuestionChoice>(
 				question.choices);
-		for (QuestionChoice choice : question.choices) {
-			sizeWithDuplicates++;
-			duplicate = new QuestionChoice();
-			duplicate.label = choice.label;
-			duplicate.sortOrder = sizeWithDuplicates;
-			newChoices.add(duplicate);
+		for (int i = 0; i < CHOICE_NUMBER; i++) {
+			choice = new QuestionChoice();
+			choice.label = DEFAULT_CHOICE_PREFIX + i % differentValuesNumber;
+			choice.sortOrder = i;
+			choices.add(choice);
 		}
 
 		// Act.
-		QuestionService.saveChoices(question.uuid(), newChoices);
+		QuestionService.saveChoices(question.uuid(), choices);
 
 		// Assert.
 		question = PollService.getQuestion(question.uuid());
-		assertEquals(expectedSize, question.choices.size());
+		assertEquals(differentValuesNumber, question.choices.size());
+	}
+
+	@Test
+	public void testSaveChoicesSecondRun() {
+		// Prepare.
+		String newChoicesPrefix = "newChoicesPrefix";
+		int newChoicesCount = CHOICE_NUMBER - 1;
+
+		Question question = createQuestion();
+		addChoices(question);
+
+		// Act.
+		QuestionChoice choice;
+		List<QuestionChoice> choices = new ArrayList<QuestionChoice>();
+		for (int i = 0; i < newChoicesCount; i++) {
+			choice = new QuestionChoice();
+			choice.label = newChoicesPrefix + i;
+			choice.sortOrder = i;
+			choices.add(choice);
+		}
+		QuestionService.saveChoices(question.uuid(), choices);
+
+		// Assert.
+		question = PollService.getQuestion(question.uuid());
+		assertEquals(newChoicesCount, question.choices.size());
+		for (QuestionChoice questionChoice : question.choices) {
+			assertFalse(questionChoice.label.startsWith(DEFAULT_CHOICE_PREFIX));
+			assertTrue(questionChoice.label.startsWith(newChoicesPrefix));
+		}
 	}
 
 	private static Question createQuestion() {
@@ -300,7 +328,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 		QuestionChoice choice;
 		for (int i = 0; i < CHOICE_NUMBER; i++) {
 			choice = new QuestionChoice();
-			choice.label = "Choice " + i;
+			choice.label = DEFAULT_CHOICE_PREFIX + i;
 			choice.sortOrder = i;
 			choice.question = question;
 			choices.add(choice);

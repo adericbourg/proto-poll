@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import models.Question;
 import models.QuestionAnswer;
 import models.QuestionAnswerDetail;
@@ -24,6 +26,9 @@ import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.CurrentUser;
 
 import com.avaje.ebean.ExpressionList;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Question management service.
@@ -42,28 +47,52 @@ public class QuestionService {
 
 	@Transactional
 	public static void saveChoices(UUID uuid, List<QuestionChoice> choices) {
-		Question question = PollService.getQuestion(uuid);
-		List<QuestionChoice> mergedChoices = mergeChoices(question.choices,
-				choices);
-		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(mergedChoices);
-
-		if (deduplicatedChoices.isEmpty()) {
+		if (choices == null || choices.isEmpty()) {
 			throw new NoChoiceException();
 		}
 
-		question.choices = deduplicatedChoices;
+		List<QuestionChoice> deduplicatedChoices = deduplicateChoices(choices);
+
+		Question question = PollService.getQuestion(uuid);
+		question.choices = mergeChoices(question.choices, deduplicatedChoices);
 		question.save();
 		PollService.updateStatus(uuid, PollStatus.COMPLETE);
 	}
 
 	private static List<QuestionChoice> mergeChoices(
-			List<QuestionChoice> initChoices, List<QuestionChoice> newChoices) {
-		List<QuestionChoice> allChoices = new ArrayList<QuestionChoice>();
-		allChoices.addAll(initChoices);
-		if (newChoices != null) {
-			allChoices.addAll(newChoices);
+			List<QuestionChoice> currentChoices, List<QuestionChoice> newChoices) {
+
+		Map<String, QuestionChoice> choicesByLabel = Maps.uniqueIndex(
+				newChoices, new Function<QuestionChoice, String>() {
+					@Override
+					@Nullable
+					public String apply(@Nullable QuestionChoice choice) {
+						return choice == null ? null : choice.label;
+					}
+				});
+
+		// Keep id of existing choices.
+		for (QuestionChoice questionChoice : currentChoices) {
+			if (choicesByLabel.containsKey(questionChoice.label)) {
+				choicesByLabel.get(questionChoice.label).id = questionChoice.id;
+			}
 		}
-		return allChoices;
+
+		// Delete removed choices.
+		Set<Long> remainingIds = new HashSet<Long>();
+		for (QuestionChoice choice : choicesByLabel.values()) {
+			if (choice.id != null) {
+				remainingIds.add(choice.id);
+			}
+		}
+		for (QuestionChoice formerChoice : currentChoices) {
+			if (!remainingIds.contains(formerChoice.id)) {
+				formerChoice.delete();
+			}
+		}
+
+		// Return choices that will be saved.
+		return Lists.newArrayList(choicesByLabel.values());
 	}
 
 	private static List<QuestionChoice> deduplicateChoices(
