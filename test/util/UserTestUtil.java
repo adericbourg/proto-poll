@@ -2,8 +2,8 @@ package util;
 
 import models.User;
 import services.UserService;
-import util.security.PasswordUtil;
 import util.security.CurrentUser;
+import util.security.PasswordUtil;
 
 public class UserTestUtil {
 

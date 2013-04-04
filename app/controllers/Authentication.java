@@ -14,8 +14,8 @@ import scala.Option;
 import services.UserService;
 import services.exception.user.AlreadyRegisteredUser;
 import ui.util.UIUtil;
-import util.security.PasswordUtil;
 import util.security.CurrentUser;
+import util.security.PasswordUtil;
 import util.user.message.Messages;
 
 import com.google.common.base.Strings;
