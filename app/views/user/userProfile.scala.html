@@ -1,7 +1,4 @@
-@(locales: List[java.util.Locale], formUserProfile: Form[UserSettings.UserProfile], formUserSecurity: Form[UserSettings.UserSecurity], templateLayout: controllers.model.user.UserProfileLayout) 
-
-@import helper._
-@import helper.twitterBootstrap._
+@(locales: List[java.util.Locale], formUserProfile: Form[UserSettings.UserProfile], formUserSecurity: Form[UserSettings.UserSecurity], templateLayout: controllers.model.user.UserProfileLayout)
 
 @import util.user.message.Messages
 
@@ -17,7 +14,7 @@
 				}
 			</ul>
 		</div>
-	
+
 		<!-- Content -->
 		<div class="tab-content span8 offset1">
 			<div id="user-profile-informations" class="tab-pane active">
@@ -30,7 +27,7 @@
 			}
 		</div>
 	</div>
-	
+
 	<script type="text/javascript">
 		// Enable tabbing.
 		$('#user-profile-tabs a').click(function (e) {

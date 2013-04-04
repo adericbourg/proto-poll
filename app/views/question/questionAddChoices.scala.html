@@ -1,8 +1,6 @@
 @(poll: Poll, questionForm: Form[Question], locale: Option[String])
 
-@import helper._
-@import helper.twitterBootstrap._
-
+@import helper.repeat
 @import util.user.message.Messages
 
 @scripts = {
@@ -36,7 +34,7 @@
                     @choiceGroup(choice)
                 }
 
-                @** Keep an hidden block that will be used as template for Javascript copy code **@
+                @* Keep an hidden block that will be used as template for Javascript copy code *@
                 @choiceGroup(
                     questionForm("choices[x]"),
                     className = "choice_template"

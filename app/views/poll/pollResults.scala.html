@@ -130,7 +130,7 @@
 	@tags.comments(results.uuid, comments, formComment)
 	
 	<!-- Dialogs -->
-	@** The modal "remove anwer" is only used when user is registered and has already answered poll. **@
+	@* The modal "remove anwer" is only used when user is registered and has already answered poll. *@
 	@if(UIUtil.isRegisteredUser && results.isAlreadyAnswered) {
 		<div id="answer-delete-confirmation" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-header">

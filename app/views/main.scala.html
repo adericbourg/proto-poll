@@ -1,12 +1,12 @@
 @(title: String, scripts: Html = Html(""))(content: Html)
 
-@**
+@*
 	If adding a script on a specific page is needed, set this variable before using the main template and 
 	add the variable to its constructor (@main("title", scripts)). 
 		@scripts = {
 		    <script type="text/javascript">alert("hello !");</script>
 		}
-**@
+*@
 
 @import util.user.message.Messages
 
@@ -70,7 +70,7 @@
         <!-- Placed at the end of the document so the pages load faster -->
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("js/bootstrap.min.js"))'></script>
-        @** <script type="text/javascript" src="@routes.I18nController.javascriptRoutes"></script> **@
+        @* <script type="text/javascript" src="@routes.I18nController.javascriptRoutes"></script> *@
         @scripts
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
