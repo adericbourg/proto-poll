@@ -7,8 +7,8 @@ import java.util.UUID;
 import models.User;
 import models.reference.ThirdPartySource;
 import play.db.ebean.Transactional;
+import play.libs.F.Option;
 import play.libs.OpenID.UserInfo;
-import scala.Option;
 import services.exception.poll.NoAuthenticatedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
 import services.messages.ServiceMessage;
@@ -79,9 +79,9 @@ public final class UserService {
 	public static Option<User> getUser(Long userId) {
 		ExpressionList<User> el = Ebean.find(User.class).where().idEq(userId);
 		if (el.findRowCount() == 0) {
-			return Option.empty();
+			return Option.None();
 		}
-		return Option.apply(el.findUnique());
+		return Option.Some(el.findUnique());
 	}
 
 	@Transactional
@@ -95,9 +95,9 @@ public final class UserService {
 				.ieq("password_hash",
 						PasswordUtil.hashPassword(login, password));
 		if (el.findRowCount() == 0) {
-			return Option.empty();
+			return Option.None();
 		}
-		return Option.apply(el.findUnique());
+		return Option.Some(el.findUnique());
 	}
 
 	@Transactional
@@ -107,9 +107,9 @@ public final class UserService {
 				.ieq("username", trimmedUsername)
 				.eq("registered", Boolean.TRUE);
 		if (el.findRowCount() == 0) {
-			return Option.empty();
+			return Option.None();
 		}
-		return Option.apply(el.findUnique());
+		return Option.Some(el.findUnique());
 	}
 
 	@Transactional
@@ -117,7 +117,7 @@ public final class UserService {
 			ThirdPartySource source) {
 		Option<User> optUser = findByOpenId(userInfo.id, source);
 		User user;
-		if (optUser.isEmpty()) {
+		if (!optUser.isDefined()) {
 			// Create new user.
 			user = new User();
 			user.registered = true;
@@ -177,9 +177,9 @@ public final class UserService {
 				.ieq("thirdPartyIdentifier", openIdIdentifier)
 				.eq("thirdPartySource", source);
 		if (el.findRowCount() == 0) {
-			return Option.empty();
+			return Option.None();
 		}
-		return Option.apply(el.findUnique());
+		return Option.Some(el.findUnique());
 	}
 
 	@Transactional
@@ -193,7 +193,7 @@ public final class UserService {
 
 	private static User getCheckedCurrentUser() {
 		Option<User> currentUser = CurrentUser.currentUser();
-		if (currentUser.isEmpty()) {
+		if (!currentUser.isDefined()) {
 			throw new NoAuthenticatedUserInSessionException();
 		}
 		return currentUser.get();

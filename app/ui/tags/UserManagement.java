@@ -2,7 +2,7 @@ package ui.tags;
 
 import models.User;
 import play.api.templates.Html;
-import scala.Option;
+import play.libs.F.Option;
 import util.security.CurrentUser;
 
 public class UserManagement {
@@ -20,7 +20,7 @@ public class UserManagement {
 	public static Html currentUser() {
 		Option<User> user = CurrentUser.currentUser();
 
-		if (user.isEmpty()) {
+		if (!user.isDefined()) {
 			return Html
 					.apply("<a class=\"btn btn-inverse btn-mini\" href=\"/login\">Login</a>");
 		}

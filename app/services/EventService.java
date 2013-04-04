@@ -14,7 +14,7 @@ import models.EventChoice;
 import models.User;
 import models.reference.PollStatus;
 import play.db.ebean.Transactional;
-import scala.Option;
+import play.libs.F.Option;
 import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.CurrentUser;
@@ -60,12 +60,12 @@ public class EventService {
 		// Create new unregistered user with same login.
 		User user = UserService.registerAnonymousUser(username);
 
-		answerEvent(Option.apply(user), uuid, choiceIds);
+		answerEvent(Option.Some(user), uuid, choiceIds);
 	}
 
 	private static void answerEvent(Option<User> user, UUID uuid,
 			Collection<Long> choiceIds) {
-		if (user.isEmpty()) {
+		if (!user.isDefined()) {
 			throw new RuntimeException("User cannot be null");
 		}
 

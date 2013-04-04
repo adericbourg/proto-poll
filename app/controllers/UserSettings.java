@@ -16,13 +16,13 @@ import play.data.Form;
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Transactional;
+import play.libs.F.Option;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import scala.Option;
 import services.ReferentialService;
 import services.UserService;
-import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenticatedUserInSessionException;
 import ui.util.Language;
 import util.security.CurrentUser;
 import views.html.user.userProfile;
@@ -156,8 +156,8 @@ public class UserSettings extends Controller {
 
 	private static Form<UserProfile> getFormProfile() {
 		Option<User> optUser = CurrentUser.currentUser();
-		if (optUser.isEmpty()) {
-			throw new NoAuthenfiedUserInSessionException();
+		if (!optUser.isDefined()) {
+			throw new NoAuthenticatedUserInSessionException();
 		}
 
 		User currentUser = optUser.get();

@@ -15,7 +15,8 @@ public class AlreadyRegisteredUser extends UserException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param username User name.
+	 * @param username
+	 *            User name.
 	 */
 	public AlreadyRegisteredUser(String username) {
 		super(ServiceMessage.ALREADY_REGISTERED_USER, username);

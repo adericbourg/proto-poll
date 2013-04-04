@@ -12,9 +12,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import play.Play;
+import play.libs.F.Option;
 import play.mvc.Http.Context;
 import play.mvc.Http.Request;
-import scala.Option;
 import services.UserService;
 import util.security.CurrentUser;
 import util.user.message.Messages;
@@ -67,10 +67,10 @@ public final class UIUtil {
 	}
 
 	public static Option<String> urlEncode(Option<String> url) {
-		if (url.isEmpty()) {
+		if (!url.isDefined()) {
 			return url;
 		}
-		return Option.apply(urlEncode(url.get()));
+		return Option.Some(urlEncode(url.get()));
 	}
 
 	public static String urlEncode(String url) {
@@ -136,7 +136,7 @@ public final class UIUtil {
 		if (!CurrentUser.isAuthenticated()) {
 			return false;
 		}
-		if (CurrentUser.currentUser().isEmpty()) {
+		if (!CurrentUser.currentUser().isDefined()) {
 			return false;
 		}
 		return !Strings.isNullOrEmpty(CurrentUser.currentUser().get().email);
@@ -155,7 +155,7 @@ public final class UIUtil {
 	}
 
 	public static String getGravatarUrl(Option<User> optUser, int size) {
-		if (optUser.isEmpty()) {
+		if (!optUser.isDefined()) {
 			return null;
 		}
 

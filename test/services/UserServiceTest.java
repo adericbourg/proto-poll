@@ -13,7 +13,7 @@ import models.User;
 
 import org.junit.Test;
 
-import scala.Option;
+import play.libs.F.Option;
 import services.exception.poll.NoAuthenticatedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
 import util.security.CurrentUser;
@@ -86,7 +86,7 @@ public class UserServiceTest extends ProtoPollTest {
 		Option<User> loadedUser = UserService.getUser(-1L);
 
 		// Assert.
-		assertTrue(loadedUser.isEmpty());
+		assertFalse(loadedUser.isDefined());
 	}
 
 	@Test
@@ -116,7 +116,7 @@ public class UserServiceTest extends ProtoPollTest {
 
 		// Assert.
 		assertNotNull(foundUser);
-		assertTrue(foundUser.isEmpty());
+		assertFalse(foundUser.isDefined());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -170,7 +170,7 @@ public class UserServiceTest extends ProtoPollTest {
 
 		// Assert.
 		assertNotNull(user);
-		assertTrue(user.isEmpty());
+		assertFalse(user.isDefined());
 	}
 
 	@Test(expected = NoAuthenticatedUserInSessionException.class)

@@ -1,8 +1,8 @@
 package util.security;
 
 import models.User;
+import play.libs.F.Option;
 import play.mvc.Http.Context;
-import scala.Option;
 import services.UserService;
 
 public final class ContextUtil {
@@ -16,7 +16,7 @@ public final class ContextUtil {
 		}
 		Context.current.set(context);
 		if (!context.session().containsKey(SessionParameters.USERNAME.getKey())) {
-			return Option.empty();
+			return Option.None();
 		}
 		return UserService.findByUsername(context.session().get(
 				SessionParameters.USERNAME.getKey()));

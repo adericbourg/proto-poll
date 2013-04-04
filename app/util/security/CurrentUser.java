@@ -12,9 +12,9 @@ import org.apache.commons.lang3.LocaleUtils;
 
 import play.cache.Cache;
 import play.i18n.Lang;
+import play.libs.F.Option;
 import play.mvc.Http.Context;
 import play.mvc.Http.Session;
-import scala.Option;
 import services.UserService;
 
 public final class CurrentUser {
@@ -42,7 +42,7 @@ public final class CurrentUser {
 
 	public static Option<User> currentUser() {
 		if (!isAuthenticated()) {
-			return Option.empty();
+			return Option.None();
 		}
 
 		// Fetch current user.
@@ -54,12 +54,12 @@ public final class CurrentUser {
 				Cache.set(USERNAME.getKey(), optUser.get());
 			}
 		} else {
-			optUser = Option.apply(user);
+			optUser = Option.Some(user);
 		}
 
 		// If current user was not found, session cookie might be outdated.
 		// Clear session.
-		if (optUser.isEmpty()) {
+		if (!optUser.isDefined()) {
 			logout();
 		}
 
@@ -89,16 +89,16 @@ public final class CurrentUser {
 		if ((locale == null) && (Context.current != null)) {
 			locale = Context.current().lang().toLocale();
 		}
-		return Option.apply(locale);
+		return Option.Some(locale);
 	}
 
 	public static Option<Lang> preferredLang() {
 		if (preferredLocale().isDefined()) {
-			return Option.apply(new Lang(new play.api.i18n.Lang(
+			return Option.Some(new Lang(new play.api.i18n.Lang(
 					preferredLocale().get().getLanguage(), preferredLocale()
 							.get().getCountry())));
 		}
-		return Option.empty();
+		return Option.None();
 	}
 
 	// --- UTIL ---
@@ -115,7 +115,7 @@ public final class CurrentUser {
 	}
 
 	static String sessionId() {
-		if (getCurrentSession().isEmpty()) {
+		if (!getCurrentSession().isDefined()) {
 			return null;
 		}
 		if (getCurrentSession().get().containsKey(SESSION_KEY)) {
@@ -153,8 +153,8 @@ public final class CurrentUser {
 	}
 
 	private static Option<Session> getCurrentSession() {
-		return Context.current.get() == null ? Option.<Session> empty()
-				: Option.apply(Context.current().session());
+		return Context.current.get() == null ? Option.<Session> None() : Option
+				.Some(Context.current().session());
 	}
 
 }

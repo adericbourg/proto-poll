@@ -103,7 +103,7 @@ public class AnswerPoll extends Controller {
 		} catch (NoAnswerFoundException e) {
 			Messages.error(ControllerMessage.POLL_ANSWER_DOES_NOT_EXIST);
 		}
-        return redirect(routes.AnswerPoll.viewPoll(uuidBinder));
+		return redirect(routes.AnswerPoll.viewPoll(uuidBinder));
 	}
 
 	@Transactional
@@ -148,6 +148,6 @@ public class AnswerPoll extends Controller {
 	private static Html getPollViewContent(Poll poll,
 			Form<PollComment> formComment) {
 		PollResults results = PollResultsFactory.build(poll);
-        return pollResults.render(results, poll.comments, formComment);
-    }
+		return pollResults.render(results, poll.comments, formComment);
+	}
 }

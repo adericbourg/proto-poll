@@ -8,9 +8,9 @@ import play.data.Form;
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Transactional;
+import play.libs.F.Option;
 import play.mvc.Controller;
 import play.mvc.Result;
-import scala.Option;
 import services.UserService;
 import services.exception.user.AlreadyRegisteredUser;
 import ui.util.UIUtil;
@@ -118,7 +118,7 @@ public class Authentication extends Controller {
 		Option<User> optUser = UserService.authenticate(login.username,
 				login.password);
 
-		if (optUser.isEmpty()) {
+		if (!optUser.isDefined()) {
 			formLogin.reject("username", "User name and password do not match");
 			formLogin.reject("password", "");
 			return invalidForm(views.html.user.login.render(formLogin, url));
