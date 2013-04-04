@@ -4,18 +4,18 @@
 
 # Home page
 GET    /                            controllers.Application.index()
-GET    /lang/:lang/*url             controllers.Application.changeLanguage(lang: String, url: String)
+GET    /lang/:lang/*url             controllers.Application.changeLanguage(lang, url)
 
 # Authentication
-GET    /register/*url               controllers.Authentication.register(url: String)
+GET    /register/*url               controllers.Authentication.register(url)
 POST   /register/                   controllers.Authentication.saveRegistration()
-GET    /login/*url                  controllers.Authentication.login(url: String)
-POST   /authenticate/*url           controllers.Authentication.authenticate(url: String)
+GET    /login/*url                  controllers.Authentication.login(url)
+POST   /authenticate/*url           controllers.Authentication.authenticate(url)
 GET    /logout                      controllers.Authentication.logout()
 
 # Third party authentication
-GET    /google/auth/*url            controllers.security.GoogleAuthenticationController.auth(url: String)
-GET    /google/verify/*url          controllers.security.GoogleAuthenticationController.verify(url: String)
+GET    /google/auth/*url            controllers.security.GoogleAuthenticationController.auth(url)
+GET    /google/verify/*url          controllers.security.GoogleAuthenticationController.verify(url)
 
 # User
 GET    /user/profile                controllers.UserSettings.profile()
