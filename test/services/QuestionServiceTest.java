@@ -23,7 +23,7 @@ import models.reference.PollStatus;
 
 import org.junit.Test;
 
-import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenticatedUserInSessionException;
 import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.UserTestUtil;
@@ -230,7 +230,7 @@ public class QuestionServiceTest extends ProtoPollTest {
 		return savedChoices;
 	}
 
-	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	@Test(expected = NoAuthenticatedUserInSessionException.class)
 	public void testAnswerPollRegisteredNoCurrentUser() {
 		// Prepare.
 		Question question = createQuestion();

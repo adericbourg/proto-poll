@@ -14,7 +14,7 @@ import models.User;
 import org.junit.Test;
 
 import scala.Option;
-import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenticatedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
 import util.security.CurrentUser;
 import util.security.PasswordUtil;
@@ -173,7 +173,7 @@ public class UserServiceTest extends ProtoPollTest {
 		assertTrue(user.isEmpty());
 	}
 
-	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	@Test(expected = NoAuthenticatedUserInSessionException.class)
 	public void testtestUpdateUserProfileNotAuthentified() {
 		UserService.updateUserProfile(new User());
 	}
@@ -273,7 +273,7 @@ public class UserServiceTest extends ProtoPollTest {
 				.equals(loadedUser.passwordHash));
 	}
 
-	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	@Test(expected = NoAuthenticatedUserInSessionException.class)
 	public void testUpdateUserPasswordNotAuthentified() {
 		UserService.updateUserPassword(null, null);
 	}

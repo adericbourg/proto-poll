@@ -18,7 +18,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import services.PollService;
 import services.exception.poll.NoAnswerFoundException;
-import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenticatedUserInSessionException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.binders.UuidBinder;
 import util.security.CurrentUser;
@@ -98,12 +98,12 @@ public class AnswerPoll extends Controller {
 		try {
 			PollService.removeCurrentUserAnswer(uuidBinder.uuid());
 			Messages.info(ControllerMessage.POLL_ANSWER_DELETED);
-		} catch (NoAuthenfiedUserInSessionException e) {
+		} catch (NoAuthenticatedUserInSessionException e) {
 			Messages.error(ControllerMessage.ACCESS_FORBIDDEN_NOT_AUTHENTIFIED);
 		} catch (NoAnswerFoundException e) {
 			Messages.error(ControllerMessage.POLL_ANSWER_DOES_NOT_EXIST);
 		}
-		return redirect(routes.AnswerPoll.viewPoll(uuidBinder));
+        return redirect(routes.AnswerPoll.viewPoll(uuidBinder));
 	}
 
 	@Transactional
@@ -148,6 +148,6 @@ public class AnswerPoll extends Controller {
 	private static Html getPollViewContent(Poll poll,
 			Form<PollComment> formComment) {
 		PollResults results = PollResultsFactory.build(poll);
-		return pollResults.render(results, poll.comments, formComment);
-	}
+        return pollResults.render(results, poll.comments, formComment);
+    }
 }

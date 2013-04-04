@@ -21,7 +21,7 @@ import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
 import services.exception.poll.InconsistentPollException;
 import services.exception.poll.NoAnswerFoundException;
-import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenticatedUserInSessionException;
 import services.exception.poll.PollNotFoundException;
 import util.security.CurrentUser;
 
@@ -76,7 +76,7 @@ public class PollService {
 
 	private static List<Poll> listUserPolls(PollStatus... statuses) {
 		if (!CurrentUser.isAuthenticated()) {
-			throw new NoAuthenfiedUserInSessionException();
+			throw new NoAuthenticatedUserInSessionException();
 		}
 		if (statuses == null) {
 			return new ArrayList<Poll>();
@@ -168,7 +168,7 @@ public class PollService {
 		if (CurrentUser.currentUser().isDefined()) {
 			postComment(uuid, comment, CurrentUser.currentUser().get());
 		} else {
-			throw new NoAuthenfiedUserInSessionException();
+			throw new NoAuthenticatedUserInSessionException();
 		}
 	}
 
@@ -194,7 +194,7 @@ public class PollService {
 	@Transactional
 	public static void removeCurrentUserAnswer(UUID uuid) {
 		if (!CurrentUser.isAuthenticated()) {
-			throw new NoAuthenfiedUserInSessionException();
+			throw new NoAuthenticatedUserInSessionException();
 		}
 
 		Poll poll = getPoll(uuid);

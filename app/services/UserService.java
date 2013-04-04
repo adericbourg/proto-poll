@@ -9,7 +9,7 @@ import models.reference.ThirdPartySource;
 import play.db.ebean.Transactional;
 import play.libs.OpenID.UserInfo;
 import scala.Option;
-import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenticatedUserInSessionException;
 import services.exception.user.AlreadyRegisteredUser;
 import services.messages.ServiceMessage;
 import services.openid.OpenIdAttributes;
@@ -194,7 +194,7 @@ public final class UserService {
 	private static User getCheckedCurrentUser() {
 		Option<User> currentUser = CurrentUser.currentUser();
 		if (currentUser.isEmpty()) {
-			throw new NoAuthenfiedUserInSessionException();
+			throw new NoAuthenticatedUserInSessionException();
 		}
 		return currentUser.get();
 	}

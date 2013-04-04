@@ -1,5 +1,5 @@
 package services.exception.poll;
 
-public class NoAuthenfiedUserInSessionException extends RuntimeException {
+public class NoAuthenticatedUserInSessionException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 }

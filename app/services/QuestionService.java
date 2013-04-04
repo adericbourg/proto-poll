@@ -20,7 +20,7 @@ import models.reference.PollStatus;
 import play.db.ebean.Model.Finder;
 import play.db.ebean.Transactional;
 import scala.Option;
-import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenticatedUserInSessionException;
 import services.exception.poll.NoChoiceException;
 import services.exception.user.AnonymousUserAlreadyAnsweredPoll;
 import util.security.CurrentUser;
@@ -127,7 +127,7 @@ public class QuestionService {
 	static void answerQuestionRegistered(UUID uuid, Collection<Long> choiceIds) {
 		Option<User> currentUser = CurrentUser.currentUser();
 		if (currentUser.isEmpty()) {
-			throw new NoAuthenfiedUserInSessionException();
+			throw new NoAuthenticatedUserInSessionException();
 		}
 		answerQuestion(currentUser.get(), uuid, choiceIds);
 	}

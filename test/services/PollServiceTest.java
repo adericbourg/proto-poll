@@ -22,7 +22,7 @@ import models.Question;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
-import services.exception.poll.NoAuthenfiedUserInSessionException;
+import services.exception.poll.NoAuthenticatedUserInSessionException;
 import util.UserTestUtil;
 
 public class PollServiceTest extends ProtoPollTest {
@@ -161,7 +161,7 @@ public class PollServiceTest extends ProtoPollTest {
 		assertTrue(polls.isEmpty());
 	}
 
-	@Test(expected = NoAuthenfiedUserInSessionException.class)
+	@Test(expected = NoAuthenticatedUserInSessionException.class)
 	public void testListUserPollsNotAuthenticated() {
 		PollService.listUserPolls();
 	}
