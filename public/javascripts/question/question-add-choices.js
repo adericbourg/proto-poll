@@ -1,7 +1,7 @@
 $(function() {
 	$(document).on('click', '.remove-choice', function(e) {
-        $(this).parents('.choice').remove()
-        renumber()
+        $(this).parents('.choice').remove();
+        renumber();
     });
     
     $(document).on('click', '.add-choice', function(e) {
@@ -17,35 +17,35 @@ $(function() {
     	}
     });
     
+    $(document).ready(renumber);
+    
     $('#form').submit(function() {
-        $('.choice_template').remove()
+        $('.choice_template').remove();
     });
 
     function addChoice() {
-    	var template = $('.choice_template')
-        template.before('<div class="choice">' + template.html() + '</div>')
-        renumber()
+    	var template = $('.choice_template');
+        template.before('<div class="choice">' + template.html() + '</div>');
+        renumber();
     }
     
-    var renumber = function(choice) {
+    function renumber() {
     	var count = 0;
         $('#choices .choice').each(function(i) {
             $('input', this).each(function() {
-            	count++
-                $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'))
-                $(this).attr('placeholder', i18n.choice_placeholder + ' ' + count)
-                $(this).removeClass("last-input")
-            })
-        })
+            	count++;
+                $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'));
+                $(this).attr('placeholder', i18n.choice_placeholder + ' ' + count);
+                $(this).removeClass("last-input");
+            });
+        });
         
-        $('#choices .choice input:last').addClass("last-input")
+        $('#choices .choice input:last').addClass("last-input");
         
         if (count > 10) {
-        	$('#manage-bottom').show()
+        	$('#manage-bottom').show();
         } else {
-        	$('#manage-bottom').hide()
+        	$('#manage-bottom').hide();
         }
     }
-    
-    renumber()
-})
+});

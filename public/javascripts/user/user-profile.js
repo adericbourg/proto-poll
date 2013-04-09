@@ -10,10 +10,10 @@ $(function() {
 	
 	// Put modal info link info form.
 	$(document).ready(function() {
-		registerGravatarTipLink()
+		registerGravatarTipLink();
 	});
 
 	function registerGravatarTipLink() {
-		$('#avatarEmail_field .help-inline').append($('#gravatar-tip-link'))
+		$('#avatarEmail_field .help-inline').append($('#gravatar-tip-link'));
 	}
 });

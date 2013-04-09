@@ -1,6 +1,8 @@
 $(function() {
 	$(document).on('click', '.answer', function(e) {
-    	$(this).find("input").each(function(){ this.checked = !this.checked; });
+    	$(this).find("input").each(function() { 
+    		this.checked = !this.checked; 
+		});
     	return false;
     });
 	
@@ -12,4 +14,4 @@ $(function() {
 		e.stopPropagation();
 		var val = $(this).val();
 	});
-})
+});

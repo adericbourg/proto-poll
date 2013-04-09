@@ -4,7 +4,7 @@ $(function() {
 			startDate: startDate(), 
 			language: i18n.language
 		})
-		.on('changeDate', function(ev){
+		.on('changeDate', function(ev) {
 			var locally_formatted_date = $('#datepicker').data('date');
 			var selected_date = ev.date;
 			var sort_format = formatForSort(selected_date);
@@ -27,7 +27,7 @@ $(function() {
 	    organize();
 	});
 	
-	var organize = function() {
+	function organize() {
 		// Sort items by ascending date.
 		var items = $('#choices ul').children('li').remove();
 		items.sort(function(a, b) {
@@ -39,8 +39,8 @@ $(function() {
 		var count = 0;
 	    $('#choices').each(function(i) {
 	        $('input[type=hidden]', this).each(function() {
-	            $(this).attr('name', $(this).attr('name').replace(/date_choice\[.+?\]/g, 'date_choice[' + count + ']'))
-	        	count++
+	            $(this).attr('name', $(this).attr('name').replace(/date_choice\[.+?\]/g, 'date_choice[' + count + ']'));
+	        	count++;
 	        })
 	    })
 	}
@@ -52,16 +52,16 @@ $(function() {
 	}
 	
 	function formatToISOFormat(date) {
-		var day = date.getDate(); if (day < 10) { day = '0' + day};
-		var month = date.getMonth(); month++; if (month < 10) { month = '0' + month };
+		var day = date.getDate(); if (day < 10) { day = '0' + day }
+		var month = date.getMonth(); month++; if (month < 10) { month = '0' + month }
 		var year = date.getFullYear();
 		return year + '-' + month + '-' + day;
 	}
 	
 	function formatForSort(date) {
-		var day = date.getDate(); if (day < 10) { day = '0' + day};
-		var month = date.getMonth(); month++; if (month < 10) { month = '0' + month };
+		var day = date.getDate(); if (day < 10) { day = '0' + day }
+		var month = date.getMonth(); month++; if (month < 10) { month = '0' + month }
 		var year = date.getFullYear();
 		return '' + year + month + day;
-	    }
-})
+    }
+});
