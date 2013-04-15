@@ -1,51 +1,23 @@
-$(function() {
-	$(document).on('click', '.remove-choice', function(e) {
-        $(this).parents('.choice').remove();
-        renumber();
-    });
-    
-    $(document).on('click', '.add-choice', function(e) {
-    	addChoice();
-    });
-    
-    $(document).on('keypress', '.last-input', function(e) {
-    	// While input is not empty, "Tab" key press will add new input.
-    	if (e.keyCode === 9 && $(this).val() != "") {
-    		addChoice();
-    		$('#choices .choice input:last').focus();
-        	return false;
-    	}
-    });
-    
-    $(document).ready(renumber);
-    
-    $('#form').submit(function() {
-        $('.choice_template').remove();
-    });
-
-    function addChoice() {
-    	var template = $('.choice_template');
-        template.before('<div class="choice">' + template.html() + '</div>');
-        renumber();
-    }
-    
-    function renumber() {
-    	var count = 0;
-        $('#choices .choice').each(function(i) {
-            $('input', this).each(function() {
-            	count++;
-                $(this).attr('name', $(this).attr('name').replace(/choice\[.+?\]/g, 'choice[' + count + ']'));
-                $(this).attr('placeholder', i18n.choice_placeholder + ' ' + count);
-                $(this).removeClass("last-input");
-            });
-        });
-        
-        $('#choices .choice input:last').addClass("last-input");
-        
-        if (count > 10) {
-        	$('#manage-bottom').show();
-        } else {
-        	$('#manage-bottom').hide();
-        }
-    }
-});
+function QuestionAddChoiceCtrl($scope) {
+	$scope.choices = [];
+	
+	$scope.addChoice = function () {
+		if ($scope.choiceText != null && $scope.choiceText != "") {
+			$scope.choices.push({label: $scope.choiceText, sortOrder: $scope.count()});
+			$scope.choiceText = '';
+		}
+	};
+	
+	$scope.removeChoice = function(choice) {
+		var index = $scope.choices.indexOf(choice);
+		$scope.choices.splice(index, 1);
+	};
+	
+	$scope.count = function() {
+		var count = 0;
+		angular.forEach($scope.choices, function(choice) {
+			count += 1;
+		});
+		return count;
+	};
+}

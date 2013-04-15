@@ -21,6 +21,8 @@ object ApplicationBuild extends Build {
     "org.webjars" % "bootstrap" % "2.3.1",
     "org.webjars" % "font-awesome" % "3.0.2",
     "org.webjars" % "bootstrap-datepicker" % "1.0.1",
+    "org.webjars" % "angularjs" % "1.1.4",
+    "org.webjars" % "angular-ui" % "0.4.0",
     "mysql" % "mysql-connector-java" % "5.1.22",
     "commons-codec" % "commons-codec" % "1.7",
     "org.markdownj" % "markdownj" % "0.3.0-1.0.2b4",

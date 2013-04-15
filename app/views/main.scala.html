@@ -19,6 +19,7 @@
     	<link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap-responsive.min.css"))'>
     	<link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("font-awesome/3.0.2/css/font-awesome.min.css"))'>
+    	<link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
         <!--[if IE 7]>
    	    	<link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("font-awesome/3.0.2/css/font-awesome-ie7.min.css"))'>
 		<![endif]-->
@@ -27,7 +28,7 @@
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/bootstrap.forms.fix.css")'>
         <style>
             body {
-            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
             }
         </style>
         <link rel="shortcut icon" type="image/png" href='@routes.Assets.at("images/favicon.png")'>
@@ -70,11 +71,16 @@
         <!-- Placed at the end of the document so the pages load faster -->
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("js/bootstrap.min.js"))'></script>
+        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular.min.js"))'></script>
+        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.js"))'></script>
         @* <script type="text/javascript" src="@routes.I18nController.javascriptRoutes"></script> *@
-        @scripts
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
             <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("html5shiv.min.js"))'></script>
         <![endif]-->
+        <!--[if lte IE 8]>
+			<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui-ieshiv.min.js"))'></script>
+		<![endif]-->
+        @scripts
     </body>
 </html>
