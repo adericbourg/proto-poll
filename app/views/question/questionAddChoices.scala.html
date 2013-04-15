@@ -23,7 +23,9 @@
             	<h3>{{count()}} choices</h3>
             	<ol>
             		<li ng-repeat="choice in choices">
-            			<a href="#" class="icon-remove-sign" ng-click="removeChoice({{choice}})"></a>
+            			<a class="btn btn-mini btn-link choice-remove" ng-click="removeChoice({{choice}})"><i class="icon-remove-sign"></i></a>
+            			<a class="btn btn-mini btn-link choice-down" ng-click="moveDown({{choice}})"><i class="icon-arrow-down"></i></a>
+            			<a class="btn btn-mini btn-link choice-up" ng-click="moveUp({{choice}})"><i class="icon-arrow-up"></i></a>
             			<span>{{choice.label}}</span>
             		</li>
             	</ol>
