@@ -32,8 +32,7 @@ function QuestionAddChoiceCtrl($scope) {
 	};
 
 	var indexOf = function(choice) {
-		var i, len;
-		for (i = 0, len = $scope.choices.length; i < len; i++) {
+		for (var i = 0, len = $scope.choices.length; i < len; i++) {
 			if ($scope.choices[i].label == choice.label) {
 				return i;
 			}
