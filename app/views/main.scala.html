@@ -1,8 +1,8 @@
 @(title: String, scripts: Html = Html(""))(content: Html)
 
 @*
-	If adding a script on a specific page is needed, set this variable before using the main template and 
-	add the variable to its constructor (@main("title", scripts)). 
+	If adding a script on a specific page is needed, set this variable before using the main template and
+	add the variable to its constructor (@main("title", scripts)).
 		@scripts = {
 		    <script type="text/javascript">alert("hello !");</script>
 		}
@@ -14,15 +14,16 @@
 
 <html>
     <head>
+        <meta charset="UTF-8">
         <title>@Messages.resolve("application.name") :: @title</title>
         <!-- Le styles -->
-    	<link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap-responsive.min.css"))'>
     	<link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("font-awesome/3.0.2/css/font-awesome.min.css"))'>
         <!--[if IE 7]>
    	    	<link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("font-awesome/3.0.2/css/font-awesome-ie7.min.css"))'>
 		<![endif]-->
-		
+
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/main.css")'>
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/bootstrap.forms.fix.css")'>
         <style>
@@ -47,7 +48,7 @@
 		                    </div>
 		                </div>
 					</div>
-				</div> 
+				</div>
         	</div>
         </header>
 
@@ -57,14 +58,14 @@
     	</ul>
 
       	<div class="container">
-      	
+
       		@tags.messages()
-      		
+
 			<div class="content">
 				@content
 			</div>
 		</div>
-        
+
         <!-- Le javascript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
